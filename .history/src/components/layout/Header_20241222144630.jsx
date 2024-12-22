@@ -1,10 +1,10 @@
-import { Box, InputBase, Badge, Avatar, IconButton } from "@mui/material";
+import { Box, InputBase, Badge, Avatar } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import SettingsIcon from "@mui/icons-material/Settings";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
 const SearchWrapper = styled("div")({
   position: "relative",
@@ -14,10 +14,20 @@ const SearchWrapper = styled("div")({
   alignItems: "center",
 });
 
+const SearchIconWrapper = styled("div")({
+  position: "absolute",
+  left: 12,
+  top: "50%",
+  transform: "translateY(-50%)",
+  pointerEvents: "none",
+  color: "#919EAB",
+  zIndex: 1,
+});
+
 const StyledInputBase = styled(InputBase)({
   width: "100%",
   "& .MuiInputBase-input": {
-    padding: "9px 12px",
+    padding: "9px 12px 9px 36px",
     backgroundColor: "#F4F6F8",
     borderRadius: 8,
     fontSize: 14,
@@ -40,13 +50,25 @@ const SearchButton = styled(IconButton)({
   },
 });
 
+const IconButton = styled(Box)({
+  width: 40,
+  height: 40,
+  borderRadius: 8,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  color: "#637381",
+  transition: "all 0.2s",
+  "&:hover": {
+    backgroundColor: "#F4F6F8",
+  },
+});
+
 export default function Header() {
   return (
     <Box
       sx={{
-        position: "sticky",
-        top: 0,
-        zIndex: 1100,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
@@ -58,6 +80,9 @@ export default function Header() {
       }}
     >
       <SearchWrapper>
+        <SearchIconWrapper>
+          <SearchIcon sx={{ fontSize: 18 }} />
+        </SearchIconWrapper>
         <StyledInputBase
           placeholder="Search in here"
           inputProps={{ "aria-label": "search" }}
@@ -67,43 +92,33 @@ export default function Header() {
         </SearchButton>
       </SearchWrapper>
 
-      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-        <IconButton
-          sx={{
-            color: "#637381",
-            "&:hover": { backgroundColor: "#F4F6F8" },
-          }}
-        >
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <IconButton>
           <Badge
             badgeContent={2}
+            color="primary"
             sx={{
               "& .MuiBadge-badge": {
                 backgroundColor: "#2065D1",
-                color: "#fff",
-                minWidth: 16,
-                height: 16,
+                minWidth: 18,
+                height: 18,
                 fontSize: 10,
               },
             }}
           >
-            <ChatBubbleOutlineIcon sx={{ fontSize: 20 }} />
+            <EmailOutlinedIcon sx={{ fontSize: 20 }} />
           </Badge>
         </IconButton>
 
-        <IconButton
-          sx={{
-            color: "#637381",
-            "&:hover": { backgroundColor: "#F4F6F8" },
-          }}
-        >
+        <IconButton>
           <Badge
             badgeContent={3}
+            color="primary"
             sx={{
               "& .MuiBadge-badge": {
                 backgroundColor: "#2065D1",
-                color: "#fff",
-                minWidth: 16,
-                height: 16,
+                minWidth: 18,
+                height: 18,
                 fontSize: 10,
               },
             }}
@@ -112,20 +127,15 @@ export default function Header() {
           </Badge>
         </IconButton>
 
-        <IconButton
-          sx={{
-            color: "#637381",
-            "&:hover": { backgroundColor: "#F4F6F8" },
-          }}
-        >
+        <IconButton>
           <Badge
             badgeContent={5}
             sx={{
               "& .MuiBadge-badge": {
                 backgroundColor: "#FF4842",
                 color: "#fff",
-                minWidth: 16,
-                height: 16,
+                minWidth: 18,
+                height: 18,
                 fontSize: 10,
               },
             }}
@@ -134,25 +144,13 @@ export default function Header() {
           </Badge>
         </IconButton>
 
-        <IconButton
-          sx={{
-            color: "#637381",
-            "&:hover": { backgroundColor: "#F4F6F8" },
-          }}
-        >
-          <SettingsIcon sx={{ fontSize: 20 }} />
+        <IconButton>
+          <SettingsOutlinedIcon sx={{ fontSize: 20 }} />
         </IconButton>
 
-        <Box sx={{ display: "flex", alignItems: "center", ml: 1 }}>
-          <Box sx={{ mr: 1 }}>
-            <Box
-              sx={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#212B36",
-                textAlign: "right",
-              }}
-            >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, ml: 1 }}>
+          <Box sx={{ textAlign: "right" }}>
+            <Box sx={{ fontSize: 13, fontWeight: 600, color: "#212B36" }}>
               Hello, Admin
             </Box>
           </Box>

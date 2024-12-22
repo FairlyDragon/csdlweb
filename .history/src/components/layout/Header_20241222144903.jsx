@@ -14,10 +14,20 @@ const SearchWrapper = styled("div")({
   alignItems: "center",
 });
 
+const SearchIconWrapper = styled("div")({
+  position: "absolute",
+  left: 12,
+  top: "50%",
+  transform: "translateY(-50%)",
+  pointerEvents: "none",
+  color: "#919EAB",
+  zIndex: 1,
+});
+
 const StyledInputBase = styled(InputBase)({
   width: "100%",
   "& .MuiInputBase-input": {
-    padding: "9px 12px",
+    padding: "9px 12px 9px 36px",
     backgroundColor: "#F4F6F8",
     borderRadius: 8,
     fontSize: 14,
@@ -58,6 +68,9 @@ export default function Header() {
       }}
     >
       <SearchWrapper>
+        <SearchIconWrapper>
+          <SearchIcon sx={{ fontSize: 18 }} />
+        </SearchIconWrapper>
         <StyledInputBase
           placeholder="Search in here"
           inputProps={{ "aria-label": "search" }}
