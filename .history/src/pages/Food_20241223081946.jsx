@@ -1,11 +1,4 @@
-import {
-  Box,
-  Card,
-  Typography,
-  Button,
-  Rating,
-  IconButton,
-} from "@mui/material";
+import { Box, Typography, Button, Rating, Card } from "@mui/material";
 import {
   ChevronLeft,
   ChevronRight,
@@ -20,16 +13,18 @@ const popularDishes = [
     rating: 5,
     reviews: "1.31",
     price: 5.59,
-    discount: 15,
+    discount: "15% OFF",
+    category: "Dishes",
   },
   {
     id: 2,
     name: "Egg Noodles",
     image: "/food2.jpg",
     rating: 5,
-    reviews: "1.31",
+    reviews: "1.11",
     price: 5.59,
-    discount: 15,
+    discount: "15% OFF",
+    category: "Dishes",
   },
   {
     id: 3,
@@ -38,9 +33,10 @@ const popularDishes = [
     rating: 5,
     reviews: "1.31",
     price: 5.59,
-    discount: 15,
+    discount: "15% OFF",
+    category: "Dishes",
   },
-  // Duplicate dishes for the second row
+  // Duplicate for second row
   {
     id: 4,
     name: "Spicy Noodles",
@@ -48,7 +44,8 @@ const popularDishes = [
     rating: 5,
     reviews: "1.31",
     price: 5.59,
-    discount: 15,
+    discount: "15% OFF",
+    category: "Dishes",
   },
   {
     id: 5,
@@ -57,7 +54,8 @@ const popularDishes = [
     rating: 5,
     reviews: "1.31",
     price: 5.59,
-    discount: 15,
+    discount: "15% OFF",
+    category: "Dishes",
   },
   {
     id: 6,
@@ -66,23 +64,15 @@ const popularDishes = [
     rating: 5,
     reviews: "1.31",
     price: 5.59,
-    discount: 15,
+    discount: "15% OFF",
+    category: "Dishes",
   },
 ];
 
 export default function Foods() {
   return (
-    <Box sx={{ p: 3 }}>
-      {/* Header */}
-      <Typography
-        variant="h4"
-        sx={{
-          mb: 4,
-          color: "#212B36",
-          fontSize: 24,
-          fontWeight: 600,
-        }}
-      >
+    <Box sx={{ p: 3, bgcolor: "#F4F6F8", minHeight: "100vh" }}>
+      <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
         Foods
       </Typography>
 
@@ -94,57 +84,56 @@ export default function Foods() {
           p: 4,
           mb: 4,
           position: "relative",
-          overflow: "visible",
           borderRadius: 3,
         }}
       >
-        <IconButton
+        <Box
           sx={{
             position: "absolute",
             left: -20,
             top: "50%",
             transform: "translateY(-50%)",
-            bgcolor: "white",
-            "&:hover": { bgcolor: "white" },
-            width: 40,
-            height: 40,
           }}
         >
-          <ChevronLeft />
-        </IconButton>
-        <IconButton
+          <Button
+            sx={{
+              minWidth: 40,
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              bgcolor: "white",
+              color: "#637381",
+              "&:hover": { bgcolor: "white" },
+            }}
+          >
+            <ChevronLeft />
+          </Button>
+        </Box>
+        <Box
           sx={{
             position: "absolute",
             right: -20,
             top: "50%",
             transform: "translateY(-50%)",
-            bgcolor: "white",
-            "&:hover": { bgcolor: "white" },
-            width: 40,
-            height: 40,
           }}
         >
-          <ChevronRight />
-        </IconButton>
-        <Typography
-          sx={{
-            mb: 1,
-            fontSize: 14,
-            fontWeight: 400,
-            color: "rgba(255, 255, 255, 0.9)",
-          }}
-        >
-          December 21-27
-        </Typography>
-        <Typography
-          variant="h5"
-          sx={{
-            mb: 2,
-            fontSize: 24,
-            fontWeight: 600,
-            lineHeight: 1.5,
-          }}
-        >
+          <Button
+            sx={{
+              minWidth: 40,
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              bgcolor: "white",
+              color: "#637381",
+              "&:hover": { bgcolor: "white" },
+            }}
+          >
+            <ChevronRight />
+          </Button>
+        </Box>
+
+        <Typography sx={{ opacity: 0.8, mb: 1 }}>December 21-27</Typography>
+        <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>
           Enjoy 20% discount
           <br />
           in this Christmas
@@ -155,9 +144,7 @@ export default function Foods() {
             bgcolor: "#FF6B6B",
             "&:hover": { bgcolor: "#FF5252" },
             textTransform: "none",
-            borderRadius: 1.5,
-            px: 3,
-            py: 1,
+            borderRadius: 1,
           }}
         >
           Get Started
@@ -167,33 +154,21 @@ export default function Foods() {
       {/* Popular Dishes */}
       <Box
         sx={{
-          mb: 2,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          mb: 3,
         }}
       >
-        <Typography
-          sx={{
-            fontSize: 18,
-            fontWeight: 600,
-            color: "#212B36",
-          }}
-        >
+        <Typography variant="h6" sx={{ fontWeight: 600 }}>
           Popular Dishes
         </Typography>
         <Button
-          endIcon={<ArrowForwardIos sx={{ fontSize: 14 }} />}
+          endIcon={<ArrowForwardIos sx={{ fontSize: 12 }} />}
           sx={{
-            textTransform: "none",
             color: "#637381",
-            "&:hover": {
-              bgcolor: "transparent",
-              color: "#212B36",
-            },
-            "& .MuiButton-endIcon": {
-              ml: 0.5,
-            },
+            "&:hover": { bgcolor: "transparent", color: "#212B36" },
+            textTransform: "none",
           }}
         >
           View all
@@ -204,15 +179,14 @@ export default function Foods() {
         sx={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 3 }}
       >
         {popularDishes.map((dish) => (
-          <Card
-            key={dish.id}
-            sx={{
-              position: "relative",
-              borderRadius: 3,
-              overflow: "hidden",
-            }}
-          >
-            {dish.discount && (
+          <Card key={dish.id} sx={{ borderRadius: 3, overflow: "hidden" }}>
+            <Box sx={{ position: "relative" }}>
+              <Box
+                component="img"
+                src={dish.image}
+                alt={dish.name}
+                sx={{ width: "100%", height: 200, objectFit: "cover" }}
+              />
               <Typography
                 sx={{
                   position: "absolute",
@@ -223,55 +197,27 @@ export default function Foods() {
                   px: 1,
                   py: 0.5,
                   borderRadius: 1,
-                  fontSize: "0.75rem",
+                  fontSize: 12,
                   fontWeight: 600,
                 }}
               >
-                {dish.discount}% Off
+                {dish.discount}
               </Typography>
-            )}
-            <Box
-              component="img"
-              src={dish.image}
-              sx={{
-                width: "100%",
-                height: 200,
-                objectFit: "cover",
-              }}
-            />
+            </Box>
             <Box sx={{ p: 2 }}>
               <Box
                 sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
               >
-                <Rating
-                  value={dish.rating}
-                  readOnly
-                  size="small"
-                  sx={{
-                    "& .MuiRating-iconFilled": {
-                      color: "#FFC107",
-                    },
-                  }}
-                />
+                <Rating value={dish.rating} readOnly size="small" />
                 <Typography
                   variant="body2"
-                  sx={{
-                    color: "#637381",
-                    fontSize: 12,
-                  }}
+                  sx={{ color: "#637381", fontSize: 12 }}
                 >
                   ({dish.reviews})
                 </Typography>
               </Box>
-              <Typography
-                variant="body2"
-                sx={{
-                  mb: 1,
-                  color: "#637381",
-                  fontSize: 13,
-                }}
-              >
-                Dishes
+              <Typography variant="body2" sx={{ color: "#637381", mb: 1 }}>
+                {dish.category}
               </Typography>
               <Box
                 sx={{
@@ -280,30 +226,19 @@ export default function Foods() {
                   alignItems: "center",
                 }}
               >
-                <Typography
-                  sx={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    color: "#212B36",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.5,
-                  }}
-                >
-                  <span style={{ color: "#FFC107" }}>$</span>
+                <Typography sx={{ fontWeight: 600, fontSize: 16 }}>
+                  <Box component="span" sx={{ color: "#FFA723", mr: 0.5 }}>
+                    $
+                  </Box>
                   {dish.price}
                 </Typography>
                 <Button
                   variant="contained"
                   size="small"
                   sx={{
-                    bgcolor: "#F4F6F8",
-                    color: "#212B36",
-                    "&:hover": {
-                      bgcolor: "#E7E9EC",
-                    },
+                    bgcolor: "#212B36",
+                    "&:hover": { bgcolor: "#454F5B" },
                     textTransform: "none",
-                    boxShadow: "none",
                   }}
                 >
                   Edit Product
