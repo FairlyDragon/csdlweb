@@ -3,11 +3,12 @@ import { Download } from "@mui/icons-material";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 const data = [
-  { name: "Monday", orders: 380 },
-  { name: "Tuesday", orders: 400 },
-  { name: "Wednesday", orders: 456 },
-  { name: "Thursday", orders: 390 },
-  { name: "Friday", orders: 430 },
+  { name: "Sunday", orders: 380 },
+  { name: "Monday", orders: 400 },
+  { name: "Tuesday", orders: 456 },
+  { name: "Wednesday", orders: 390 },
+  { name: "Thursday", orders: 430 },
+  { name: "Friday", orders: 420 },
   { name: "Saturday", orders: 450 },
 ];
 
@@ -17,30 +18,16 @@ const CustomTooltip = (active, payload) => {
       <Box
         sx={{
           bgcolor: "#fff",
-          p: 2,
-          boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
+          p: 1.5,
+          boxShadow: "0px 4px 16px rgba(0, 0, 0, 0.1)",
           borderRadius: 2,
-          minWidth: "120px",
+          border: "1px solid rgba(145, 158, 171, 0.12)",
         }}
       >
-        <Typography
-          sx={{
-            color: "#464255",
-            fontSize: "16px",
-            fontFamily: "Barlow",
-            fontWeight: 600,
-          }}
-        >
+        <Typography sx={{ color: "#212B36", fontSize: 14, fontWeight: 600 }}>
           {payload[0].value} Order
         </Typography>
-        <Typography
-          sx={{
-            color: "#B9BBBD",
-            fontSize: "14px",
-            fontFamily: "Barlow",
-            lineHeight: "21px",
-          }}
-        >
+        <Typography sx={{ color: "#919EAB", fontSize: 12 }}>
           Oct 18th, 2023
         </Typography>
       </Box>
@@ -68,11 +55,12 @@ export default function OrderChart() {
       >
         <Box>
           <Typography
+            variant="h4"
             sx={{
               color: "#464255",
               fontSize: 24,
               fontFamily: "Barlow",
-              fontWeight: 600,
+              fontWeight: 700,
             }}
           >
             Chart Order
@@ -94,8 +82,8 @@ export default function OrderChart() {
           sx={{
             color: "#2D9CDB",
             fontSize: 18,
-            fontFamily: "Barlow",
-            fontWeight: 600,
+            fontFamily: "Cairo",
+            fontWeight: 700,
             "&:hover": {
               backgroundColor: "rgba(45, 156, 219, 0.08)",
             },

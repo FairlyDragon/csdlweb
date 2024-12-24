@@ -37,7 +37,6 @@ export default function PieCharts() {
         p: 3,
         boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.05)",
         borderRadius: 3,
-        height: "fit-content",
       }}
     >
       <Box
@@ -116,19 +115,18 @@ export default function PieCharts() {
             <Box
               sx={{
                 position: "relative",
-                height: 120,
+                height: 140,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                mb: 1,
               }}
             >
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={[{ value: item.value }, { value: 100 - item.value }]}
-                    innerRadius={40}
-                    outerRadius={50}
+                    innerRadius={45}
+                    outerRadius={55}
                     startAngle={90}
                     endAngle={450}
                     dataKey="value"
@@ -144,7 +142,7 @@ export default function PieCharts() {
                   top: "50%",
                   left: "50%",
                   transform: "translate(-50%, -50%)",
-                  fontSize: "1.25rem",
+                  fontSize: "1.5rem",
                   fontWeight: 600,
                   color: "#212B36",
                 }}
@@ -156,7 +154,7 @@ export default function PieCharts() {
               sx={{
                 fontSize: "0.875rem",
                 color: "#637381",
-                fontWeight: 500,
+                mt: 1,
               }}
             >
               {item.name}

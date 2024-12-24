@@ -3,15 +3,16 @@ import { Download } from "@mui/icons-material";
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 const data = [
-  { name: "Monday", orders: 380 },
-  { name: "Tuesday", orders: 400 },
-  { name: "Wednesday", orders: 456 },
-  { name: "Thursday", orders: 390 },
-  { name: "Friday", orders: 430 },
+  { name: "Sunday", orders: 380 },
+  { name: "Monday", orders: 400 },
+  { name: "Tuesday", orders: 456 },
+  { name: "Wednesday", orders: 390 },
+  { name: "Thursday", orders: 430 },
+  { name: "Friday", orders: 420 },
   { name: "Saturday", orders: 450 },
 ];
 
-const CustomTooltip = (active, payload) => {
+const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
       <Box
@@ -27,8 +28,8 @@ const CustomTooltip = (active, payload) => {
           sx={{
             color: "#464255",
             fontSize: "16px",
-            fontFamily: "Barlow",
-            fontWeight: 600,
+            fontFamily: "Cairo",
+            fontWeight: 700,
           }}
         >
           {payload[0].value} Order
@@ -56,23 +57,26 @@ export default function OrderChart() {
         p: 3,
         boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.04)",
         borderRadius: "14px",
+        border: "1px solid #F3F2F7",
       }}
     >
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: "flex-start",
           mb: 2,
         }}
       >
         <Box>
           <Typography
+            variant="h4"
             sx={{
               color: "#464255",
               fontSize: 24,
               fontFamily: "Barlow",
-              fontWeight: 600,
+              fontWeight: 700,
+              mb: 0.5,
             }}
           >
             Chart Order
@@ -93,9 +97,10 @@ export default function OrderChart() {
           startIcon={<Download />}
           sx={{
             color: "#2D9CDB",
-            fontSize: 18,
-            fontFamily: "Barlow",
-            fontWeight: 600,
+            fontSize: "18px",
+            fontFamily: "Cairo",
+            fontWeight: 700,
+            textTransform: "none",
             "&:hover": {
               backgroundColor: "rgba(45, 156, 219, 0.08)",
             },
@@ -105,16 +110,29 @@ export default function OrderChart() {
         </Button>
       </Box>
 
-      <Box sx={{ height: 120, mt: 2 }}>
-        <ResponsiveContainer width="100%" height="100%">
+      <Box sx={{ width: "100%", height: 300, mt: 2 }}>
+        <ResponsiveContainer>
           <AreaChart
             data={data}
-            margin={{ top: 5, right: 0, left: -10, bottom: 0 }}
+            margin={{
+              top: 5,
+              right: 10,
+              left: -10,
+              bottom: 0,
+            }}
           >
             <defs>
               <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2D9CDB" stopOpacity={0.12} />
-                <stop offset="95%" stopColor="#2D9CDB" stopOpacity={0.01} />
+                <stop
+                  offset="5%"
+                  stopColor="#2D9CDB"
+                  stopOpacity={0.12}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="#2D9CDB"
+                  stopOpacity={0.01}
+                />
               </linearGradient>
             </defs>
             <XAxis

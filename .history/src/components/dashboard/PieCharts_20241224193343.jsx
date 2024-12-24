@@ -126,7 +126,10 @@ export default function PieCharts() {
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={[{ value: item.value }, { value: 100 - item.value }]}
+                    data={[
+                      { value: item.value },
+                      { value: 100 - item.value }
+                    ]}
                     innerRadius={40}
                     outerRadius={50}
                     startAngle={90}

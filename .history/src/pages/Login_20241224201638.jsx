@@ -119,12 +119,6 @@ export default function Login() {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '12px',
-                  '& fieldset': {
-                    borderColor: '#D1D5DB',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#9CA3AF',
-                  }
                 }
               }}
             />
@@ -136,12 +130,6 @@ export default function Login() {
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '12px',
-                  '& fieldset': {
-                    borderColor: '#D1D5DB',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#9CA3AF',
-                  }
                 }
               }}
             />
@@ -157,12 +145,6 @@ export default function Login() {
               mb: 2,
               '& .MuiOutlinedInput-root': {
                 borderRadius: '12px',
-                '& fieldset': {
-                  borderColor: '#D1D5DB',
-                },
-                '&:hover fieldset': {
-                  borderColor: '#9CA3AF',
-                }
               }
             }}
           />
@@ -186,12 +168,6 @@ export default function Login() {
               mb: 2,
               '& .MuiOutlinedInput-root': {
                 borderRadius: '12px',
-                '& fieldset': {
-                  borderColor: '#D1D5DB',
-                },
-                '&:hover fieldset': {
-                  borderColor: '#9CA3AF',
-                }
               }
             }}
           />
@@ -215,12 +191,6 @@ export default function Login() {
               mb: 3,
               '& .MuiOutlinedInput-root': {
                 borderRadius: '12px',
-                '& fieldset': {
-                  borderColor: '#D1D5DB',
-                },
-                '&:hover fieldset': {
-                  borderColor: '#9CA3AF',
-                }
               }
             }}
           />
