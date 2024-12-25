@@ -18,31 +18,30 @@ const data = [
   { name: 'Saturday', orders: 430 }
 ]
 
-const CustomTooltip = ({active, payload}) => {
+const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
       <Box
         sx={{
           bgcolor: '#fff',
-          p: '8px 12px', // Reduced padding
-          boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
-          borderRadius: '8px',
-          border: '1px solid #F2F4F7'
+          p: '8px 12px',
+          boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.08)',
+          borderRadius: '6px',
+          border: 'none'
         }}
       >
         <Typography sx={{ 
-          fontSize: '13px', // Reduced font size
+          fontSize: '14px',
           fontWeight: 500,
-          color: '#111827',
-          mb: 0.25 // Reduced margin
+          color: '#111827'
         }}>
           {`${payload[0].value} Order`}
         </Typography>
         <Typography sx={{ 
-          fontSize: '11px', // Reduced font size
-          color: '#6B7280'
+          fontSize: '12px',
+          color: '#9CA3AF'
         }}>
-          Oct 16th, 2023
+          OCT 18th, 2023
         </Typography>
       </Box>
     )
@@ -55,9 +54,9 @@ export default function OrderChart() {
     <Card
       sx={{
         p: 3,
-        borderRadius: '24px',
-        bgcolor: '#FFFFFF',
-        boxShadow: '0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06)'
+        border: '1px solid #E5E7EB',
+        borderRadius: '12px',
+        bgcolor: '#FFFFFF'
       }}
     >
       <Box 
@@ -71,7 +70,7 @@ export default function OrderChart() {
         <Box>
           <Typography
             sx={{
-              fontSize: '20px',
+              fontSize: '16px',
               fontWeight: 600,
               color: '#111827',
               mb: 0.5
@@ -81,12 +80,11 @@ export default function OrderChart() {
           </Typography>
           <Typography
             sx={{
-              fontSize: '13px',
-              color: '#6B7280',
-              lineHeight: 1.5
+              fontSize: '14px',
+              color: '#9CA3AF'
             }}
           >
-            The number of orders by day of the week.
+            The number of orders by day of the week
           </Typography>
         </Box>
 
@@ -96,15 +94,11 @@ export default function OrderChart() {
           sx={{
             color: '#2563EB',
             borderColor: '#E5E7EB',
-            borderRadius: '8px',
-            fontSize: '13px',
+            fontSize: '14px',
             textTransform: 'none',
-            px: 1.5,
-            py: 0.75,
-            minHeight: 0,
             '&:hover': {
-              borderColor: '#2563EB',
-              bgcolor: 'transparent'
+              borderColor: '#D1D5DB',
+              bgcolor: '#F9FAFB'
             }
           }}
         >
@@ -116,12 +110,12 @@ export default function OrderChart() {
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
-            margin={{ top: 10, right: 25, left: 25, bottom: 5 }}
+            margin={{ top: 10, right: 30, left: 30, bottom: 5 }}
           >
             <defs>
               <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2563EB" stopOpacity={0.2}/>
-                <stop offset="95%" stopColor="#2563EB" stopOpacity={0}/>
+                <stop offset="5%" stopColor="#60A5FA" stopOpacity={0.2}/>
+                <stop offset="95%" stopColor="#60A5FA" stopOpacity={0}"/>
               </linearGradient>
             </defs>
             <XAxis 
@@ -130,32 +124,30 @@ export default function OrderChart() {
               tickLine={false}
               tick={{ 
                 fill: '#9CA3AF',
-                fontSize: 11
+                fontSize: 12
               }}
-              dy={8}
-              interval={0}
-              tickMargin={5}
+              dy={10}
             />
             <Tooltip 
               content={<CustomTooltip />}
               cursor={false}
             />
             <Area
-              type="natural"
+              type="monotone"
               dataKey="orders"
-              stroke="#2563EB"
+              stroke="#60A5FA"
               strokeWidth={2}
               fill="url(#colorOrders)"
               dot={{
                 r: 4,
                 fill: '#FFFFFF',
-                stroke: '#2563EB',
+                stroke: '#60A5FA',
                 strokeWidth: 2
               }}
               activeDot={{
                 r: 6,
                 fill: '#FFFFFF',
-                stroke: '#2563EB',
+                stroke: '#60A5FA',
                 strokeWidth: 2
               }}
             />

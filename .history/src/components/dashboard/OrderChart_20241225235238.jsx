@@ -18,28 +18,28 @@ const data = [
   { name: 'Saturday', orders: 430 }
 ]
 
-const CustomTooltip = ({active, payload}) => {
+const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
       <Box
         sx={{
           bgcolor: '#fff',
-          p: '8px 12px', // Reduced padding
+          p: '12px 16px',
           boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
           borderRadius: '8px',
           border: '1px solid #F2F4F7'
         }}
       >
         <Typography sx={{ 
-          fontSize: '13px', // Reduced font size
+          fontSize: '14px',
           fontWeight: 500,
           color: '#111827',
-          mb: 0.25 // Reduced margin
+          mb: 0.5
         }}>
           {`${payload[0].value} Order`}
         </Typography>
         <Typography sx={{ 
-          fontSize: '11px', // Reduced font size
+          fontSize: '12px',
           color: '#6B7280'
         }}>
           Oct 16th, 2023

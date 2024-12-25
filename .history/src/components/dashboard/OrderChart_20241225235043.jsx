@@ -18,28 +18,28 @@ const data = [
   { name: 'Saturday', orders: 430 }
 ]
 
-const CustomTooltip = ({active, payload}) => {
+const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
       <Box
         sx={{
           bgcolor: '#fff',
-          p: '8px 12px', // Reduced padding
+          p: '12px 16px',
           boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
           borderRadius: '8px',
           border: '1px solid #F2F4F7'
         }}
       >
         <Typography sx={{ 
-          fontSize: '13px', // Reduced font size
+          fontSize: '14px',
           fontWeight: 500,
           color: '#111827',
-          mb: 0.25 // Reduced margin
+          mb: 0.5
         }}>
           {`${payload[0].value} Order`}
         </Typography>
         <Typography sx={{ 
-          fontSize: '11px', // Reduced font size
+          fontSize: '12px',
           color: '#6B7280'
         }}>
           Oct 16th, 2023
@@ -101,7 +101,6 @@ export default function OrderChart() {
             textTransform: 'none',
             px: 1.5,
             py: 0.75,
-            minHeight: 0,
             '&:hover': {
               borderColor: '#2563EB',
               bgcolor: 'transparent'
@@ -116,7 +115,7 @@ export default function OrderChart() {
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
-            margin={{ top: 10, right: 25, left: 25, bottom: 5 }}
+            margin={{ top: 10, right: 30, left: 30, bottom: 5 }}
           >
             <defs>
               <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
@@ -133,8 +132,6 @@ export default function OrderChart() {
                 fontSize: 11
               }}
               dy={8}
-              interval={0}
-              tickMargin={5}
             />
             <Tooltip 
               content={<CustomTooltip />}

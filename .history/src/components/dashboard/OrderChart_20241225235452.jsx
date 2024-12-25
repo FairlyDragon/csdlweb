@@ -18,7 +18,7 @@ const data = [
   { name: 'Saturday', orders: 430 }
 ]
 
-const CustomTooltip = ({active, payload}) => {
+const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
       <Box
