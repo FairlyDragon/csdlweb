@@ -2,28 +2,23 @@ import { Box, Typography, Card } from "@mui/material";
 import { CalendarToday, KeyboardArrowDown } from "@mui/icons-material";
 
 const dateRange = {
-  from: new Date(2024, 9, 17),
-  to: new Date(2024, 10, 17),
+  from: new Date(2024, 10, 17),
+  to: new Date(2024, 11, 17),
 };
 
 const formatDate = (date) => {
-  try {
-    return new Intl.DateTimeFormat("en-US", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    }).format(date);
-  } catch (error) {
-    console.error("Date formatting error:", error);
-    return "Invalid date";
-  }
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+  });
 };
 
 export default function FilterPeriod() {
   return (
     <Card
       sx={{
-        width: 320,
+        width: 280,
         display: "flex",
         alignItems: "center",
         gap: 2,
@@ -34,16 +29,14 @@ export default function FilterPeriod() {
           boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
         },
         ml: "auto",
-        borderRadius: "14px",
-        bgcolor: "#FFFFFF",
       }}
     >
       <Box
         sx={{
-          width: 36,
-          height: 36,
-          borderRadius: "10px",
-          backgroundColor: "#EEF2FF",
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          backgroundColor: "rgba(99, 102, 241, 0.08)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -77,22 +70,15 @@ export default function FilterPeriod() {
             whiteSpace: "nowrap",
           }}
         >
-          {`${formatDate(dateRange.from)} - ${formatDate(dateRange.to)}`}
+          {`17 November 2024 - 17 December 2024`}
         </Typography>
       </Box>
-      <Box
+      <KeyboardArrowDown
         sx={{
-          display: "flex",
-          alignItems: "center",
+          color: "#6B7280",
+          fontSize: 24,
         }}
-      >
-        <KeyboardArrowDown
-          sx={{
-            color: "#6B7280",
-            fontSize: 24,
-          }}
-        />
-      </Box>
+      />
     </Card>
   );
 }

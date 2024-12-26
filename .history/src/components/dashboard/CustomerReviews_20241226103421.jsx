@@ -1,7 +1,6 @@
 import { Box, Typography, Avatar, Rating, IconButton } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useState } from "react";
-import PropTypes from "prop-types";
 
 const reviews = [
   {
@@ -56,9 +55,7 @@ const reviews = [
 
 const ReviewComment = ({ comment }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const maxLength = 50;
-
-  if (!comment) return null;
+  const maxLength = 100;
 
   const needsExpansion = comment.length > maxLength;
   const displayText = isExpanded
@@ -77,6 +74,8 @@ const ReviewComment = ({ comment }) => {
           WebkitBoxOrient: "vertical",
           lineHeight: "1.5em",
           WebkitLineClamp: isExpanded ? "unset" : 3,
+          transition: "max-height 0.3s ease",
+          maxHeight: isExpanded ? "1000px" : "4.5em",
         }}
       >
         {displayText}
@@ -101,26 +100,9 @@ const ReviewComment = ({ comment }) => {
   );
 };
 
-ReviewComment.propTypes = {
-  comment: PropTypes.string.isRequired,
-};
-
 const RatingWithScore = ({ value }) => (
   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-    <Rating
-      value={value}
-      precision={0.1}
-      readOnly
-      size="small"
-      sx={{
-        "& .MuiRating-iconFilled": {
-          color: "#FFB800",
-        },
-        "& .MuiRating-iconEmpty": {
-          color: "#E5E7EB",
-        },
-      }}
-    />
+    <Rating value={value} precision={0.5} readOnly size="small" />
     <Typography
       sx={{
         color: "#6B7280",
@@ -132,56 +114,6 @@ const RatingWithScore = ({ value }) => (
     </Typography>
   </Box>
 );
-
-RatingWithScore.propTypes = {
-  value: PropTypes.number.isRequired,
-};
-
-const CustomTooltip = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    return (
-      <Box
-        sx={{
-          bgcolor: '#fff',
-          p: '8px 12px',
-          boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
-          borderRadius: '8px',
-          border: '1px solid #F2F4F7'
-        }}
-      >
-        <Typography sx={{ 
-          fontSize: '13px',
-          fontWeight: 500,
-          color: '#111827',
-          mb: 0.25
-        }}>
-          {`${payload[0].value} Order`}
-        </Typography>
-        <Typography sx={{ 
-          fontSize: '11px',
-          color: '#6B7280'
-        }}>
-          Oct 16th, 2023
-        </Typography>
-      </Box>
-    );
-  }
-  return null;
-};
-
-CustomTooltip.propTypes = {
-  active: PropTypes.bool,
-  payload: PropTypes.arrayOf(
-    PropTypes.shape({
-      value: PropTypes.number,
-    })
-  ),
-};
-
-CustomTooltip.defaultProps = {
-  active: false,
-  payload: [],
-};
 
 export default function CustomerReviews() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -286,7 +218,6 @@ export default function CustomerReviews() {
               display: "flex",
               flexDirection: "column",
               gap: 2,
-              transition: "height 0.3s ease",
               height: "fit-content",
             }}
           >

@@ -123,8 +123,9 @@ export default function StatsCards() {
                 >
                   {stat.trend === 'up' ? <UpArrow /> : <DownArrow />}
                   <span style={{ color: stat.trend === 'up' ? '#00A389' : '#FF5B5B' }}>
-                    {stat.change} (30 days)
+                    {stat.change}
                   </span>
+                  <span style={{ color: '#637381' }}>(30 days)</span>
                 </Box>
               </Box>
             </Box>

@@ -2,7 +2,7 @@ import { Box, Card, Typography } from '@mui/material'
 import { ShoppingBag, LocalShipping, Cancel, AttachMoney } from '@mui/icons-material'
 
 const UpArrow = () => (
-  <svg width="5" height="6" viewBox="0 0 5 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="" height="6" viewBox="0 0 5 6" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0.393065 2.7956C0.481313 2.88455 0.600987 2.93451 0.72577 2.93451C0.850554 2.93451 0.970228 2.88455 1.05848 2.7956L1.90224 1.94494L1.90224 5.06957C1.90224 5.1954 1.95182 5.31607 2.04007 5.40505C2.12833 5.49402 2.24802 5.54401 2.37283 5.54401C2.49764 5.54401 2.61733 5.49402 2.70559 5.40505C2.79384 5.31607 2.84342 5.1954 2.84342 5.06957L2.84342 1.94494L3.68718 2.7956C3.77594 2.88203 3.89481 2.92985 4.01819 2.92877C4.14158 2.92768 4.25961 2.87779 4.34686 2.78982C4.43411 2.70186 4.4836 2.58287 4.48468 2.45847C4.48575 2.33408 4.43832 2.21423 4.35259 2.12475L2.70554 0.46423C2.61729 0.375287 2.49761 0.325322 2.37283 0.325322C2.24805 0.325322 2.12837 0.375287 2.04012 0.46423L0.393065 2.12475C0.304843 2.21372 0.255283 2.33438 0.255283 2.46018C0.255283 2.58598 0.304843 2.70663 0.393065 2.7956Z" fill="#00A389"/>
   </svg>
 )
@@ -17,7 +17,7 @@ const stats = [
   {
     title: 'Total Orders',
     value: '75',
-    change: '+ 12%',
+    change: '+12%',
     icon: ShoppingBag,
     color: '#10B981',
     iconBg: '#E8F8F5',
@@ -26,7 +26,7 @@ const stats = [
   {
     title: 'Total Delivered',
     value: '357',
-    change: '+ 8%',
+    change: '+8%',
     icon: LocalShipping,
     color: '#10B981',
     iconBg: '#E8F8F5',
@@ -35,7 +35,7 @@ const stats = [
   {
     title: 'Total Canceled',
     value: '65',
-    change: '- 2%',
+    change: '-2%',
     icon: Cancel,
     color: '#FF4842',
     iconBg: '#FFF5F5',
@@ -44,7 +44,7 @@ const stats = [
   {
     title: 'Total Revenue',
     value: '$128',
-    change: '+ 18%',
+    change: '+18%',
     icon: AttachMoney,
     color: '#10B981',
     iconBg: '#E8F8F5',
@@ -118,13 +118,30 @@ export default function StatsCards() {
                     alignItems: 'center',
                     gap: 0.5,
                     fontSize: 12,
-                    color: '#637381'
                   }}
                 >
-                  {stat.trend === 'up' ? <UpArrow /> : <DownArrow />}
-                  <span style={{ color: stat.trend === 'up' ? '#00A389' : '#FF5B5B' }}>
-                    {stat.change} (30 days)
-                  </span>
+                  <Box 
+                    sx={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
+                      color: stat.trend === 'up' ? '#00A389' : '#FF5B5B'
+                    }}
+                  >
+                    {stat.trend === 'up' ? <UpArrow /> : <DownArrow />}
+                    {stat.change}
+                    <span style={{ color: stat.trend === 'up' ? '#00A389' : '#FF5B5B' }}>from</span>
+                  </Box>
+                  <Box 
+                    sx={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
+                    }}
+                  >
+                    <span style={{ color: stat.trend === 'up' ? '#00A389' : '#FF5B5B' }}>last</span>
+                    <span style={{ color: '#637381' }}>month</span>
+                  </Box>
                 </Box>
               </Box>
             </Box>

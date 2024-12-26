@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ListAltIcon from "@mui/icons-material/ListAlt";
+import PeopleIcon from "@mui/icons-material/People";
 import InsightsIcon from "@mui/icons-material/Insights";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -13,12 +14,6 @@ import EmailIcon from "@mui/icons-material/Email";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AddIcon from "@mui/icons-material/Add";
 import MenuIcon from "@mui/icons-material/Menu";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import PersonIcon from "@mui/icons-material/Person";
-import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
-import GroupIcon from "@mui/icons-material/Group";
-import { useState } from "react";
 
 const COLORS = {
   primary: "#00A76F",
@@ -30,15 +25,7 @@ const COLORS = {
 const menuItems = [
   { icon: GridViewIcon, label: "Dashboard", path: "/" },
   { icon: ListAltIcon, label: "Order List", path: "/orders" },
-  {
-    icon: GroupIcon,
-    label: "User",
-    path: "/users",
-    subItems: [
-      { icon: PersonIcon, label: "Customer", path: "/users/customers" },
-      { icon: DeliveryDiningIcon, label: "Shipper", path: "/users/shippers" },
-    ],
-  },
+  { icon: PeopleIcon, label: "Customer", path: "/customers" },
   { icon: InsightsIcon, label: "Analytics", path: "/analytics" },
   { icon: StarBorderIcon, label: "Reviews", path: "/reviews" },
   { icon: RestaurantIcon, label: "Foods", path: "/foods" },
@@ -60,11 +47,23 @@ const SidebarContainer = styled(Box)((props) => ({
   display: "flex",
   flexDirection: "column",
   overflow: "hidden",
+  "&:hover": {
+    overflowY: "auto",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",
+    "&::-webkit-scrollbar": {
+      display: "none",
+      width: 0,
+      background: "transparent"
+    }
+  },
   scrollbarWidth: "none",
   msOverflowStyle: "none",
   "&::-webkit-scrollbar": {
     display: "none",
-  },
+    width: 0,
+    background: "transparent"
+  }
 }));
 
 const MenuToggle = styled(IconButton)({
@@ -109,22 +108,11 @@ const Logo = styled(Typography)({
   },
 });
 
-const ScrollableBox = styled(Box)({
-  flex: 1,
-  overflow: "auto",
-  scrollbarWidth: "none",
-  msOverflowStyle: "none",
-  "&::-webkit-scrollbar": {
-    display: "none",
-  },
-});
-
 function Sidebar({ isCollapsed, setIsCollapsed }) {
   const location = useLocation();
-  const [openSubmenu, setOpenSubmenu] = useState("");
 
-  const handleSubmenuClick = (label) => {
-    setOpenSubmenu(openSubmenu === label ? "" : label);
+  const toggleMenu = () => {
+    setIsCollapsed(!isCollapsed);
   };
 
   return (
@@ -146,7 +134,7 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
           </Logo>
         )}
         <MenuToggle
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={toggleMenu}
           sx={{
             ml: isCollapsed ? "auto" : 0,
             mr: isCollapsed ? "auto" : 0,
@@ -156,87 +144,43 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
         </MenuToggle>
       </Box>
 
-      <ScrollableBox sx={{ mt: 1 }}>
-        {menuItems.map((item) => (
-          <Box key={item.label}>
+      <Box sx={{ flex: 1, mt: 1, overflow: "auto" }}>
+        {menuItems.map((item) => {
+          const isActive = location.pathname === item.path;
+          const Icon = item.icon;
+
+          return (
             <StyledLink
-              to={item.subItems ? "#" : item.path}
-              $isactive={location.pathname === item.path ? 1 : 0}
-              onClick={() => item.subItems && handleSubmenuClick(item.label)}
+              key={item.path}
+              to={item.path}
+              $isactive={isActive ? 1 : 0}
               sx={{
                 px: isCollapsed ? 1 : 2,
                 py: 1,
                 justifyContent: isCollapsed ? "center" : "flex-start",
               }}
             >
-              <item.icon
+              <Icon
                 sx={{
                   fontSize: 20,
-                  color:
-                    location.pathname === item.path
-                      ? COLORS.primary
-                      : "inherit",
+                  color: isActive ? COLORS.primary : "inherit",
                 }}
               />
               {!isCollapsed && (
-                <>
-                  <Typography
-                    sx={{
-                      ml: 2,
-                      flex: 1,
-                      fontSize: 13,
-                      fontWeight: location.pathname === item.path ? 600 : 500,
-                    }}
-                  >
-                    {item.label}
-                  </Typography>
-                  {item.subItems &&
-                    (openSubmenu === item.label ? (
-                      <ExpandMoreIcon sx={{ fontSize: 20 }} />
-                    ) : (
-                      <ChevronRightIcon sx={{ fontSize: 20 }} />
-                    ))}
-                </>
+                <Typography
+                  sx={{
+                    ml: 2,
+                    fontSize: 13,
+                    fontWeight: isActive ? 600 : 500,
+                  }}
+                >
+                  {item.label}
+                </Typography>
               )}
             </StyledLink>
-
-            {item.subItems && openSubmenu === item.label && !isCollapsed && (
-              <Box sx={{ pl: 4 }}>
-                {item.subItems.map((subItem) => (
-                  <StyledLink
-                    key={subItem.path}
-                    to={subItem.path}
-                    $isactive={location.pathname === subItem.path ? 1 : 0}
-                    sx={{
-                      py: 0.75,
-                    }}
-                  >
-                    <subItem.icon
-                      sx={{
-                        fontSize: 18,
-                        color:
-                          location.pathname === subItem.path
-                            ? COLORS.primary
-                            : "inherit",
-                      }}
-                    />
-                    <Typography
-                      sx={{
-                        ml: 2,
-                        fontSize: 13,
-                        fontWeight:
-                          location.pathname === subItem.path ? 600 : 500,
-                      }}
-                    >
-                      {subItem.label}
-                    </Typography>
-                  </StyledLink>
-                ))}
-              </Box>
-            )}
-          </Box>
-        ))}
-      </ScrollableBox>
+          );
+        })}
+      </Box>
 
       {!isCollapsed && (
         <Box sx={{ p: 2 }}>

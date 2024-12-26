@@ -42,68 +42,36 @@ const StyledInputBase = styled(InputBase)({
   },
 });
 
-const StyledBadge = styled(Badge)(({ $variant }) => {
-  const colors = {
-    notification: '#4C7FE4',
-    email: '#5B93FF',
-    cart: '#9C9EF3',
-    settings: '#FF6B6B',
-  };
+const StyledBadge = styled(Badge)(({ color = 'primary' }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: color === 'error' ? '#FF4842' : '#2065D1',
+    color: '#FFFFFF',
+    minWidth: 16,
+    height: 16,
+    borderRadius: '50%',
+    padding: '0 4px',
+    fontSize: 10,
+    fontWeight: 600,
+    top: -4,
+    right: -4,
+  },
+}));
 
-  return {
-    '& .MuiBadge-badge': {
-      backgroundColor: colors[$variant] || colors.notification,
-      color: '#FFFFFF',
-      minWidth: 14,
-      height: 14,
-      borderRadius: '50%',
-      padding: '0 4px',
-      fontSize: 9,
-      fontWeight: 600,
-      top: -2,
-      right: -2,
-    },
-  };
-});
-
-const IconContainer = styled(Box)(({ $variant }) => {
-  const colors = {
-    notification: {
-      bg: '#EBF3FF',
-      icon: '#4C7FE4',
-    },
-    email: {
-      bg: '#F0F5FF',
-      icon: '#5B93FF',
-    },
-    cart: {
-      bg: '#F4F4FF',
-      icon: '#9C9EF3',
-    },
-    settings: {
-      bg: '#FFF5F5',
-      icon: '#FF6B6B',
-    },
-  };
-
-  const color = colors[$variant] || colors.notification;
-
-  return {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    backgroundColor: color.bg,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    position: 'relative',
-    '& .MuiSvgIcon-root': {
-      fontSize: 20,
-      color: color.icon,
-    },
-  };
-});
+const IconContainer = styled(Box)(({ pink }) => ({
+  width: 40,
+  height: 40,
+  borderRadius: 8,
+  backgroundColor: pink ? '#FFF5F5' : '#F4F9FF',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  position: 'relative',
+  '& .MuiSvgIcon-root': {
+    fontSize: 20,
+    color: pink ? '#FF4842' : '#2065D1',
+  },
+}));
 
 export default function Header() {
   return (
@@ -130,28 +98,26 @@ export default function Header() {
 
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <IconContainer $variant="notification">
-            <StyledBadge badgeContent={2} $variant="notification">
+          <IconContainer>
+            <StyledBadge badgeContent={2}>
               <NotificationsNoneIcon />
             </StyledBadge>
           </IconContainer>
           
-          <IconContainer $variant="email">
-            <StyledBadge badgeContent={3} $variant="email">
+          <IconContainer>
+            <StyledBadge badgeContent={3}>
               <EmailOutlinedIcon />
             </StyledBadge>
           </IconContainer>
           
-          <IconContainer $variant="cart">
-            <StyledBadge badgeContent={5} $variant="cart">
+          <IconContainer>
+            <StyledBadge badgeContent={5} color="error">
               <ShoppingCartOutlinedIcon />
             </StyledBadge>
           </IconContainer>
 
-          <IconContainer $variant="settings">
-            <StyledBadge badgeContent={19} $variant="settings">
-              <SettingsOutlinedIcon />
-            </StyledBadge>
+          <IconContainer pink>
+            <SettingsOutlinedIcon />
           </IconContainer>
         </Box>
 

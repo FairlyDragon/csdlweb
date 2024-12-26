@@ -42,51 +42,34 @@ const StyledInputBase = styled(InputBase)({
   },
 });
 
-const StyledBadge = styled(Badge)(({ $variant }) => {
-  const colors = {
-    notification: '#4C7FE4',
-    email: '#5B93FF',
-    cart: '#9C9EF3',
-    settings: '#FF6B6B',
-  };
-
-  return {
-    '& .MuiBadge-badge': {
-      backgroundColor: colors[$variant] || colors.notification,
-      color: '#FFFFFF',
-      minWidth: 14,
-      height: 14,
-      borderRadius: '50%',
-      padding: '0 4px',
-      fontSize: 9,
-      fontWeight: 600,
-      top: -2,
-      right: -2,
-    },
-  };
-});
+const StyledBadge = styled(Badge)(({ $variant }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: $variant === 'error' ? '#FF8A8A' : '#85B1FF',
+    color: '#FFFFFF',
+    minWidth: 14,
+    height: 14,
+    borderRadius: '50%',
+    padding: '0 4px',
+    fontSize: 9,
+    fontWeight: 600,
+    top: -2,
+    right: -2,
+  },
+}));
 
 const IconContainer = styled(Box)(({ $variant }) => {
   const colors = {
-    notification: {
+    blue: {
       bg: '#EBF3FF',
-      icon: '#4C7FE4',
+      icon: '#2065D1',
     },
-    email: {
-      bg: '#F0F5FF',
-      icon: '#5B93FF',
-    },
-    cart: {
-      bg: '#F4F4FF',
-      icon: '#9C9EF3',
-    },
-    settings: {
+    pink: {
       bg: '#FFF5F5',
-      icon: '#FF6B6B',
+      icon: '#FF4842',
     },
   };
 
-  const color = colors[$variant] || colors.notification;
+  const color = colors[$variant] || colors.blue;
 
   return {
     width: 40,
@@ -130,26 +113,26 @@ export default function Header() {
 
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <IconContainer $variant="notification">
-            <StyledBadge badgeContent={2} $variant="notification">
+          <IconContainer $variant="blue">
+            <StyledBadge badgeContent={2}>
               <NotificationsNoneIcon />
             </StyledBadge>
           </IconContainer>
           
-          <IconContainer $variant="email">
-            <StyledBadge badgeContent={3} $variant="email">
+          <IconContainer $variant="blue">
+            <StyledBadge badgeContent={3}>
               <EmailOutlinedIcon />
             </StyledBadge>
           </IconContainer>
           
-          <IconContainer $variant="cart">
-            <StyledBadge badgeContent={5} $variant="cart">
+          <IconContainer $variant="blue">
+            <StyledBadge badgeContent={5} $variant="error">
               <ShoppingCartOutlinedIcon />
             </StyledBadge>
           </IconContainer>
 
-          <IconContainer $variant="settings">
-            <StyledBadge badgeContent={19} $variant="settings">
+          <IconContainer $variant="pink">
+            <StyledBadge badgeContent={19} $variant="error">
               <SettingsOutlinedIcon />
             </StyledBadge>
           </IconContainer>

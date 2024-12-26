@@ -107,20 +107,7 @@ ReviewComment.propTypes = {
 
 const RatingWithScore = ({ value }) => (
   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-    <Rating
-      value={value}
-      precision={0.1}
-      readOnly
-      size="small"
-      sx={{
-        "& .MuiRating-iconFilled": {
-          color: "#FFB800",
-        },
-        "& .MuiRating-iconEmpty": {
-          color: "#E5E7EB",
-        },
-      }}
-    />
+    <Rating value={value} precision={0.5} readOnly size="small" />
     <Typography
       sx={{
         color: "#6B7280",
@@ -135,52 +122,6 @@ const RatingWithScore = ({ value }) => (
 
 RatingWithScore.propTypes = {
   value: PropTypes.number.isRequired,
-};
-
-const CustomTooltip = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    return (
-      <Box
-        sx={{
-          bgcolor: '#fff',
-          p: '8px 12px',
-          boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
-          borderRadius: '8px',
-          border: '1px solid #F2F4F7'
-        }}
-      >
-        <Typography sx={{ 
-          fontSize: '13px',
-          fontWeight: 500,
-          color: '#111827',
-          mb: 0.25
-        }}>
-          {`${payload[0].value} Order`}
-        </Typography>
-        <Typography sx={{ 
-          fontSize: '11px',
-          color: '#6B7280'
-        }}>
-          Oct 16th, 2023
-        </Typography>
-      </Box>
-    );
-  }
-  return null;
-};
-
-CustomTooltip.propTypes = {
-  active: PropTypes.bool,
-  payload: PropTypes.arrayOf(
-    PropTypes.shape({
-      value: PropTypes.number,
-    })
-  ),
-};
-
-CustomTooltip.defaultProps = {
-  active: false,
-  payload: [],
 };
 
 export default function CustomerReviews() {

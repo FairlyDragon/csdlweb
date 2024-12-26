@@ -8,14 +8,14 @@ const dateRange = {
 
 const formatDate = (date) => {
   try {
-    return new Intl.DateTimeFormat("en-US", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
+    return new Intl.DateTimeFormat('en-US', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
     }).format(date);
   } catch (error) {
-    console.error("Date formatting error:", error);
-    return "Invalid date";
+    console.error('Date formatting error:', error);
+    return 'Invalid date';
   }
 };
 
@@ -35,14 +35,14 @@ export default function FilterPeriod() {
         },
         ml: "auto",
         borderRadius: "14px",
-        bgcolor: "#FFFFFF",
+        bgcolor: "#FFFFFF"
       }}
     >
       <Box
         sx={{
-          width: 36,
-          height: 36,
-          borderRadius: "10px",
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
           backgroundColor: "#EEF2FF",
           display: "flex",
           alignItems: "center",

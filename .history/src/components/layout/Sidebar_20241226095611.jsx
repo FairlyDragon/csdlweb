@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ListAltIcon from "@mui/icons-material/ListAlt";
+import PeopleIcon from "@mui/icons-material/People";
 import InsightsIcon from "@mui/icons-material/Insights";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
@@ -13,11 +14,11 @@ import EmailIcon from "@mui/icons-material/Email";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AddIcon from "@mui/icons-material/Add";
 import MenuIcon from "@mui/icons-material/Menu";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import PersonIcon from "@mui/icons-material/Person";
-import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
-import GroupIcon from "@mui/icons-material/Group";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import PersonIcon from '@mui/icons-material/Person';
+import DeliveryDiningIcon from '@mui/icons-material/DeliveryDining';
+import GroupIcon from '@mui/icons-material/Group';
 import { useState } from "react";
 
 const COLORS = {
@@ -30,15 +31,16 @@ const COLORS = {
 const menuItems = [
   { icon: GridViewIcon, label: "Dashboard", path: "/" },
   { icon: ListAltIcon, label: "Order List", path: "/orders" },
-  {
-    icon: GroupIcon,
-    label: "User",
+  { 
+    icon: GroupIcon, 
+    label: "User", 
     path: "/users",
     subItems: [
       { icon: PersonIcon, label: "Customer", path: "/users/customers" },
-      { icon: DeliveryDiningIcon, label: "Shipper", path: "/users/shippers" },
-    ],
+      { icon: DeliveryDiningIcon, label: "Shipper", path: "/users/shippers" }
+    ]
   },
+  { icon: PeopleIcon, label: "Customer", path: "/customers" },
   { icon: InsightsIcon, label: "Analytics", path: "/analytics" },
   { icon: StarBorderIcon, label: "Reviews", path: "/reviews" },
   { icon: RestaurantIcon, label: "Foods", path: "/foods" },
@@ -172,10 +174,7 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
               <item.icon
                 sx={{
                   fontSize: 20,
-                  color:
-                    location.pathname === item.path
-                      ? COLORS.primary
-                      : "inherit",
+                  color: location.pathname === item.path ? COLORS.primary : "inherit",
                 }}
               />
               {!isCollapsed && (
@@ -190,12 +189,11 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                   >
                     {item.label}
                   </Typography>
-                  {item.subItems &&
-                    (openSubmenu === item.label ? (
-                      <ExpandMoreIcon sx={{ fontSize: 20 }} />
-                    ) : (
-                      <ChevronRightIcon sx={{ fontSize: 20 }} />
-                    ))}
+                  {item.subItems && (
+                    openSubmenu === item.label ? 
+                    <ExpandMoreIcon sx={{ fontSize: 20 }} /> : 
+                    <ChevronRightIcon sx={{ fontSize: 20 }} />
+                  )}
                 </>
               )}
             </StyledLink>
@@ -214,18 +212,14 @@ function Sidebar({ isCollapsed, setIsCollapsed }) {
                     <subItem.icon
                       sx={{
                         fontSize: 18,
-                        color:
-                          location.pathname === subItem.path
-                            ? COLORS.primary
-                            : "inherit",
+                        color: location.pathname === subItem.path ? COLORS.primary : "inherit",
                       }}
                     />
                     <Typography
                       sx={{
                         ml: 2,
                         fontSize: 13,
-                        fontWeight:
-                          location.pathname === subItem.path ? 600 : 500,
+                        fontWeight: location.pathname === subItem.path ? 600 : 500,
                       }}
                     >
                       {subItem.label}

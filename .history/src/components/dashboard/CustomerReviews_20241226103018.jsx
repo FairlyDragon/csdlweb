@@ -1,7 +1,6 @@
 import { Box, Typography, Avatar, Rating, IconButton } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import { useState } from "react";
-import PropTypes from "prop-types";
 
 const reviews = [
   {
@@ -56,27 +55,22 @@ const reviews = [
 
 const ReviewComment = ({ comment }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const maxLength = 50;
-
-  if (!comment) return null;
+  const maxLength = 100;
 
   const needsExpansion = comment.length > maxLength;
-  const displayText = isExpanded
-    ? comment
-    : needsExpansion
-    ? `${comment.slice(0, maxLength)}...`
-    : comment;
+  const displayText = isExpanded ? comment : needsExpansion ? `${comment.slice(0, maxLength)}...` : comment;
 
   return (
     <Box sx={{ flex: 1 }}>
       <Typography
         sx={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          display: "-webkit-box",
-          WebkitBoxOrient: "vertical",
-          lineHeight: "1.5em",
-          WebkitLineClamp: isExpanded ? "unset" : 3,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitBoxOrient: 'vertical',
+          lineHeight: '1.5em',
+          WebkitLineClamp: isExpanded ? 'unset' : 3,
+          transition: 'all 0.3s ease',
         }}
       >
         {displayText}
@@ -85,102 +79,20 @@ const ReviewComment = ({ comment }) => {
         <Typography
           onClick={() => setIsExpanded(!isExpanded)}
           sx={{
-            color: "#6B7280",
-            fontSize: "0.75rem",
-            cursor: "pointer",
-            "&:hover": {
-              textDecoration: "underline",
+            color: '#6B7280',
+            fontSize: '0.75rem',
+            cursor: 'pointer',
+            '&:hover': {
+              textDecoration: 'underline',
             },
             mt: 1,
           }}
         >
-          {isExpanded ? "Thu gọn" : "Xem thêm"}
+          {isExpanded ? 'Thu gọn' : 'Xem thêm'}
         </Typography>
       )}
     </Box>
   );
-};
-
-ReviewComment.propTypes = {
-  comment: PropTypes.string.isRequired,
-};
-
-const RatingWithScore = ({ value }) => (
-  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-    <Rating
-      value={value}
-      precision={0.1}
-      readOnly
-      size="small"
-      sx={{
-        "& .MuiRating-iconFilled": {
-          color: "#FFB800",
-        },
-        "& .MuiRating-iconEmpty": {
-          color: "#E5E7EB",
-        },
-      }}
-    />
-    <Typography
-      sx={{
-        color: "#6B7280",
-        fontSize: "0.875rem",
-        fontWeight: 500,
-      }}
-    >
-      {value.toFixed(1)}
-    </Typography>
-  </Box>
-);
-
-RatingWithScore.propTypes = {
-  value: PropTypes.number.isRequired,
-};
-
-const CustomTooltip = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    return (
-      <Box
-        sx={{
-          bgcolor: '#fff',
-          p: '8px 12px',
-          boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
-          borderRadius: '8px',
-          border: '1px solid #F2F4F7'
-        }}
-      >
-        <Typography sx={{ 
-          fontSize: '13px',
-          fontWeight: 500,
-          color: '#111827',
-          mb: 0.25
-        }}>
-          {`${payload[0].value} Order`}
-        </Typography>
-        <Typography sx={{ 
-          fontSize: '11px',
-          color: '#6B7280'
-        }}>
-          Oct 16th, 2023
-        </Typography>
-      </Box>
-    );
-  }
-  return null;
-};
-
-CustomTooltip.propTypes = {
-  active: PropTypes.bool,
-  payload: PropTypes.arrayOf(
-    PropTypes.shape({
-      value: PropTypes.number,
-    })
-  ),
-};
-
-CustomTooltip.defaultProps = {
-  active: false,
-  payload: [],
 };
 
 export default function CustomerReviews() {
@@ -210,12 +122,12 @@ export default function CustomerReviews() {
   };
 
   return (
-    <Box sx={{ bgcolor: "#F9FAFB", p: 3 }}>
+    <Box sx={{ bgcolor: '#F9FAFB', p: 3 }}>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           mb: 3,
         }}
       >
@@ -225,7 +137,7 @@ export default function CustomerReviews() {
             Review food
           </Typography>
         </Box>
-        <Box sx={{ display: "flex", gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
           <IconButton
             size="small"
             onClick={() => handleScroll("left")}
@@ -260,16 +172,16 @@ export default function CustomerReviews() {
       <Box
         id="reviews-container"
         sx={{
-          display: "flex",
+          display: 'flex',
           gap: 2,
-          overflowX: "hidden",
+          overflowX: 'hidden',
           pb: 2,
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-          "&::-webkit-scrollbar": {
-            display: "none",
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          '&::-webkit-scrollbar': {
+            display: 'none'
           },
-          scrollBehavior: "smooth",
+          scrollBehavior: 'smooth',
         }}
       >
         {reviews.map((review) => (
@@ -277,20 +189,18 @@ export default function CustomerReviews() {
             key={review.id}
             sx={{
               width: 300,
-              bgcolor: "white",
+              bgcolor: 'white',
               borderRadius: 2,
               p: 2,
               border: 1,
-              borderColor: "divider",
-              flex: "0 0 auto",
-              display: "flex",
-              flexDirection: "column",
+              borderColor: 'divider',
+              flex: '0 0 auto',
+              display: 'flex',
+              flexDirection: 'column',
               gap: 2,
-              transition: "height 0.3s ease",
-              height: "fit-content",
             }}
           >
-            <Box sx={{ display: "flex", gap: 2 }}>
+            <Box sx={{ display: 'flex', gap: 2 }}>
               <Avatar src={review.avatar} />
               <Box>
                 <Typography fontWeight="bold">{review.name}</Typography>
@@ -300,14 +210,12 @@ export default function CustomerReviews() {
               </Box>
             </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                gap: 2,
-                flex: 1,
-                alignItems: "flex-start",
-              }}
-            >
+            <Box sx={{ 
+              display: 'flex', 
+              gap: 2,
+              flex: 1,
+              alignItems: 'flex-start'
+            }}>
               <ReviewComment comment={review.comment} />
               <Box
                 component="img"
@@ -315,14 +223,20 @@ export default function CustomerReviews() {
                 sx={{
                   width: 120,
                   height: 120,
-                  objectFit: "cover",
+                  objectFit: 'cover',
                   borderRadius: 1,
                   flexShrink: 0,
                 }}
               />
             </Box>
 
-            <RatingWithScore value={review.rating} />
+            <Rating
+              value={review.rating}
+              precision={0.5}
+              readOnly
+              size="small"
+              sx={{ mt: 'auto' }}
+            />
           </Box>
         ))}
       </Box>

@@ -17,7 +17,7 @@ const stats = [
   {
     title: 'Total Orders',
     value: '75',
-    change: '+ 12%',
+    change: '+12%',
     icon: ShoppingBag,
     color: '#10B981',
     iconBg: '#E8F8F5',
@@ -26,7 +26,7 @@ const stats = [
   {
     title: 'Total Delivered',
     value: '357',
-    change: '+ 8%',
+    change: '+8%',
     icon: LocalShipping,
     color: '#10B981',
     iconBg: '#E8F8F5',
@@ -35,7 +35,7 @@ const stats = [
   {
     title: 'Total Canceled',
     value: '65',
-    change: '- 2%',
+    change: '-2%',
     icon: Cancel,
     color: '#FF4842',
     iconBg: '#FFF5F5',
@@ -44,7 +44,7 @@ const stats = [
   {
     title: 'Total Revenue',
     value: '$128',
-    change: '+ 18%',
+    change: '+18%',
     icon: AttachMoney,
     color: '#10B981',
     iconBg: '#E8F8F5',
@@ -118,13 +118,30 @@ export default function StatsCards() {
                     alignItems: 'center',
                     gap: 0.5,
                     fontSize: 12,
-                    color: '#637381'
                   }}
                 >
-                  {stat.trend === 'up' ? <UpArrow /> : <DownArrow />}
-                  <span style={{ color: stat.trend === 'up' ? '#00A389' : '#FF5B5B' }}>
-                    {stat.change} (30 days)
-                  </span>
+                  <Box 
+                    sx={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
+                      color: stat.trend === 'up' ? '#00A389' : '#FF5B5B'
+                    }}
+                  >
+                    {stat.trend === 'up' ? <UpArrow /> : <DownArrow />}
+                    {stat.change}
+                    <span style={{ color: stat.trend === 'up' ? '#00A389' : '#FF5B5B' }}>from</span>
+                  </Box>
+                  <Box 
+                    sx={{ 
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 0.5,
+                    }}
+                  >
+                    <span style={{ color: stat.trend === 'up' ? '#00A389' : '#FF5B5B' }}>last</span>
+                    <span style={{ color: '#637381' }}>month</span>
+                  </Box>
                 </Box>
               </Box>
             </Box>

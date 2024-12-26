@@ -5,6 +5,7 @@ import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import GridViewIcon from "@mui/icons-material/GridView";
 import ListAltIcon from "@mui/icons-material/ListAlt";
+import PeopleIcon from "@mui/icons-material/People";
 import InsightsIcon from "@mui/icons-material/Insights";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
