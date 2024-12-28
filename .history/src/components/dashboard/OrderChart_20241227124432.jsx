@@ -1,31 +1,35 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { Box, Card, Typography, Select, MenuItem } from "@mui/material";
-import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Box, Card, Typography, Select, MenuItem } from '@mui/material';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
 const generateData = (period) => {
-  switch (period) {
-    case "day":
+  switch(period) {
+    case 'day':
       return [
-        { name: "Sun", orders: 320 },
-        { name: "Mon", orders: 350 },
-        { name: "Tue", orders: 456 },
-        { name: "Wed", orders: 380 },
-        { name: "Thu", orders: 410 },
-        { name: "Fri", orders: 490 },
-        { name: "Sat", orders: 430 },
+        { name: 'Sun', orders: 320 },
+        { name: 'Mon', orders: 350 },
+        { name: 'Tue', orders: 456 },
+        { name: 'Wed', orders: 380 },
+        { name: 'Thu', orders: 410 },
+        { name: 'Fri', orders: 490 },
+        { name: 'Sat', orders: 430 },
       ];
-    case "week":
+    case 'week':
       return Array.from({ length: 4 }, (_, i) => ({
         name: `Week ${i + 1}`,
-        orders: Math.floor(Math.random() * 200) + 300,
+        orders: Math.floor(Math.random() * 200) + 300
       }));
-    case "month":
+    case 'month':
       return Array.from({ length: 12 }, (_, i) => ({
-        name: new Date(2024, i, 1).toLocaleDateString("en-US", {
-          month: "short",
-        }),
-        orders: Math.floor(Math.random() * 300) + 200,
+        name: new Date(2024, i, 1).toLocaleDateString('en-US', { month: 'short' }),
+        orders: Math.floor(Math.random() * 300) + 200
       }));
     default:
       return [];
@@ -38,19 +42,18 @@ const CustomTooltip = ({ active, payload, label }) => {
   return (
     <Box
       sx={{
-        bgcolor: "#fff",
-        p: "8px 12px",
-        boxShadow:
-          "0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)",
-        borderRadius: "8px",
-        border: "1px solid #F2F4F7",
+        bgcolor: '#fff',
+        p: '8px 12px',
+        boxShadow: '0px 4px 6px -2px rgba(16, 24, 40, 0.03), 0px 12px 16px -4px rgba(16, 24, 40, 0.08)',
+        borderRadius: '8px',
+        border: '1px solid #F2F4F7'
       }}
     >
       <Typography
         sx={{
-          fontSize: "13px",
+          fontSize: '13px',
           fontWeight: 500,
-          color: "#111827",
+          color: '#111827',
           mb: 0.25,
         }}
       >
@@ -58,8 +61,8 @@ const CustomTooltip = ({ active, payload, label }) => {
       </Typography>
       <Typography
         sx={{
-          fontSize: "11px",
-          color: "#6B7280",
+          fontSize: '11px',
+          color: '#6B7280',
         }}
       >
         {label}
@@ -81,11 +84,11 @@ CustomTooltip.propTypes = {
 CustomTooltip.defaultProps = {
   active: false,
   payload: null,
-  label: "",
+  label: '',
 };
 
 const OrderChart = () => {
-  const [period, setPeriod] = useState("day");
+  const [period, setPeriod] = useState('day');
   const data = generateData(period);
 
   const handlePeriodChange = (event) => {
@@ -96,26 +99,25 @@ const OrderChart = () => {
     <Card
       sx={{
         p: 3,
-        borderRadius: "24px",
-        bgcolor: "#FFFFFF",
-        boxShadow:
-          "0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06)",
+        borderRadius: '24px',
+        bgcolor: '#FFFFFF',
+        boxShadow: '0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06)',
       }}
     >
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
           mb: 3,
         }}
       >
         <Box>
           <Typography
             sx={{
-              fontSize: "20px",
+              fontSize: '20px',
               fontWeight: 600,
-              color: "#111827",
+              color: '#111827',
               mb: 0.5,
             }}
           >
@@ -123,8 +125,8 @@ const OrderChart = () => {
           </Typography>
           <Typography
             sx={{
-              fontSize: "13px",
-              color: "#6B7280",
+              fontSize: '13px',
+              color: '#6B7280',
               lineHeight: 1.5,
             }}
           >
@@ -139,15 +141,15 @@ const OrderChart = () => {
           sx={{
             minWidth: 100,
             height: 32,
-            fontSize: "13px",
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#E5E7EB",
+            fontSize: '13px',
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#E5E7EB',
             },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#E5E7EB",
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#E5E7EB',
             },
-            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#2563EB",
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: '#2563EB',
             },
           }}
         >
@@ -174,7 +176,7 @@ const OrderChart = () => {
               axisLine={false}
               tickLine={false}
               tick={{
-                fill: "#9CA3AF",
+                fill: '#9CA3AF',
                 fontSize: 11,
               }}
               dy={8}
@@ -190,14 +192,14 @@ const OrderChart = () => {
               fill="url(#colorOrders)"
               dot={{
                 r: 4,
-                fill: "#FFFFFF",
-                stroke: "#2563EB",
+                fill: '#FFFFFF',
+                stroke: '#2563EB',
                 strokeWidth: 2,
               }}
               activeDot={{
                 r: 6,
-                fill: "#FFFFFF",
-                stroke: "#2563EB",
+                fill: '#FFFFFF',
+                stroke: '#2563EB',
                 strokeWidth: 2,
               }}
             />

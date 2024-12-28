@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { Box, Typography, IconButton } from '@mui/material';
+import { Box, Typography, IconButton, Collapse } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ListAltIcon from '@mui/icons-material/ListAlt';
@@ -37,7 +36,7 @@ const SidebarContainer = styled(Box)(({ theme, $collapsed }) => ({
   backgroundColor: '#fff',
   transition: 'width 0.3s ease',
   borderRight: '1px solid rgba(0, 0, 0, 0.08)',
-  zIndex: theme.zIndex.drawer,
+  zIndex: 1200,
   display: 'flex',
   flexDirection: 'column',
   overflow: 'hidden',
@@ -71,27 +70,19 @@ const StyledLink = styled(Link)(({ theme, $isactive }) => ({
   })
 }));
 
-const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
+export default function Sidebar({ isCollapsed, setIsCollapsed }) {
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(true);
 
-  const handleToggleMenu = () => {
+  const toggleMenu = () => {
     setIsCollapsed(!isCollapsed);
     setShowMenu(!isCollapsed);
   };
 
   return (
     <SidebarContainer $collapsed={isCollapsed}>
-      <Box 
-        sx={{ 
-          p: 1.5, 
-          display: 'flex', 
-          flexDirection: isCollapsed ? 'column' : 'row',
-          alignItems: 'center',
-          gap: 1 
-        }}
-      >
-        {!isCollapsed && (
+      <Box sx={{ p: 1.5, display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Collapse in={!isCollapsed} orientation="horizontal">
           <Typography
             variant="subtitle1"
             sx={{
@@ -105,20 +96,20 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             <br />
             Dragon.
           </Typography>
-        )}
+        </Collapse>
         <MenuToggle 
-          onClick={handleToggleMenu}
+          onClick={toggleMenu}
           sx={{ 
-            p: '4px',
-            mx: isCollapsed ? 'auto' : 0,
-            my: isCollapsed ? 1 : 0
+            ml: isCollapsed ? 'auto' : 0, 
+            mr: isCollapsed ? 'auto' : 0,
+            p: '4px'
           }}
         >
           <MenuIcon sx={{ fontSize: 16 }} />
         </MenuToggle>
       </Box>
 
-      <Box sx={{ flex: 1, mt: 0.5, overflow: 'hidden auto' }}>
+      <Box sx={{ flex: 1, mt: 0.5, overflow: 'hidden' }}>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
@@ -132,12 +123,13 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
               <Icon 
                 sx={{ 
                   fontSize: 18,
-                  minWidth: isCollapsed ? 24 : 18,
+                  minWidth: isCollapsed ? '100%' : 18,
                   mr: isCollapsed ? 0 : 1.5,
+                  color: isActive ? '#00A76F' : 'inherit',
                   textAlign: isCollapsed ? 'center' : 'left'
                 }} 
               />
-              {!isCollapsed && (
+              <Collapse in={!isCollapsed} orientation="horizontal">
                 <Typography sx={{ 
                   fontSize: 13, 
                   fontWeight: isActive ? 600 : 500,
@@ -145,26 +137,19 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                 }}>
                   {item.label}
                 </Typography>
-              )}
+              </Collapse>
             </StyledLink>
           );
         })}
       </Box>
 
-      {!isCollapsed && showMenu && (
-        <Box sx={{ px: 2, pb: 2, width: '100%' }}>
+      <Collapse in={!isCollapsed} orientation="horizontal">
+        <Box sx={{ p: 2 }}>
           <SidebarAddMenus />
           <SidebarFooter />
         </Box>
-      )}
+      </Collapse>
     </SidebarContainer>
   );
-};
-
-Sidebar.propTypes = {
-  isCollapsed: PropTypes.bool.isRequired,
-  setIsCollapsed: PropTypes.func.isRequired,
-};
-
-export default Sidebar;
+}
 

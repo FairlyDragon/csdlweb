@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { Box, Typography, IconButton } from '@mui/material';
+import { Box, Typography, IconButton, Collapse } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import GridViewIcon from '@mui/icons-material/GridView';
 import ListAltIcon from '@mui/icons-material/ListAlt';
@@ -37,7 +36,7 @@ const SidebarContainer = styled(Box)(({ theme, $collapsed }) => ({
   backgroundColor: '#fff',
   transition: 'width 0.3s ease',
   borderRight: '1px solid rgba(0, 0, 0, 0.08)',
-  zIndex: theme.zIndex.drawer,
+  zIndex: 1200,
   display: 'flex',
   flexDirection: 'column',
   overflow: 'hidden',
@@ -71,11 +70,11 @@ const StyledLink = styled(Link)(({ theme, $isactive }) => ({
   })
 }));
 
-const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
+export default function Sidebar({ isCollapsed, setIsCollapsed }) {
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(true);
 
-  const handleToggleMenu = () => {
+  const toggleMenu = () => {
     setIsCollapsed(!isCollapsed);
     setShowMenu(!isCollapsed);
   };
@@ -107,7 +106,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           </Typography>
         )}
         <MenuToggle 
-          onClick={handleToggleMenu}
+          onClick={toggleMenu}
           sx={{ 
             p: '4px',
             mx: isCollapsed ? 'auto' : 0,
@@ -118,7 +117,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         </MenuToggle>
       </Box>
 
-      <Box sx={{ flex: 1, mt: 0.5, overflow: 'hidden auto' }}>
+      <Box sx={{ flex: 1, mt: 0.5, overflow: 'hidden' }}>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
           const Icon = item.icon;
@@ -151,7 +150,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         })}
       </Box>
 
-      {!isCollapsed && showMenu && (
+      {!isCollapsed && (
         <Box sx={{ px: 2, pb: 2, width: '100%' }}>
           <SidebarAddMenus />
           <SidebarFooter />
@@ -159,12 +158,5 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       )}
     </SidebarContainer>
   );
-};
-
-Sidebar.propTypes = {
-  isCollapsed: PropTypes.bool.isRequired,
-  setIsCollapsed: PropTypes.func.isRequired,
-};
-
-export default Sidebar;
+}
 

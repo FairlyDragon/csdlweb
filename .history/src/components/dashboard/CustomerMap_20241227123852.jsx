@@ -1,31 +1,39 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Box, Card, Typography, Select, MenuItem } from "@mui/material";
-import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const generateData = (period) => {
   switch (period) {
     case "day":
       return [
-        { name: "Sun", orders: 320 },
-        { name: "Mon", orders: 350 },
-        { name: "Tue", orders: 456 },
-        { name: "Wed", orders: 380 },
-        { name: "Thu", orders: 410 },
-        { name: "Fri", orders: 490 },
-        { name: "Sat", orders: 430 },
+        { name: "Sun", customers: 20 },
+        { name: "Mon", customers: 35 },
+        { name: "Tue", customers: 25 },
+        { name: "Wed", customers: 35 },
+        { name: "Thu", customers: 45 },
+        { name: "Fri", customers: 30 },
+        { name: "Sat", customers: 20 },
       ];
     case "week":
       return Array.from({ length: 4 }, (_, i) => ({
         name: `Week ${i + 1}`,
-        orders: Math.floor(Math.random() * 200) + 300,
+        customers: Math.floor(Math.random() * 30) + 20,
       }));
     case "month":
       return Array.from({ length: 12 }, (_, i) => ({
         name: new Date(2024, i, 1).toLocaleDateString("en-US", {
           month: "short",
         }),
-        orders: Math.floor(Math.random() * 300) + 200,
+        customers: Math.floor(Math.random() * 40) + 15,
       }));
     default:
       return [];
@@ -54,7 +62,7 @@ const CustomTooltip = ({ active, payload, label }) => {
           mb: 0.25,
         }}
       >
-        {`${payload[0].value} Orders`}
+        {`${payload[0].value} Customers`}
       </Typography>
       <Typography
         sx={{
@@ -84,8 +92,8 @@ CustomTooltip.defaultProps = {
   label: "",
 };
 
-const OrderChart = () => {
-  const [period, setPeriod] = useState("day");
+const CustomerMap = () => {
+  const [period, setPeriod] = useState("week");
   const data = generateData(period);
 
   const handlePeriodChange = (event) => {
@@ -96,41 +104,30 @@ const OrderChart = () => {
     <Card
       sx={{
         p: 3,
+        height: "100%",
+        width: "100%",
         borderRadius: "24px",
-        bgcolor: "#FFFFFF",
-        boxShadow:
-          "0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06)",
+        boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.05)",
       }}
     >
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "flex-start",
+          alignItems: "center",
           mb: 3,
         }}
       >
-        <Box>
-          <Typography
-            sx={{
-              fontSize: "20px",
-              fontWeight: 600,
-              color: "#111827",
-              mb: 0.5,
-            }}
-          >
-            Total Orders
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: "13px",
-              color: "#6B7280",
-              lineHeight: 1.5,
-            }}
-          >
-            The number of orders by {period}.
-          </Typography>
-        </Box>
+        <Typography
+          variant="h6"
+          sx={{
+            fontSize: 18,
+            fontWeight: 600,
+            color: "#212B36",
+          }}
+        >
+          Customer Map
+        </Typography>
 
         <Select
           size="small"
@@ -147,7 +144,7 @@ const OrderChart = () => {
               borderColor: "#E5E7EB",
             },
             "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#2563EB",
+              borderColor: "#4ADE80",
             },
           }}
         >
@@ -157,57 +154,43 @@ const OrderChart = () => {
         </Select>
       </Box>
 
-      <Box sx={{ height: 120, mx: -3 }}>
+      <Box sx={{ height: 240, width: "100%", mt: 1 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
+          <BarChart
             data={data}
-            margin={{ top: 10, right: 25, left: 25, bottom: 5 }}
+            margin={{ top: 5, right: 5, left: -20, bottom: 5 }}
+            barSize={24}
           >
-            <defs>
-              <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2563EB" stopOpacity={0.2} />
-                <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
-              </linearGradient>
-            </defs>
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={false}
+              stroke="rgba(145, 158, 171, 0.2)"
+            />
             <XAxis
               dataKey="name"
               axisLine={false}
               tickLine={false}
-              tick={{
-                fill: "#9CA3AF",
-                fontSize: 11,
-              }}
-              dy={8}
-              interval={0}
-              tickMargin={5}
+              tick={{ fill: "#919EAB", fontSize: 11 }}
+              dy={10}
             />
-            <Tooltip content={<CustomTooltip />} cursor={false} />
-            <Area
-              type="natural"
-              dataKey="orders"
-              stroke="#2563EB"
-              strokeWidth={2}
-              fill="url(#colorOrders)"
-              dot={{
-                r: 4,
-                fill: "#FFFFFF",
-                stroke: "#2563EB",
-                strokeWidth: 2,
-              }}
-              activeDot={{
-                r: 6,
-                fill: "#FFFFFF",
-                stroke: "#2563EB",
-                strokeWidth: 2,
-              }}
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#919EAB", fontSize: 11 }}
+              tickCount={5}
             />
-          </AreaChart>
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: "rgba(74, 222, 128, 0.1)" }}
+            />
+            <Bar dataKey="customers" fill="#4ADE80" radius={[4, 4, 0, 0]} />
+          </BarChart>
         </ResponsiveContainer>
       </Box>
     </Card>
   );
 };
 
-OrderChart.propTypes = {};
+CustomerMap.propTypes = {};
 
-export default OrderChart;
+export default CustomerMap;

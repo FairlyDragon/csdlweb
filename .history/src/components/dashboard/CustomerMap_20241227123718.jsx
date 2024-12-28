@@ -40,7 +40,7 @@ const generateData = (period) => {
   }
 };
 
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload?.[0]) {
     return (
       <Box
@@ -69,7 +69,7 @@ const CustomTooltip = ({ active, payload }) => {
             color: "#6B7280",
           }}
         >
-          {payload[0].payload.name}
+          {label}
         </Typography>
       </Box>
     );
@@ -82,21 +82,24 @@ CustomTooltip.propTypes = {
   payload: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.number,
-      payload: PropTypes.shape({
-        name: PropTypes.string,
-      }),
     })
   ),
+  label: PropTypes.string,
 };
 
 CustomTooltip.defaultProps = {
   active: false,
   payload: [],
+  label: "",
 };
 
 export default function CustomerMap() {
   const [period, setPeriod] = useState("week");
   const data = generateData(period);
+
+  const handlePeriodChange = (event) => {
+    setPeriod(event.target.value);
+  };
 
   return (
     <Card
@@ -130,7 +133,7 @@ export default function CustomerMap() {
         <Select
           size="small"
           value={period}
-          onChange={(e) => setPeriod(e.target.value)}
+          onChange={handlePeriodChange}
           sx={{
             minWidth: 100,
             height: 32,
