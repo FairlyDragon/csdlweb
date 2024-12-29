@@ -28,7 +28,7 @@ const AddMenuButton = styled(Button)({
   textTransform: "none",
   opacity: 0.85,
   marginTop: "-50px",
-  marginLeft: "4px",
+  marginLeft: "12px",
   position: "relative",
   zIndex: 1,
   "&:hover": {

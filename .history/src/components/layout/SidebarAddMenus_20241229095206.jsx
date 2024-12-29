@@ -9,7 +9,7 @@ const AddMenuContainer = styled(Box)({
   boxShadow: "0px 15px 20px rgba(70.31, 6.17, 80.75, 0.12)",
   borderRadius: 10,
   position: "relative",
-  padding: "12px 16px",
+  padding: "12px 16px 16px",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -27,10 +27,7 @@ const AddMenuButton = styled(Button)({
   lineHeight: "20px",
   textTransform: "none",
   opacity: 0.85,
-  marginTop: "-50px",
-  marginLeft: "4px",
-  position: "relative",
-  zIndex: 1,
+  marginTop: "-8px",
   "&:hover": {
     background: "#E5E8E6",
     opacity: 1,
@@ -45,7 +42,6 @@ export default function SidebarAddMenus() {
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
-          mb: 4,
         }}
       >
         <Typography
@@ -57,6 +53,7 @@ export default function SidebarAddMenus() {
             fontWeight: 400,
             lineHeight: "16px",
             maxWidth: 120,
+            mb: 1,
             "& > span": {
               display: "block",
             },
@@ -68,7 +65,8 @@ export default function SidebarAddMenus() {
         >
           <span>Please, organize</span>
           <div>
-            <span>your menus through</span>
+            <span>your menus</span>
+            <span>through</span>
           </div>
           <span>button bellow!</span>
         </Typography>
@@ -79,10 +77,8 @@ export default function SidebarAddMenus() {
           sx={{
             width: 48,
             height: 60,
-            mt: 2,
+            mt: -1,
             mr: -1,
-            position: "relative",
-            top: "4px",
           }}
         />
       </Box>

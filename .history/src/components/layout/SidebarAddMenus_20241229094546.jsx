@@ -27,10 +27,6 @@ const AddMenuButton = styled(Button)({
   lineHeight: "20px",
   textTransform: "none",
   opacity: 0.85,
-  marginTop: "-50px",
-  marginLeft: "4px",
-  position: "relative",
-  zIndex: 1,
   "&:hover": {
     background: "#E5E8E6",
     opacity: 1,
@@ -45,7 +41,6 @@ export default function SidebarAddMenus() {
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
-          mb: 4,
         }}
       >
         <Typography
@@ -57,19 +52,16 @@ export default function SidebarAddMenus() {
             fontWeight: 400,
             lineHeight: "16px",
             maxWidth: 120,
+            mb: 1,
+            pl: 0.5,
             "& > span": {
               display: "block",
-            },
-            "& > div": {
-              display: "flex",
-              gap: "4px",
             },
           }}
         >
           <span>Please, organize</span>
-          <div>
-            <span>your menus through</span>
-          </div>
+          <span>your menus</span>
+          <span>through</span>
           <span>button bellow!</span>
         </Typography>
         <Box
@@ -77,12 +69,10 @@ export default function SidebarAddMenus() {
           src={banner}
           alt="Menu illustration"
           sx={{
-            width: 48,
-            height: 60,
-            mt: 2,
+            width: 42,
+            height: 52,
+            mt: -0.5,
             mr: -1,
-            position: "relative",
-            top: "4px",
           }}
         />
       </Box>

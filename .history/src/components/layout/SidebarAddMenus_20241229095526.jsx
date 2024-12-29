@@ -27,10 +27,7 @@ const AddMenuButton = styled(Button)({
   lineHeight: "20px",
   textTransform: "none",
   opacity: 0.85,
-  marginTop: "-50px",
-  marginLeft: "4px",
-  position: "relative",
-  zIndex: 1,
+  marginTop: "-8px",
   "&:hover": {
     background: "#E5E8E6",
     opacity: 1,
@@ -45,7 +42,7 @@ export default function SidebarAddMenus() {
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
-          mb: 4,
+          mb: 2,
         }}
       >
         <Typography

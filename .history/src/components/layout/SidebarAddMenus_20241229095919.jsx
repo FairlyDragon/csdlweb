@@ -27,7 +27,7 @@ const AddMenuButton = styled(Button)({
   lineHeight: "20px",
   textTransform: "none",
   opacity: 0.85,
-  marginTop: "-50px",
+  marginTop: "-35px",
   marginLeft: "4px",
   position: "relative",
   zIndex: 1,
