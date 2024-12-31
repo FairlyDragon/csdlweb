@@ -96,6 +96,7 @@ const dishes = [
     price: "5.59",
     discount: 15,
   },
+  
 ];
 
 export default function Foods() {

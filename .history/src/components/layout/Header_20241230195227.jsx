@@ -162,7 +162,7 @@ export default function Header() {
             gap: 2,
             ml: 3,
             pl: 3,
-            borderLeft: "2px solid #E0E0E0",
+            borderLeft: "1px solid #F2F4F7",
           }}
         >
           <Box
@@ -174,7 +174,10 @@ export default function Header() {
               gap: 0.5,
             }}
           >
-            Hello, <span style={{ fontWeight: 600 }}>Admin</span>
+            Hello,{" "}
+            <span style={{ fontWeight: 600, textDecoration: "underline" }}>
+              Admin
+            </span>
           </Box>
 
           <Avatar

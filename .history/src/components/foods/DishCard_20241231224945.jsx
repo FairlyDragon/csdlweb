@@ -5,7 +5,7 @@ const DishCard = ({ dish, onEditClick }) => {
   return (
     <Card
       sx={{
-        width: "280px",
+        width: "304px",
         bgcolor: "white",
         borderRadius: "16px",
         overflow: "hidden",

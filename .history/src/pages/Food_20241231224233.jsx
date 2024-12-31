@@ -96,6 +96,16 @@ const dishes = [
     price: "5.59",
     discount: 15,
   },
+  {
+    id: 1,
+    name: "Spicy Noodles",
+    image: "/images/spicy-noodles.jpg",
+    rating: 5,
+    reviews: "1.31",
+    category: "Dishes",
+    price: "5.59",
+    discount: 15,
+  },
 ];
 
 export default function Foods() {

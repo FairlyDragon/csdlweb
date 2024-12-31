@@ -5,32 +5,25 @@ const DishCard = ({ dish, onEditClick }) => {
   return (
     <Card
       sx={{
-        width: "280px",
-        bgcolor: "white",
-        borderRadius: "16px",
+        borderRadius: "14px",
         overflow: "hidden",
         transition: "all 0.2s",
-        boxShadow:
-          "0px 0px 2px rgba(145, 158, 171, 0.2), 0px 12px 24px -4px rgba(145, 158, 171, 0.12)",
+        boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.04)",
         "&:hover": {
-          boxShadow:
-            "0px 0px 2px rgba(145, 158, 171, 0.2), 0px 12px 24px -4px rgba(145, 158, 171, 0.12)",
-          "& img": {
-            transform: "scale(1.05)",
-          },
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.12)",
+          border: "3px solid #2D9CDB",
         },
       }}
     >
-      <Box sx={{ position: "relative", height: "200px", overflow: "hidden" }}>
+      <Box sx={{ position: "relative" }}>
         <Box
           component="img"
           src={dish.image}
           alt={dish.name}
           sx={{
             width: "100%",
-            height: "100%",
+            height: 200,
             objectFit: "cover",
-            transition: "transform 0.3s ease-in-out",
           }}
         />
         {dish.discount && (
@@ -41,13 +34,11 @@ const DishCard = ({ dish, onEditClick }) => {
               left: 16,
               bgcolor: "#FF4842",
               color: "white",
-              px: 1,
+              px: 1.5,
               py: 0.5,
-              borderRadius: "6px",
-              fontSize: "0.75rem",
-              fontWeight: 700,
-              lineHeight: "20px",
-              letterSpacing: "0.5px",
+              borderRadius: "4px",
+              fontSize: 12,
+              fontWeight: 500,
             }}
           >
             {dish.discount}% Off
@@ -61,21 +52,9 @@ const DishCard = ({ dish, onEditClick }) => {
             value={dish.rating}
             readOnly
             size="small"
-            sx={{
-              color: "#FFC107",
-              "& .MuiRating-icon": {
-                fontSize: "1rem",
-              },
-            }}
+            sx={{ color: "#FFC107" }}
           />
-          <Typography
-            variant="body2"
-            sx={{
-              ml: 1,
-              color: "#637381",
-              fontSize: "0.875rem",
-            }}
-          >
+          <Typography variant="body2" sx={{ ml: 1, color: "#637381" }}>
             ({dish.reviews})
           </Typography>
         </Box>
@@ -85,8 +64,6 @@ const DishCard = ({ dish, onEditClick }) => {
           sx={{
             color: "#212B36",
             mb: 1,
-            fontSize: "0.875rem",
-            fontWeight: 400,
           }}
         >
           {dish.category}
@@ -99,46 +76,32 @@ const DishCard = ({ dish, onEditClick }) => {
             alignItems: "center",
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "baseline" }}>
-            <Typography
-              component="span"
-              sx={{
-                color: "#637381",
-                fontSize: "0.875rem",
-                mr: 0.5,
-                fontWeight: 400,
-              }}
-            >
-              $
-            </Typography>
-            <Typography
-              sx={{
-                color: "#212B36",
-                fontSize: "1.125rem",
-                fontWeight: 600,
-                lineHeight: "1.5",
-              }}
-            >
-              {dish.price}
-            </Typography>
-          </Box>
+          <Typography
+            sx={{
+              color: "#2D9CDB",
+              fontSize: "18px",
+              fontWeight: 600,
+              "&::before": {
+                content: '"$"',
+                fontSize: "14px",
+                verticalAlign: "top",
+                marginRight: "2px",
+              },
+            }}
+          >
+            {dish.price}
+          </Typography>
           <Button
             variant="outlined"
-            onClick={onEditClick}
+            onClick={() => onEditClick(dish)}
             sx={{
               color: "#637381",
               borderColor: "#DFE3E8",
               borderRadius: "8px",
               textTransform: "none",
-              fontSize: "0.875rem",
-              fontWeight: 400,
-              px: 2,
-              py: 0.75,
-              minWidth: "92px",
               "&:hover": {
                 borderColor: "#2D9CDB",
                 color: "#2D9CDB",
-                bgcolor: "transparent",
               },
             }}
           >
