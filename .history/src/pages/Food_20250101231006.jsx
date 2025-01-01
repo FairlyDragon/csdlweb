@@ -216,14 +216,14 @@ export default function Foods() {
   // Hàm xử lý tắt discount
   const handleDisableDiscount = () => {
     // Reset discount về 0 cho tất cả sản phẩm
-    const resetProducts = products.map((product) => ({
+    const resetProducts = products.map(product => ({
       ...product,
-      discount: 0,
+      discount: 0
     }));
-
+    
     setProducts(resetProducts);
     setShowDiscountedPrices(false);
-    localStorage.setItem("dishes", JSON.stringify(resetProducts));
+    localStorage.setItem('dishes', JSON.stringify(resetProducts));
   };
 
   return (

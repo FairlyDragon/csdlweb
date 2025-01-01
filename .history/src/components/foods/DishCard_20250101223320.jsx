@@ -1,12 +1,7 @@
 import PropTypes from "prop-types";
 import { Box, Card, Typography, Button, Rating } from "@mui/material";
 
-const DishCard = ({
-  dish,
-  showDiscountedPrice,
-  calculatedPrice,
-  onEditClick,
-}) => {
+const DishCard = ({ dish, onEditClick }) => {
   return (
     <Card
       sx={{
@@ -28,10 +23,10 @@ const DishCard = ({
             width: "100%",
             height: "100%",
             objectFit: "contain",
-            bgcolor: "#F4F6F8",
+            bgcolor: "#F4F6F8"
           }}
         />
-        {dish.discount > 0 && showDiscountedPrice && (
+        {dish.discount > 0 && (
           <Typography
             sx={{
               position: "absolute",
@@ -67,7 +62,7 @@ const DishCard = ({
             color: "#212B36",
             fontSize: "1rem",
             fontWeight: 600,
-            mb: 1,
+            mb: 1
           }}
         >
           {dish.name}
@@ -84,7 +79,7 @@ const DishCard = ({
             WebkitLineClamp: 3,
             WebkitBoxOrient: "vertical",
             height: "3.6em",
-            lineHeight: "1.2em",
+            lineHeight: "1.2em"
           }}
         >
           {dish.details}
@@ -110,26 +105,13 @@ const DishCard = ({
             </Typography>
             <Typography
               sx={{
-                color:
-                  showDiscountedPrice && dish.discount ? "#FF4842" : "#212B36",
+                color: "#212B36",
                 fontSize: "1.125rem",
                 fontWeight: 600,
               }}
             >
-              {calculatedPrice}
+              {dish.price}
             </Typography>
-            {showDiscountedPrice && dish.discount > 0 && (
-              <Typography
-                sx={{
-                  color: "#637381",
-                  fontSize: "0.875rem",
-                  ml: 1,
-                  textDecoration: "line-through",
-                }}
-              >
-                ${dish.price}
-              </Typography>
-            )}
           </Box>
           <Button
             variant="outlined"
@@ -157,8 +139,6 @@ const DishCard = ({
 
 DishCard.propTypes = {
   dish: PropTypes.object.isRequired,
-  showDiscountedPrice: PropTypes.bool.isRequired,
-  calculatedPrice: PropTypes.string.isRequired,
   onEditClick: PropTypes.func.isRequired,
 };
 

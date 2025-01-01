@@ -93,7 +93,7 @@ export default function Foods() {
   const [showDiscountedPrices, setShowDiscountedPrices] = useState(false);
   const [discountDialog, setDiscountDialog] = useState({
     open: false,
-    value: 5, // Giá trị mặc định
+    value: 5 // Giá trị mặc định
   });
 
   // Cập nhật localStorage mỗi khi products thay đổi
@@ -203,27 +203,14 @@ export default function Foods() {
 
   // Xử lý áp dụng discount cho tất cả sản phẩm
   const handleApplyDiscount = () => {
-    const newProducts = products.map((product) => ({
+    const newProducts = products.map(product => ({
       ...product,
-      discount: discountDialog.value, // Cập nhật giá trị discount
+      discount: discountDialog.value // Cập nhật giá trị discount
     }));
     setProducts(newProducts);
     setShowDiscountedPrices(true);
     setDiscountDialog({ ...discountDialog, open: false });
-    localStorage.setItem("dishes", JSON.stringify(newProducts));
-  };
-
-  // Hàm xử lý tắt discount
-  const handleDisableDiscount = () => {
-    // Reset discount về 0 cho tất cả sản phẩm
-    const resetProducts = products.map((product) => ({
-      ...product,
-      discount: 0,
-    }));
-
-    setProducts(resetProducts);
-    setShowDiscountedPrices(false);
-    localStorage.setItem("dishes", JSON.stringify(resetProducts));
+    localStorage.setItem('dishes', JSON.stringify(newProducts));
   };
 
   return (
@@ -268,15 +255,7 @@ export default function Foods() {
 
           <Button
             variant={showDiscountedPrices ? "contained" : "outlined"}
-            onClick={() => {
-              if (showDiscountedPrices) {
-                // Nếu đang bật discount thì tắt
-                handleDisableDiscount();
-              } else {
-                // Nếu đang tắt thì mở dialog chọn %
-                setDiscountDialog({ open: true, value: 5 });
-              }
-            }}
+            onClick={() => setDiscountDialog({ open: true, value: 5 })}
             sx={{
               bgcolor: showDiscountedPrices ? "#FF4842" : "transparent",
               color: showDiscountedPrices ? "white" : "#FF4842",
@@ -290,7 +269,7 @@ export default function Foods() {
               textTransform: "none",
             }}
           >
-            {showDiscountedPrices ? "Disable Discount" : "Discount"}
+            Discount
           </Button>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -471,7 +450,7 @@ export default function Foods() {
           </Typography>
           <Slider
             value={discountDialog.value}
-            onChange={(_, newValue) =>
+            onChange={(_, newValue) => 
               setDiscountDialog({ ...discountDialog, value: newValue })
             }
             min={5}
@@ -481,20 +460,18 @@ export default function Foods() {
             valueLabelDisplay="auto"
             sx={{
               color: "#FF4842",
-              "& .MuiSlider-valueLabel": {
+              '& .MuiSlider-valueLabel': {
                 bgcolor: "#FF4842",
-              },
+              }
             }}
           />
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() =>
-              setDiscountDialog({ ...discountDialog, open: false })
-            }
+            onClick={() => setDiscountDialog({ ...discountDialog, open: false })}
             sx={{
               color: "#637381",
-              "&:hover": { bgcolor: "rgba(99, 115, 129, 0.08)" },
+              '&:hover': { bgcolor: "rgba(99, 115, 129, 0.08)" }
             }}
           >
             Cancel
@@ -504,8 +481,8 @@ export default function Foods() {
             sx={{
               bgcolor: "#FF4842",
               color: "white",
-              "&:hover": { bgcolor: "#B72136" },
-              textTransform: "none",
+              '&:hover': { bgcolor: "#B72136" },
+              textTransform: "none"
             }}
           >
             Apply

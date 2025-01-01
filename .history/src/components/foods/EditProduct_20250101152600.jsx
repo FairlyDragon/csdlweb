@@ -11,49 +11,54 @@ import {
   Rating,
   Button,
   DialogActions,
+  DialogContentText,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
   const [formData, setFormData] = useState({
-    id: "",
     name: "",
     category: "",
     price: "",
     details: "",
+    rating: 0,
+    reviews: "",
     image: null,
-    rating: 5,
-    discount: 0,
   });
-
-  // Thêm state cho confirm dialog
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  // Cập nhật formData khi product thay đổi
   useEffect(() => {
-    if (product) {
+    if (open) {
       setFormData({
-        id: product.id || "",
-        name: product.name || "",
-        category: product.category || "",
-        price: product.price || "",
-        details: product.details || "",
-        image: product.image || null,
-        rating: product.rating || 5,
-        discount: product.discount || 0,
+        name: product?.name || "",
+        category: product?.category || "",
+        price: product?.price || "",
+        details: product?.details || "",
+        rating: product?.rating || 0,
+        reviews: product?.reviews || "",
+        image: null,
       });
     }
-  }, [product]);
+  }, [open, product]);
 
-  const handleSave = () => {
-    onSave(formData);
-    onClose();
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, image: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData((prev) => ({ ...prev, image: null }));
   };
 
   return (
     <>
-      {/* Main Edit Dialog */}
       <Dialog
         open={open}
         onClose={onClose}
@@ -92,6 +97,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                 </Typography>
                 <TextField
                   fullWidth
+                  placeholder="Dishes"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, name: e.target.value }))
@@ -111,12 +117,10 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                 </Typography>
                 <TextField
                   fullWidth
+                  placeholder="Rice"
                   value={formData.category}
                   onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      category: e.target.value,
-                    }))
+                    setFormData((prev) => ({ ...prev, category: e.target.value }))
                   }
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -130,7 +134,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
             </Box>
 
             {/* Second Row: Price and Rating */}
-            <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+            <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "flex-end" }}>
               <Box sx={{ width: "280px" }}>
                 <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
                   Price
@@ -150,17 +154,16 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                   }}
                 />
               </Box>
-              <Box sx={{ width: "280px" }}>
-                <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
-                  Rating
-                </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", height: "40px" }}>
                 <Rating
                   value={formData.rating}
-                  onChange={(_, newValue) => {
-                    setFormData((prev) => ({ ...prev, rating: newValue }));
-                  }}
+                  readOnly
+                  precision={0.5}
                   sx={{ color: "#FFC107" }}
                 />
+                <Typography sx={{ ml: 1, color: "#637381" }}>
+                  ({formData.reviews})
+                </Typography>
               </Box>
             </Box>
 
@@ -172,7 +175,8 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
               <TextField
                 fullWidth
                 multiline
-                rows={4}
+                rows={3}
+                placeholder="Type to add..."
                 value={formData.details}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, details: e.target.value }))
@@ -186,150 +190,115 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
               />
             </Box>
 
-            {/* Image Upload */}
-            <Box sx={{ mb: 3 }}>
-              <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
-                Image
-              </Typography>
-              {formData.image ? (
-                <Box sx={{ position: "relative", width: "fit-content" }}>
-                  <img
-                    src={formData.image}
-                    alt="Product"
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "8px",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <IconButton
-                    size="small"
-                    onClick={() =>
-                      setFormData((prev) => ({ ...prev, image: null }))
-                    }
-                    sx={{
-                      position: "absolute",
-                      top: -10,
-                      right: -10,
-                      bgcolor: "white",
-                      boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-                      "&:hover": { bgcolor: "#f5f5f5" },
-                    }}
-                  >
-                    <CloseIcon fontSize="small" />
-                  </IconButton>
-                </Box>
-              ) : (
-                <Box
-                  component="label"
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
+            {/* Upload Area or Image Preview */}
+            {formData.image ? (
+              <Box sx={{ position: "relative", width: "fit-content", mb: 3 }}>
+                <img
+                  src={formData.image}
+                  alt="Product"
+                  style={{
+                    width: "100px",
                     height: "100px",
-                    border: "1px dashed #DFE3E8",
                     borderRadius: "8px",
-                    cursor: "pointer",
-                    bgcolor: "#F8F9FA",
-                    "&:hover": { bgcolor: "#F4F6F8" },
+                    objectFit: "cover",
+                  }}
+                />
+                <IconButton
+                  size="small"
+                  onClick={handleRemoveImage}
+                  sx={{
+                    position: "absolute",
+                    top: -10,
+                    right: -10,
+                    bgcolor: "white",
+                    boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
+                    "&:hover": { bgcolor: "#f5f5f5" },
                   }}
                 >
-                  <input
-                    type="file"
-                    hidden
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setFormData((prev) => ({
-                            ...prev,
-                            image: reader.result,
-                          }));
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                  />
-                  <FileUploadIcon sx={{ color: "#637381", mb: 1 }} />
-                  <Typography sx={{ color: "#637381" }}>
-                    Drop files to upload
-                  </Typography>
-                </Box>
-              )}
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            ) : (
+              <Box
+                component="label"
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100px",
+                  border: "1px dashed #DFE3E8",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  bgcolor: "#F8F9FA",
+                  mb: 3,
+                  "&:hover": {
+                    bgcolor: "#F4F6F8",
+                  },
+                }}
+              >
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                />
+                <FileUploadIcon sx={{ color: "#637381", mb: 1 }} />
+                <Typography sx={{ color: "#637381" }}>
+                  Drop files to upload
+                </Typography>
+              </Box>
+            )}
+
+            {/* Buttons */}
+            <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => setConfirmDelete(true)}
+                sx={{
+                  bgcolor: "#FF4842",
+                  "&:hover": { bgcolor: "#B72136" },
+                  textTransform: "none",
+                }}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => onSave(formData)}
+                sx={{
+                  bgcolor: "#3366FF",
+                  "&:hover": { bgcolor: "#1939B7" },
+                  textTransform: "none",
+                }}
+              >
+                Save
+              </Button>
             </Box>
           </Box>
         </DialogContent>
-
-        <DialogActions sx={{ p: 3, pt: 0 }}>
-          <Button
-            onClick={() => setConfirmDelete(true)}
-            sx={{
-              bgcolor: "#FF4842",
-              color: "white",
-              "&:hover": { bgcolor: "#B72136" },
-              textTransform: "none",
-            }}
-          >
-            Delete
-          </Button>
-          <Button
-            onClick={handleSave}
-            sx={{
-              bgcolor: "#3366FF",
-              color: "white",
-              "&:hover": { bgcolor: "#1939B7" },
-              textTransform: "none",
-            }}
-          >
-            Save
-          </Button>
-        </DialogActions>
       </Dialog>
 
-      {/* Confirm Delete Dialog */}
       <Dialog
         open={confirmDelete}
         onClose={() => setConfirmDelete(false)}
-        PaperProps={{
-          sx: {
-            borderRadius: "16px",
-            width: "360px",
-            p: 2,
-          },
-        }}
       >
-        <DialogTitle sx={{ pb: 1 }}>Confirm Delete</DialogTitle>
+        <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
-          <Typography sx={{ color: "#637381" }}>
+          <DialogContentText>
             Are you sure you want to delete this product?
-          </Typography>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => setConfirmDelete(false)}
-            sx={{
-              color: "#637381",
-              "&:hover": { bgcolor: "rgba(99, 115, 129, 0.08)" },
-              textTransform: "none",
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
+          <Button onClick={() => setConfirmDelete(false)}>Cancel</Button>
+          <Button 
             onClick={() => {
-              onDelete(formData.id);
+              onDelete(product.id);
               setConfirmDelete(false);
-            }}
-            sx={{
-              bgcolor: "#FF4842",
-              color: "white",
-              "&:hover": { bgcolor: "#B72136" },
-              textTransform: "none",
-            }}
+            }} 
+            color="error" 
+            autoFocus
           >
             Delete
           </Button>

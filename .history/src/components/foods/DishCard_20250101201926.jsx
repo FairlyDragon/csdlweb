@@ -1,12 +1,7 @@
 import PropTypes from "prop-types";
 import { Box, Card, Typography, Button, Rating } from "@mui/material";
 
-const DishCard = ({
-  dish,
-  showDiscountedPrice,
-  calculatedPrice,
-  onEditClick,
-}) => {
+const DishCard = ({ dish, onEditClick }) => {
   return (
     <Card
       sx={{
@@ -17,6 +12,13 @@ const DishCard = ({
         transition: "all 0.2s",
         boxShadow:
           "0px 0px 2px rgba(145, 158, 171, 0.2), 0px 12px 24px -4px rgba(145, 158, 171, 0.12)",
+        "&:hover": {
+          boxShadow:
+            "0px 0px 2px rgba(145, 158, 171, 0.2), 0px 12px 24px -4px rgba(145, 158, 171, 0.12)",
+          "& img": {
+            transform: "scale(1.05)",
+          },
+        },
       }}
     >
       <Box sx={{ position: "relative", height: "200px", overflow: "hidden" }}>
@@ -27,11 +29,11 @@ const DishCard = ({
           sx={{
             width: "100%",
             height: "100%",
-            objectFit: "contain",
-            bgcolor: "#F4F6F8",
+            objectFit: "cover",
+            transition: "transform 0.3s ease-in-out",
           }}
         />
-        {dish.discount > 0 && showDiscountedPrice && (
+        {dish.discount && (
           <Typography
             sx={{
               position: "absolute",
@@ -44,6 +46,8 @@ const DishCard = ({
               borderRadius: "6px",
               fontSize: "0.75rem",
               fontWeight: 700,
+              lineHeight: "20px",
+              letterSpacing: "0.5px",
             }}
           >
             {dish.discount}% Off
@@ -57,37 +61,35 @@ const DishCard = ({
             value={dish.rating}
             readOnly
             size="small"
-            sx={{ color: "#FFC107" }}
+            sx={{
+              color: "#FFC107",
+              "& .MuiRating-icon": {
+                fontSize: "1rem",
+              },
+            }}
           />
+          <Typography
+            variant="body2"
+            sx={{
+              ml: 1,
+              color: "#637381",
+              fontSize: "0.875rem",
+            }}
+          >
+            ({dish.reviews})
+          </Typography>
         </Box>
 
         <Typography
-          variant="h6"
+          variant="body1"
           sx={{
             color: "#212B36",
-            fontSize: "1rem",
-            fontWeight: 600,
             mb: 1,
-          }}
-        >
-          {dish.name}
-        </Typography>
-
-        <Typography
-          sx={{
-            color: "#637381",
             fontSize: "0.875rem",
-            mb: 2,
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            height: "3.6em",
-            lineHeight: "1.2em",
+            fontWeight: 400,
           }}
         >
-          {dish.details}
+          {dish.category}
         </Typography>
 
         <Box
@@ -104,32 +106,21 @@ const DishCard = ({
                 color: "#637381",
                 fontSize: "0.875rem",
                 mr: 0.5,
+                fontWeight: 400,
               }}
             >
               $
             </Typography>
             <Typography
               sx={{
-                color:
-                  showDiscountedPrice && dish.discount ? "#FF4842" : "#212B36",
+                color: "#212B36",
                 fontSize: "1.125rem",
                 fontWeight: 600,
+                lineHeight: "1.5",
               }}
             >
-              {calculatedPrice}
+              {dish.price}
             </Typography>
-            {showDiscountedPrice && dish.discount > 0 && (
-              <Typography
-                sx={{
-                  color: "#637381",
-                  fontSize: "0.875rem",
-                  ml: 1,
-                  textDecoration: "line-through",
-                }}
-              >
-                ${dish.price}
-              </Typography>
-            )}
           </Box>
           <Button
             variant="outlined"
@@ -140,6 +131,10 @@ const DishCard = ({
               borderRadius: "8px",
               textTransform: "none",
               fontSize: "0.875rem",
+              fontWeight: 400,
+              px: 2,
+              py: 0.75,
+              minWidth: "92px",
               "&:hover": {
                 borderColor: "#2D9CDB",
                 color: "#2D9CDB",
@@ -157,8 +152,6 @@ const DishCard = ({
 
 DishCard.propTypes = {
   dish: PropTypes.object.isRequired,
-  showDiscountedPrice: PropTypes.bool.isRequired,
-  calculatedPrice: PropTypes.string.isRequired,
   onEditClick: PropTypes.func.isRequired,
 };
 

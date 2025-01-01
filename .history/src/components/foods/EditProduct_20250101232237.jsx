@@ -113,10 +113,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                   fullWidth
                   value={formData.category}
                   onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      category: e.target.value,
-                    }))
+                    setFormData((prev) => ({ ...prev, category: e.target.value }))
                   }
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -302,7 +299,9 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
           },
         }}
       >
-        <DialogTitle sx={{ pb: 1 }}>Confirm Delete</DialogTitle>
+        <DialogTitle sx={{ pb: 1 }}>
+          Confirm Delete
+        </DialogTitle>
         <DialogContent>
           <Typography sx={{ color: "#637381" }}>
             Are you sure you want to delete this product?

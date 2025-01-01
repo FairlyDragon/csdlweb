@@ -1,12 +1,7 @@
 import PropTypes from "prop-types";
 import { Box, Card, Typography, Button, Rating } from "@mui/material";
 
-const DishCard = ({
-  dish,
-  showDiscountedPrice,
-  calculatedPrice,
-  onEditClick,
-}) => {
+const DishCard = ({ dish, showDiscountedPrice, calculatedPrice, onEditClick }) => {
   return (
     <Card
       sx={{
@@ -31,7 +26,7 @@ const DishCard = ({
             bgcolor: "#F4F6F8",
           }}
         />
-        {dish.discount > 0 && showDiscountedPrice && (
+        {dish.discount > 0 && (
           <Typography
             sx={{
               position: "absolute",
@@ -110,10 +105,10 @@ const DishCard = ({
             </Typography>
             <Typography
               sx={{
-                color:
-                  showDiscountedPrice && dish.discount ? "#FF4842" : "#212B36",
+                color: showDiscountedPrice ? "#FF4842" : "#212B36",
                 fontSize: "1.125rem",
                 fontWeight: 600,
+                textDecoration: showDiscountedPrice ? "none" : "none",
               }}
             >
               {calculatedPrice}

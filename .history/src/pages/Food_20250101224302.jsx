@@ -8,11 +8,6 @@ import {
   Skeleton,
   Alert,
   Snackbar,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Slider,
 } from "@mui/material";
 import DishCard from "../components/foods/DishCard";
 import EditProduct from "../components/foods/EditProduct";
@@ -91,10 +86,6 @@ export default function Foods() {
   });
   const [addMenuOpen, setAddMenuOpen] = useState(false);
   const [showDiscountedPrices, setShowDiscountedPrices] = useState(false);
-  const [discountDialog, setDiscountDialog] = useState({
-    open: false,
-    value: 5, // Giá trị mặc định
-  });
 
   // Cập nhật localStorage mỗi khi products thay đổi
   useEffect(() => {
@@ -201,31 +192,6 @@ export default function Foods() {
     return (price * (1 - discount)).toFixed(2);
   };
 
-  // Xử lý áp dụng discount cho tất cả sản phẩm
-  const handleApplyDiscount = () => {
-    const newProducts = products.map((product) => ({
-      ...product,
-      discount: discountDialog.value, // Cập nhật giá trị discount
-    }));
-    setProducts(newProducts);
-    setShowDiscountedPrices(true);
-    setDiscountDialog({ ...discountDialog, open: false });
-    localStorage.setItem("dishes", JSON.stringify(newProducts));
-  };
-
-  // Hàm xử lý tắt discount
-  const handleDisableDiscount = () => {
-    // Reset discount về 0 cho tất cả sản phẩm
-    const resetProducts = products.map((product) => ({
-      ...product,
-      discount: 0,
-    }));
-
-    setProducts(resetProducts);
-    setShowDiscountedPrices(false);
-    localStorage.setItem("dishes", JSON.stringify(resetProducts));
-  };
-
   return (
     <Box sx={{ p: 3, bgcolor: "#F9FAFB", minHeight: "100vh" }}>
       {/* Header */}
@@ -268,15 +234,7 @@ export default function Foods() {
 
           <Button
             variant={showDiscountedPrices ? "contained" : "outlined"}
-            onClick={() => {
-              if (showDiscountedPrices) {
-                // Nếu đang bật discount thì tắt
-                handleDisableDiscount();
-              } else {
-                // Nếu đang tắt thì mở dialog chọn %
-                setDiscountDialog({ open: true, value: 5 });
-              }
-            }}
+            onClick={() => setShowDiscountedPrices(!showDiscountedPrices)}
             sx={{
               bgcolor: showDiscountedPrices ? "#FF4842" : "transparent",
               color: showDiscountedPrices ? "white" : "#FF4842",
@@ -290,7 +248,7 @@ export default function Foods() {
               textTransform: "none",
             }}
           >
-            {showDiscountedPrices ? "Disable Discount" : "Discount"}
+            Discount
           </Button>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -451,67 +409,6 @@ export default function Foods() {
         onClose={() => setAddMenuOpen(false)}
         onAdd={handleAddProduct}
       />
-
-      {/* Discount Dialog */}
-      <Dialog
-        open={discountDialog.open}
-        onClose={() => setDiscountDialog({ ...discountDialog, open: false })}
-        PaperProps={{
-          sx: {
-            borderRadius: "16px",
-            width: "360px",
-            p: 2,
-          },
-        }}
-      >
-        <DialogTitle>Apply Discount</DialogTitle>
-        <DialogContent>
-          <Typography sx={{ mb: 2, color: "#637381" }}>
-            Select discount percentage for all products
-          </Typography>
-          <Slider
-            value={discountDialog.value}
-            onChange={(_, newValue) =>
-              setDiscountDialog({ ...discountDialog, value: newValue })
-            }
-            min={5}
-            max={20}
-            step={1}
-            marks
-            valueLabelDisplay="auto"
-            sx={{
-              color: "#FF4842",
-              "& .MuiSlider-valueLabel": {
-                bgcolor: "#FF4842",
-              },
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() =>
-              setDiscountDialog({ ...discountDialog, open: false })
-            }
-            sx={{
-              color: "#637381",
-              "&:hover": { bgcolor: "rgba(99, 115, 129, 0.08)" },
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleApplyDiscount}
-            sx={{
-              bgcolor: "#FF4842",
-              color: "white",
-              "&:hover": { bgcolor: "#B72136" },
-              textTransform: "none",
-            }}
-          >
-            Apply
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -8,11 +8,6 @@ import {
   Skeleton,
   Alert,
   Snackbar,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Slider,
 } from "@mui/material";
 import DishCard from "../components/foods/DishCard";
 import EditProduct from "../components/foods/EditProduct";
@@ -24,13 +19,13 @@ const TRANSITION_DURATION = 800; // Tăng thời gian transition
 const LOADING_DELAY = 600; // Thời gian loading giả lập
 
 // Giả lập dữ liệu nhiều món ăn
-const INITIAL_DISHES = [
+const allDishes = [
   {
     id: 1,
     name: "Spicy Noodles",
     image: "/images/spicy-noodles.jpg",
     rating: 5,
-    details: "Delicious spicy noodles with vegetables and special sauce",
+    reviews: "1.31",
     category: "Dishes",
     price: "5.59",
     discount: 15,
@@ -40,14 +35,66 @@ const INITIAL_DISHES = [
     name: "Grilled Chicken",
     image: "/images/grilled-chicken.jpg",
     rating: 4,
-    details: "Tender grilled chicken with herbs and spices",
+    reviews: "1.21",
     category: "Dishes",
     price: "6.59",
     discount: 10,
   },
-  // ... thêm các món ăn khác nếu cần
+  {
+    id: 3,
+    name: "Vegetable Salad",
+    image: "/images/vegetable-salad.jpg",
+    rating: 4.5,
+    reviews: "1.15",
+    category: "Dishes",
+    price: "4.59",
+    discount: 20,
+  },
+  {
+    id: 4,
+    name: "Beef Steak",
+    image: "/images/beef-steak.jpg",
+    rating: 5,
+    reviews: "1.42",
+    category: "Dishes",
+    price: "8.59",
+    discount: 15,
+  },
+  {
+    id: 5,
+    name: "Seafood Pasta",
+    image: "/images/seafood-pasta.jpg",
+    rating: 4.5,
+    reviews: "1.28",
+    category: "Dishes",
+    price: "7.59",
+    discount: 12,
+  },
+  {
+    id: 6,
+    name: "Sushi Roll",
+    image: "/images/sushi-roll.jpg",
+    rating: 4.8,
+    reviews: "1.35",
+    category: "Dishes",
+    price: "9.59",
+    discount: 18,
+  },
+  // Trang 2
+  {
+    id: 7,
+    name: "Pizza Margherita",
+    image: "/images/pizza.jpg",
+    rating: 4.7,
+    reviews: "1.33",
+    category: "Dishes",
+    price: "7.99",
+    discount: 15,
+  },
+  // ... thêm các món khác cho trang 2
+  // ... thêm các món khác cho trang 3
+  // Mỗi trang 6 món
 ];
-
 const ITEMS_PER_PAGE = 6; // Số món ăn cố định mỗi trang
 
 // Component Skeleton cho DishCard
@@ -85,21 +132,8 @@ export default function Foods() {
     open: false,
     product: null,
   });
-  const [products, setProducts] = useState(() => {
-    const savedProducts = localStorage.getItem("dishes");
-    return savedProducts ? JSON.parse(savedProducts) : INITIAL_DISHES;
-  });
+  const [products, setProducts] = useState(allDishes); // State quản lý danh sách sản phẩm
   const [addMenuOpen, setAddMenuOpen] = useState(false);
-  const [showDiscountedPrices, setShowDiscountedPrices] = useState(false);
-  const [discountDialog, setDiscountDialog] = useState({
-    open: false,
-    value: 5, // Giá trị mặc định
-  });
-
-  // Cập nhật localStorage mỗi khi products thay đổi
-  useEffect(() => {
-    localStorage.setItem("dishes", JSON.stringify(products));
-  }, [products]);
 
   // Tính toán tổng số trang dựa trên số món ăn
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
@@ -163,67 +197,43 @@ export default function Foods() {
   );
 
   const handleDeleteProduct = (productId) => {
+    // Xóa sản phẩm khỏi danh sách
     setProducts((prevProducts) =>
       prevProducts.filter((product) => product.id !== productId)
     );
+
+    // Kiểm tra và điều chỉnh trang hiện tại nếu cần
+    const newTotalPages = Math.ceil((products.length - 1) / ITEMS_PER_PAGE);
+    if (currentPage > newTotalPages) {
+      setCurrentPage(newTotalPages || 1); // Nếu không còn trang nào thì về trang 1
+    }
+
+    // Đóng dialog
     setEditDialog({ open: false, product: null });
   };
 
   const handleAddProduct = (newProduct) => {
     const productToAdd = {
-      id: Date.now(),
+      id: Date.now(), // Tạo ID duy nhất
       name: newProduct.name,
       category: newProduct.category,
       price: newProduct.price,
       details: newProduct.details,
-      image: newProduct.image || "/images/default-food.jpg",
-      rating: newProduct.rating || 5,
-      discount: newProduct.discount || 0,
+      image: newProduct.image || "/images/default-food.jpg", // Thêm ảnh mặc định nếu không có
+      rating: 5,
+      reviews: "0",
+      discount: 0,
     };
 
+    // Thêm sản phẩm mới vào state
     setProducts((prevProducts) => [...prevProducts, productToAdd]);
+
+    // Chuyển đến trang cuối
+    const newTotalPages = Math.ceil((products.length + 1) / ITEMS_PER_PAGE);
+    setCurrentPage(newTotalPages);
+
+    // Đóng dialog
     setAddMenuOpen(false);
-  };
-
-  const handleEditProduct = (editedProduct) => {
-    setProducts((prevProducts) =>
-      prevProducts.map((product) =>
-        product.id === editedProduct.id ? editedProduct : product
-      )
-    );
-    setEditDialog({ open: false, product: null });
-  };
-
-  // Tính giá sau khi áp dụng discount
-  const calculateDiscountedPrice = (originalPrice, discountPercent) => {
-    const price = parseFloat(originalPrice);
-    const discount = discountPercent / 100;
-    return (price * (1 - discount)).toFixed(2);
-  };
-
-  // Xử lý áp dụng discount cho tất cả sản phẩm
-  const handleApplyDiscount = () => {
-    const newProducts = products.map((product) => ({
-      ...product,
-      discount: discountDialog.value, // Cập nhật giá trị discount
-    }));
-    setProducts(newProducts);
-    setShowDiscountedPrices(true);
-    setDiscountDialog({ ...discountDialog, open: false });
-    localStorage.setItem("dishes", JSON.stringify(newProducts));
-  };
-
-  // Hàm xử lý tắt discount
-  const handleDisableDiscount = () => {
-    // Reset discount về 0 cho tất cả sản phẩm
-    const resetProducts = products.map((product) => ({
-      ...product,
-      discount: 0,
-    }));
-
-    setProducts(resetProducts);
-    setShowDiscountedPrices(false);
-    localStorage.setItem("dishes", JSON.stringify(resetProducts));
   };
 
   return (
@@ -264,33 +274,6 @@ export default function Foods() {
             }}
           >
             +Add Menus
-          </Button>
-
-          <Button
-            variant={showDiscountedPrices ? "contained" : "outlined"}
-            onClick={() => {
-              if (showDiscountedPrices) {
-                // Nếu đang bật discount thì tắt
-                handleDisableDiscount();
-              } else {
-                // Nếu đang tắt thì mở dialog chọn %
-                setDiscountDialog({ open: true, value: 5 });
-              }
-            }}
-            sx={{
-              bgcolor: showDiscountedPrices ? "#FF4842" : "transparent",
-              color: showDiscountedPrices ? "white" : "#FF4842",
-              borderColor: "#FF4842",
-              "&:hover": {
-                bgcolor: showDiscountedPrices
-                  ? "#B72136"
-                  : "rgba(255, 72, 66, 0.08)",
-                borderColor: "#FF4842",
-              },
-              textTransform: "none",
-            }}
-          >
-            {showDiscountedPrices ? "Disable Discount" : "Discount"}
           </Button>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -404,15 +387,6 @@ export default function Foods() {
                   <DishCard
                     key={product.id}
                     dish={product}
-                    showDiscountedPrice={showDiscountedPrices}
-                    calculatedPrice={
-                      showDiscountedPrices
-                        ? calculateDiscountedPrice(
-                            product.price,
-                            product.discount
-                          )
-                        : product.price
-                    }
                     onEditClick={() => setEditDialog({ open: true, product })}
                   />
                 ))}
@@ -442,7 +416,14 @@ export default function Foods() {
         open={editDialog.open}
         product={editDialog.product}
         onClose={() => setEditDialog({ open: false, product: null })}
-        onSave={handleEditProduct}
+        onSave={(editedProduct) => {
+          setProducts((prevProducts) =>
+            prevProducts.map((p) =>
+              p.id === editedProduct.id ? editedProduct : p
+            )
+          );
+          setEditDialog({ open: false, product: null });
+        }}
         onDelete={handleDeleteProduct}
       />
 
@@ -451,67 +432,6 @@ export default function Foods() {
         onClose={() => setAddMenuOpen(false)}
         onAdd={handleAddProduct}
       />
-
-      {/* Discount Dialog */}
-      <Dialog
-        open={discountDialog.open}
-        onClose={() => setDiscountDialog({ ...discountDialog, open: false })}
-        PaperProps={{
-          sx: {
-            borderRadius: "16px",
-            width: "360px",
-            p: 2,
-          },
-        }}
-      >
-        <DialogTitle>Apply Discount</DialogTitle>
-        <DialogContent>
-          <Typography sx={{ mb: 2, color: "#637381" }}>
-            Select discount percentage for all products
-          </Typography>
-          <Slider
-            value={discountDialog.value}
-            onChange={(_, newValue) =>
-              setDiscountDialog({ ...discountDialog, value: newValue })
-            }
-            min={5}
-            max={20}
-            step={1}
-            marks
-            valueLabelDisplay="auto"
-            sx={{
-              color: "#FF4842",
-              "& .MuiSlider-valueLabel": {
-                bgcolor: "#FF4842",
-              },
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() =>
-              setDiscountDialog({ ...discountDialog, open: false })
-            }
-            sx={{
-              color: "#637381",
-              "&:hover": { bgcolor: "rgba(99, 115, 129, 0.08)" },
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleApplyDiscount}
-            sx={{
-              bgcolor: "#FF4842",
-              color: "white",
-              "&:hover": { bgcolor: "#B72136" },
-              textTransform: "none",
-            }}
-          >
-            Apply
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }

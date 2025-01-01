@@ -213,19 +213,6 @@ export default function Foods() {
     localStorage.setItem("dishes", JSON.stringify(newProducts));
   };
 
-  // Hàm xử lý tắt discount
-  const handleDisableDiscount = () => {
-    // Reset discount về 0 cho tất cả sản phẩm
-    const resetProducts = products.map((product) => ({
-      ...product,
-      discount: 0,
-    }));
-
-    setProducts(resetProducts);
-    setShowDiscountedPrices(false);
-    localStorage.setItem("dishes", JSON.stringify(resetProducts));
-  };
-
   return (
     <Box sx={{ p: 3, bgcolor: "#F9FAFB", minHeight: "100vh" }}>
       {/* Header */}
@@ -268,15 +255,7 @@ export default function Foods() {
 
           <Button
             variant={showDiscountedPrices ? "contained" : "outlined"}
-            onClick={() => {
-              if (showDiscountedPrices) {
-                // Nếu đang bật discount thì tắt
-                handleDisableDiscount();
-              } else {
-                // Nếu đang tắt thì mở dialog chọn %
-                setDiscountDialog({ open: true, value: 5 });
-              }
-            }}
+            onClick={() => setDiscountDialog({ open: true, value: 5 })}
             sx={{
               bgcolor: showDiscountedPrices ? "#FF4842" : "transparent",
               color: showDiscountedPrices ? "white" : "#FF4842",
@@ -290,7 +269,7 @@ export default function Foods() {
               textTransform: "none",
             }}
           >
-            {showDiscountedPrices ? "Disable Discount" : "Discount"}
+            Discount
           </Button>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
