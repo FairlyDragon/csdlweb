@@ -30,72 +30,50 @@ const allDishes = [
     discount: 15,
   },
   {
-    id: 2,
-    name: "Grilled Chicken",
-    image: "/images/grilled-chicken.jpg",
-    rating: 4,
-    reviews: "1.21",
-    category: "Dishes",
-    price: "6.59",
-    discount: 10,
-  },
-  {
-    id: 3,
-    name: "Vegetable Salad",
-    image: "/images/vegetable-salad.jpg",
-    rating: 4.5,
-    reviews: "1.15",
-    category: "Dishes",
-    price: "4.59",
-    discount: 20,
-  },
-  {
-    id: 4,
-    name: "Beef Steak",
-    image: "/images/beef-steak.jpg",
+    id: 1,
+    name: "Spicy Noodles",
+    image: "/images/spicy-noodles.jpg",
     rating: 5,
-    reviews: "1.42",
+    reviews: "1.31",
     category: "Dishes",
-    price: "8.59",
+    price: "5.59",
     discount: 15,
   },
   {
-    id: 5,
-    name: "Seafood Pasta",
-    image: "/images/seafood-pasta.jpg",
-    rating: 4.5,
-    reviews: "1.28",
+    id: 1,
+    name: "Spicy Noodles",
+    image: "/images/spicy-noodles.jpg",
+    rating: 5,
+    reviews: "1.31",
     category: "Dishes",
-    price: "7.59",
-    discount: 12,
-  },
-  {
-    id: 6,
-    name: "Sushi Roll",
-    image: "/images/sushi-roll.jpg",
-    rating: 4.8,
-    reviews: "1.35",
-    category: "Dishes",
-    price: "9.59",
-    discount: 18,
-  },
-  // Trang 2
-  {
-    id: 7,
-    name: "Pizza Margherita",
-    image: "/images/pizza.jpg",
-    rating: 4.7,
-    reviews: "1.33",
-    category: "Dishes",
-    price: "7.99",
+    price: "5.59",
     discount: 15,
   },
-  // ... thêm các món khác cho trang 2
-  // ... thêm các món khác cho trang 3
-  // Mỗi trang 6 món
+  {
+    id: 1,
+    name: "Spicy Noodles",
+    image: "/images/spicy-noodles.jpg",
+    rating: 5,
+    reviews: "1.31",
+    category: "Dishes",
+    price: "5.59",
+    discount: 15,
+  },
+  {
+    id: 1,
+    name: "Spicy Noodles",
+    image: "/images/spicy-noodles.jpg",
+    rating: 5,
+    reviews: "1.31",
+    category: "Dishes",
+    price: "5.59",
+    discount: 15,
+  },
+  
+  // (giả sử có 18 món - 3 trang)
 ];
 
-const ITEMS_PER_PAGE = 6; // Số món ăn cố định mỗi trang
+const ITEMS_PER_PAGE = 6;
 
 // Component Skeleton cho DishCard
 const DishCardSkeleton = () => (
@@ -133,10 +111,10 @@ export default function Foods() {
     product: null,
   });
 
-  // Tính toán tổng số trang dựa trên số món ăn
+  // Tính toán tổng số trang
   const totalPages = Math.ceil(allDishes.length / ITEMS_PER_PAGE);
 
-  // Lấy chính xác 6 món ăn cho trang hiện tại
+  // Lấy các món ăn cho trang hiện tại
   const getCurrentPageDishes = () => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
@@ -153,16 +131,11 @@ export default function Foods() {
         // Giả lập API call
         await new Promise((resolve, reject) => {
           setTimeout(() => {
-            // Kiểm tra xem trang mới có đủ dữ liệu không
-            const startIndex = (newPage - 1) * ITEMS_PER_PAGE;
-            const endIndex = startIndex + ITEMS_PER_PAGE;
-            const pageData = allDishes.slice(startIndex, endIndex);
-
-            if (pageData.length === 0) {
-              reject(new Error("No more items to display"));
-            } else {
-              resolve();
+            if (Math.random() > 0.9) {
+              // 10% chance of error for demo
+              reject(new Error("Failed to load data"));
             }
+            resolve();
           }, LOADING_DELAY);
         });
 
@@ -323,7 +296,13 @@ export default function Foods() {
           </Box>
         )}
 
-        <Fade in={fadeIn} timeout={TRANSITION_DURATION}>
+        <Fade
+          in={fadeIn}
+          timeout={{
+            enter: TRANSITION_DURATION,
+            exit: TRANSITION_DURATION / 2,
+          }}
+        >
           <Box>
             {isLoading ? (
               renderSkeletons()

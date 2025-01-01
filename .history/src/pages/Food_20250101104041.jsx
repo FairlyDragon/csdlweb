@@ -157,9 +157,9 @@ export default function Foods() {
             const startIndex = (newPage - 1) * ITEMS_PER_PAGE;
             const endIndex = startIndex + ITEMS_PER_PAGE;
             const pageData = allDishes.slice(startIndex, endIndex);
-
+            
             if (pageData.length === 0) {
-              reject(new Error("No more items to display"));
+              reject(new Error('No more items to display'));
             } else {
               resolve();
             }
@@ -323,7 +323,10 @@ export default function Foods() {
           </Box>
         )}
 
-        <Fade in={fadeIn} timeout={TRANSITION_DURATION}>
+        <Fade
+          in={fadeIn}
+          timeout={TRANSITION_DURATION}
+        >
           <Box>
             {isLoading ? (
               renderSkeletons()

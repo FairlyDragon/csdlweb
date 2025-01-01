@@ -26,18 +26,18 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
   });
 
   useEffect(() => {
-    if (open) {
+    if (product) {
       setFormData({
-        name: product?.name || "",
-        category: product?.category || "",
-        price: product?.price || "",
-        details: product?.details || "",
-        rating: product?.rating || 0,
-        reviews: product?.reviews || "",
-        image: null,
+        name: product.name || "",
+        category: product.category || "",
+        price: product.price || "",
+        details: product.details || "",
+        rating: product.rating || 0,
+        reviews: product.reviews || "",
+        image: product.image || null,
       });
     }
-  }, [open, product]);
+  }, [product]);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -87,7 +87,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
         <Box component="form">
           {/* First Row: Food and Category */}
           <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-            <Box sx={{ width: "280px" }}>
+            <Box sx={{ flex: 1 }}>
               <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
                 Food
               </Typography>
@@ -107,7 +107,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                 }}
               />
             </Box>
-            <Box sx={{ width: "280px" }}>
+            <Box sx={{ flex: 1 }}>
               <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
                 Category
               </Typography>
@@ -131,7 +131,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
 
           {/* Second Row: Price and Rating */}
           <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "flex-end" }}>
-            <Box sx={{ width: "280px" }}>
+            <Box sx={{ width: "50%" }}>
               <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
                 Price
               </Typography>

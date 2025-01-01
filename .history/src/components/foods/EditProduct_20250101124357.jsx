@@ -26,18 +26,18 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
   });
 
   useEffect(() => {
-    if (open) {
+    if (product) {
       setFormData({
-        name: product?.name || "",
-        category: product?.category || "",
-        price: product?.price || "",
-        details: product?.details || "",
-        rating: product?.rating || 0,
-        reviews: product?.reviews || "",
-        image: null,
+        name: product.name || "",
+        category: product.category || "",
+        price: product.price || "",
+        details: product.details || "",
+        rating: product.rating || 0,
+        reviews: product.reviews || "",
+        image: product.image || null,
       });
     }
-  }, [open, product]);
+  }, [product]);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -85,9 +85,9 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
 
       <DialogContent sx={{ p: "24px", pt: 0 }}>
         <Box component="form">
-          {/* First Row: Food and Category */}
+          {/* Food and Category Row */}
           <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-            <Box sx={{ width: "280px" }}>
+            <Box sx={{ flex: 1 }}>
               <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
                 Food
               </Typography>
@@ -107,7 +107,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                 }}
               />
             </Box>
-            <Box sx={{ width: "280px" }}>
+            <Box sx={{ flex: 1 }}>
               <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
                 Category
               </Typography>
@@ -129,19 +129,19 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
             </Box>
           </Box>
 
-          {/* Second Row: Price and Rating */}
-          <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "flex-end" }}>
-            <Box sx={{ width: "280px" }}>
-              <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
-                Price
-              </Typography>
+          {/* Price and Rating Row */}
+          <Box sx={{ mb: 3 }}>
+            <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
+              Price
+            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <TextField
-                fullWidth
                 value={formData.price}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, price: e.target.value }))
                 }
                 sx={{
+                  width: "200px",
                   "& .MuiOutlinedInput-root": {
                     height: "40px",
                     bgcolor: "#F8F9FA",
@@ -149,17 +149,17 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                   },
                 }}
               />
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", height: "40px" }}>
-              <Rating
-                value={formData.rating}
-                readOnly
-                precision={0.5}
-                sx={{ color: "#FFC107" }}
-              />
-              <Typography sx={{ ml: 1, color: "#637381" }}>
-                ({formData.reviews})
-              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Rating
+                  value={formData.rating}
+                  readOnly
+                  precision={0.5}
+                  sx={{ color: "#FFC107" }}
+                />
+                <Typography sx={{ ml: 1, color: "#637381" }}>
+                  ({formData.reviews})
+                </Typography>
+              </Box>
             </Box>
           </Box>
 
@@ -171,7 +171,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
             <TextField
               fullWidth
               multiline
-              rows={3}
+              rows={4}
               placeholder="Type to add..."
               value={formData.details}
               onChange={(e) =>
@@ -222,7 +222,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                height: "100px",
+                height: "120px", // Giảm chiều cao
                 border: "1px dashed #DFE3E8",
                 borderRadius: "8px",
                 cursor: "pointer",
