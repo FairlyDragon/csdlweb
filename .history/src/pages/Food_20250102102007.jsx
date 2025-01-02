@@ -16,6 +16,9 @@ import {
   Select,
   MenuItem,
   FormControl,
+  InputLabel,
+  Pagination,
+  IconButton,
 } from "@mui/material";
 import DishCard from "../components/foods/DishCard";
 import EditProduct from "../components/foods/EditProduct";
@@ -24,7 +27,6 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AddMenu from "../components/foods/AddMenu";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
 
 const TRANSITION_DURATION = 800; // Tăng thời gian transition
 const LOADING_DELAY = 600; // Thời gian loading giả lập
@@ -37,10 +39,9 @@ const INITIAL_DISHES = [
     image: "/images/spicy-noodles.jpg",
     rating: 5,
     details: "Delicious spicy noodles with vegetables and special sauce",
-    category: "Noodles",
+    category: "Dishes",
     price: "5.59",
-    discount: 0,
-    isActive: true,
+    discount: 15,
   },
   {
     id: 2,
@@ -48,15 +49,14 @@ const INITIAL_DISHES = [
     image: "/images/grilled-chicken.jpg",
     rating: 4,
     details: "Tender grilled chicken with herbs and spices",
-    category: "Main Dish",
+    category: "Dishes",
     price: "6.59",
-    discount: 0,
-    isActive: true,
+    discount: 10,
   },
   // ... thêm các món ăn khác nếu cần
 ];
 
-const ITEMS_PER_PAGE = 6; // Số món ăn mỗi trang
+const ITEMS_PER_PAGE = 6;
 
 // Component Skeleton cho DishCard
 const DishCardSkeleton = () => (
@@ -118,16 +118,21 @@ export default function Foods() {
   });
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [categories, setCategories] = useState(["all"]);
-  const [sortPrice, setSortPrice] = useState("default");
-  const [stockFilter, setStockFilter] = useState("all");
 
   // Cập nhật localStorage mỗi khi products thay đổi
   useEffect(() => {
     localStorage.setItem("dishes", JSON.stringify(products));
   }, [products]);
 
-  // Tính toán tổng số trang dựa trên số món ăn
-  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  // Lấy products cho trang hiện tại
+  const getCurrentPageProducts = () => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return filteredProducts.slice(startIndex, endIndex);
+  };
+
+  // Tính tổng số trang
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
 
   const handlePageChange = async (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -189,12 +194,17 @@ export default function Foods() {
 
   const handleAddProduct = (newProduct) => {
     const productToAdd = {
-      ...newProduct,
       id: Date.now(),
-      discount: 0,
-      isActive: true,
+      name: newProduct.name,
+      category: newProduct.category,
+      price: newProduct.price,
+      details: newProduct.details,
+      image: newProduct.image || "/images/default-food.jpg",
+      rating: newProduct.rating || 5,
+      discount: newProduct.discount || 0,
     };
-    setProducts([...products, productToAdd]);
+
+    setProducts((prevProducts) => [...prevProducts, productToAdd]);
     setAddMenuOpen(false);
   };
 
@@ -207,7 +217,7 @@ export default function Foods() {
     setEditDialog({ open: false, product: null });
   };
 
-  // Hàm tính giá sau khi áp dụng discount
+  // Tính giá sau khi áp dụng discount
   const calculateDiscountedPrice = (originalPrice, discountPercent) => {
     const price = parseFloat(originalPrice);
     const discount = discountPercent / 100;
@@ -270,41 +280,11 @@ export default function Foods() {
     localStorage.setItem("dishes", JSON.stringify(items));
   };
 
-  // Hàm lọc và sắp xếp products
-  const getFilteredAndSortedProducts = () => {
-    let result = [...products];
-
-    // Lọc theo category
-    if (selectedCategory !== "all") {
-      result = result.filter(
-        (product) => product.category === selectedCategory
-      );
-    }
-
-    // Lọc theo trạng thái stock
-    if (stockFilter !== "all") {
-      result = result.filter((product) =>
-        stockFilter === "inStock" ? product.isActive : !product.isActive
-      );
-    }
-
-    // Sắp xếp theo giá
-    if (sortPrice === "highToLow") {
-      result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-    } else if (sortPrice === "lowToHigh") {
-      result.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    }
-
-    return result;
-  };
-
-  // Lấy products cho trang hiện tại (giữ lại chỉ một hàm này)
-  const getCurrentPageProducts = () => {
-    const filteredAndSortedProducts = getFilteredAndSortedProducts();
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    return filteredAndSortedProducts.slice(startIndex, endIndex);
-  };
+  // Lọc products theo category
+  const filteredProducts =
+    selectedCategory === "all"
+      ? products
+      : products.filter((p) => p.category === selectedCategory);
 
   return (
     <Box sx={{ p: 3, bgcolor: "#F9FAFB", minHeight: "100vh" }}>
@@ -335,18 +315,12 @@ export default function Foods() {
               value={selectedCategory}
               onChange={(e) => {
                 setSelectedCategory(e.target.value);
-                setCurrentPage(1); // Reset page when filter changes
+                setCurrentPage(1); // Reset về trang 1 khi đổi category
               }}
               displayEmpty
               startAdornment={
                 <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
               }
-              renderValue={(selected) => {
-                if (selected === "all") {
-                  return "Category";
-                }
-                return selected.charAt(0).toUpperCase() + selected.slice(1);
-              }}
               sx={{
                 height: "40px",
                 bgcolor: "white",
@@ -360,92 +334,9 @@ export default function Foods() {
             >
               {categories.map((category) => (
                 <MenuItem key={category} value={category}>
-                  {category === "all"
-                    ? "All Categories"
-                    : category.charAt(0).toUpperCase() + category.slice(1)}
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
                 </MenuItem>
               ))}
-            </Select>
-          </FormControl>
-
-          {/* Price Filter with Arrow */}
-          <FormControl sx={{ minWidth: 120 }}>
-            <Select
-              value={sortPrice}
-              onChange={(e) => {
-                setSortPrice(e.target.value);
-                setCurrentPage(1);
-              }}
-              displayEmpty
-              startAdornment={
-                <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
-              }
-              renderValue={(selected) => (
-                <Box
-                  sx={{ display: "flex", alignItems: "center", width: "100%" }}
-                >
-                  <Typography sx={{ flexGrow: 1 }}>Price</Typography>
-                  {selected === "highToLow" ? (
-                    <ArrowDownward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : selected === "lowToHigh" ? (
-                    <ArrowUpward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : null}
-                </Box>
-              )}
-              sx={{
-                height: "40px",
-                bgcolor: "white",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#DFE3E8",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#919EAB",
-                },
-              }}
-            >
-              <MenuItem value="default">Default</MenuItem>
-              <MenuItem value="highToLow">Price: High-Low</MenuItem>
-              <MenuItem value="lowToHigh">Price: Low-High</MenuItem>
-            </Select>
-          </FormControl>
-
-          {/* Stock Status Filter */}
-          <FormControl sx={{ minWidth: 120 }}>
-            <Select
-              value={stockFilter}
-              onChange={(e) => {
-                setStockFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              displayEmpty
-              startAdornment={
-                <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
-              }
-              renderValue={(selected) => {
-                switch (selected) {
-                  case "inStock":
-                    return "In Stock";
-                  case "outOfStock":
-                    return "Out of Stock";
-                  default:
-                    return "Stock Status";
-                }
-              }}
-              sx={{
-                height: "40px",
-                bgcolor: "white",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#DFE3E8",
-                },
-              }}
-            >
-              <MenuItem value="all">All</MenuItem>
-              <MenuItem value="inStock">In Stock</MenuItem>
-              <MenuItem value="outOfStock">Out of Stock</MenuItem>
             </Select>
           </FormControl>
 
@@ -470,10 +361,8 @@ export default function Foods() {
             variant={showDiscountedPrices ? "contained" : "outlined"}
             onClick={() => {
               if (showDiscountedPrices) {
-                // Nếu đang bật discount thì tắt
                 handleDisableDiscount();
               } else {
-                // Nếu đang tắt thì mở dialog chọn %
                 setDiscountDialog({ open: true, value: 5 });
               }
             }}
@@ -495,43 +384,33 @@ export default function Foods() {
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1 || isLoading}
+              onClick={() => handlePageChange(null, currentPage - 1)}
+              disabled={currentPage === 1}
               sx={{
-                minWidth: 32,
                 width: 32,
                 height: 32,
-                p: 0,
                 border: "1px solid #DFE3E8",
                 borderRadius: "8px",
                 color: "#637381",
-                "&.Mui-disabled": {
-                  borderColor: "#DFE3E8",
-                  color: "#DFE3E8",
-                },
               }}
             >
               <ChevronLeftIcon fontSize="small" />
             </Button>
+
             <Button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages || isLoading}
+              onClick={() => handlePageChange(null, currentPage + 1)}
+              disabled={currentPage === totalPages}
               sx={{
-                minWidth: 32,
                 width: 32,
                 height: 32,
-                p: 0,
                 border: "1px solid #DFE3E8",
                 borderRadius: "8px",
                 color: "#637381",
-                "&.Mui-disabled": {
-                  borderColor: "#DFE3E8",
-                  color: "#DFE3E8",
-                },
               }}
             >
               <ChevronRightIcon fontSize="small" />
             </Button>
+
             <Typography
               variant="body2"
               sx={{
@@ -539,7 +418,7 @@ export default function Foods() {
                 fontSize: "0.875rem",
               }}
             >
-              Show {currentPage}-{totalPages}
+              Page {currentPage} of {totalPages}
             </Typography>
           </Box>
         </Box>
@@ -623,16 +502,14 @@ export default function Foods() {
                                 dish={product}
                                 showDiscountedPrice={showDiscountedPrices}
                                 calculatedPrice={
-                                  showDiscountedPrices && product.discount
+                                  showDiscountedPrices
                                     ? calculateDiscountedPrice(
                                         product.price,
                                         product.discount
                                       )
                                     : product.price
                                 }
-                                onEditClick={() =>
-                                  setEditDialog({ open: true, product })
-                                }
+                                onEditClick={() => handleEditProduct(product)}
                               />
                             </Box>
                           )}

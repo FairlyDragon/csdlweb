@@ -133,7 +133,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
               </Box>
             </Box>
 
-            {/* Second Row: Price and Rating with Stock Status */}
+            {/* Second Row: Price and Rating */}
             <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
               <Box sx={{ width: "280px" }}>
                 <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
@@ -155,34 +155,9 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                 />
               </Box>
               <Box sx={{ width: "280px" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 1,
-                  }}
-                >
-                  <Typography sx={{ color: "#637381", fontSize: "14px" }}>
-                    Rating
-                  </Typography>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={formData.isActive}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            isActive: e.target.checked,
-                          }))
-                        }
-                        color="success"
-                      />
-                    }
-                    label={formData.isActive ? "In Stock" : "Out of Stock"}
-                    sx={{ m: 0 }}
-                  />
-                </Box>
+                <Typography sx={{ mb: 1, color: "#637381", fontSize: "14px" }}>
+                  Rating
+                </Typography>
                 <Rating
                   value={formData.rating}
                   onChange={(_, newValue) => {
@@ -290,6 +265,20 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                 </Box>
               )}
             </Box>
+
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formData.isActive}
+                  onChange={(e) =>
+                    setFormData({ ...formData, isActive: e.target.checked })
+                  }
+                  color="success"
+                />
+              }
+              label={formData.isActive ? "In Stock" : "Out of Stock"}
+              sx={{ mt: 2 }}
+            />
           </Box>
         </DialogContent>
 

@@ -24,7 +24,6 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AddMenu from "../components/foods/AddMenu";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
 
 const TRANSITION_DURATION = 800; // Tăng thời gian transition
 const LOADING_DELAY = 600; // Thời gian loading giả lập
@@ -118,8 +117,6 @@ export default function Foods() {
   });
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [categories, setCategories] = useState(["all"]);
-  const [sortPrice, setSortPrice] = useState("default");
-  const [stockFilter, setStockFilter] = useState("all");
 
   // Cập nhật localStorage mỗi khi products thay đổi
   useEffect(() => {
@@ -128,6 +125,19 @@ export default function Foods() {
 
   // Tính toán tổng số trang dựa trên số món ăn
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+
+  // Lọc products theo category
+  const filteredProducts =
+    selectedCategory === "all"
+      ? products
+      : products.filter((p) => p.category === selectedCategory);
+
+  // Lấy products cho trang hiện tại từ danh sách đã được lọc
+  const getCurrentPageProducts = () => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return filteredProducts.slice(startIndex, endIndex);
+  };
 
   const handlePageChange = async (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -207,7 +217,7 @@ export default function Foods() {
     setEditDialog({ open: false, product: null });
   };
 
-  // Hàm tính giá sau khi áp dụng discount
+  // Tính giá sau khi áp dụng discount
   const calculateDiscountedPrice = (originalPrice, discountPercent) => {
     const price = parseFloat(originalPrice);
     const discount = discountPercent / 100;
@@ -270,40 +280,10 @@ export default function Foods() {
     localStorage.setItem("dishes", JSON.stringify(items));
   };
 
-  // Hàm lọc và sắp xếp products
-  const getFilteredAndSortedProducts = () => {
-    let result = [...products];
-
-    // Lọc theo category
-    if (selectedCategory !== "all") {
-      result = result.filter(
-        (product) => product.category === selectedCategory
-      );
-    }
-
-    // Lọc theo trạng thái stock
-    if (stockFilter !== "all") {
-      result = result.filter((product) =>
-        stockFilter === "inStock" ? product.isActive : !product.isActive
-      );
-    }
-
-    // Sắp xếp theo giá
-    if (sortPrice === "highToLow") {
-      result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-    } else if (sortPrice === "lowToHigh") {
-      result.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-    }
-
-    return result;
-  };
-
-  // Lấy products cho trang hiện tại (giữ lại chỉ một hàm này)
-  const getCurrentPageProducts = () => {
-    const filteredAndSortedProducts = getFilteredAndSortedProducts();
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    return filteredAndSortedProducts.slice(startIndex, endIndex);
+  // Reset về trang 1 khi đổi category
+  const handleCategoryChange = (newCategory) => {
+    setSelectedCategory(newCategory);
+    setCurrentPage(1); // Reset về trang 1 khi đổi category
   };
 
   return (
@@ -333,20 +313,11 @@ export default function Foods() {
           <FormControl sx={{ minWidth: 120 }}>
             <Select
               value={selectedCategory}
-              onChange={(e) => {
-                setSelectedCategory(e.target.value);
-                setCurrentPage(1); // Reset page when filter changes
-              }}
+              onChange={(e) => handleCategoryChange(e.target.value)}
               displayEmpty
               startAdornment={
                 <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
               }
-              renderValue={(selected) => {
-                if (selected === "all") {
-                  return "Category";
-                }
-                return selected.charAt(0).toUpperCase() + selected.slice(1);
-              }}
               sx={{
                 height: "40px",
                 bgcolor: "white",
@@ -360,92 +331,9 @@ export default function Foods() {
             >
               {categories.map((category) => (
                 <MenuItem key={category} value={category}>
-                  {category === "all"
-                    ? "All Categories"
-                    : category.charAt(0).toUpperCase() + category.slice(1)}
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
                 </MenuItem>
               ))}
-            </Select>
-          </FormControl>
-
-          {/* Price Filter with Arrow */}
-          <FormControl sx={{ minWidth: 120 }}>
-            <Select
-              value={sortPrice}
-              onChange={(e) => {
-                setSortPrice(e.target.value);
-                setCurrentPage(1);
-              }}
-              displayEmpty
-              startAdornment={
-                <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
-              }
-              renderValue={(selected) => (
-                <Box
-                  sx={{ display: "flex", alignItems: "center", width: "100%" }}
-                >
-                  <Typography sx={{ flexGrow: 1 }}>Price</Typography>
-                  {selected === "highToLow" ? (
-                    <ArrowDownward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : selected === "lowToHigh" ? (
-                    <ArrowUpward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : null}
-                </Box>
-              )}
-              sx={{
-                height: "40px",
-                bgcolor: "white",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#DFE3E8",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#919EAB",
-                },
-              }}
-            >
-              <MenuItem value="default">Default</MenuItem>
-              <MenuItem value="highToLow">Price: High-Low</MenuItem>
-              <MenuItem value="lowToHigh">Price: Low-High</MenuItem>
-            </Select>
-          </FormControl>
-
-          {/* Stock Status Filter */}
-          <FormControl sx={{ minWidth: 120 }}>
-            <Select
-              value={stockFilter}
-              onChange={(e) => {
-                setStockFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              displayEmpty
-              startAdornment={
-                <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
-              }
-              renderValue={(selected) => {
-                switch (selected) {
-                  case "inStock":
-                    return "In Stock";
-                  case "outOfStock":
-                    return "Out of Stock";
-                  default:
-                    return "Stock Status";
-                }
-              }}
-              sx={{
-                height: "40px",
-                bgcolor: "white",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#DFE3E8",
-                },
-              }}
-            >
-              <MenuItem value="all">All</MenuItem>
-              <MenuItem value="inStock">In Stock</MenuItem>
-              <MenuItem value="outOfStock">Out of Stock</MenuItem>
             </Select>
           </FormControl>
 
@@ -624,10 +512,10 @@ export default function Foods() {
                                 showDiscountedPrice={showDiscountedPrices}
                                 calculatedPrice={
                                   showDiscountedPrices && product.discount
-                                    ? calculateDiscountedPrice(
-                                        product.price,
-                                        product.discount
-                                      )
+                                    ? (
+                                        product.price *
+                                        (1 - product.discount / 100)
+                                      ).toFixed(2)
                                     : product.price
                                 }
                                 onEditClick={() =>

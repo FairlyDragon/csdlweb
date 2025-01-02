@@ -56,14 +56,7 @@ const DishCard = ({
       </Box>
 
       <Box sx={{ p: 2 }}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: 1,
-          }}
-        >
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
           <Rating
             value={dish.rating}
             readOnly

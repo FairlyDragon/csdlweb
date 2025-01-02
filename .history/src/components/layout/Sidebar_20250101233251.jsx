@@ -14,20 +14,20 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import MenuIcon from "@mui/icons-material/Menu";
 import SidebarAddMenus from "./SidebarAddMenus";
 import SidebarFooter from "./SidebarFooter";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useState } from "react";
 
 const menuItems = [
   { icon: GridViewIcon, label: "Dashboard", path: "/" },
   { icon: ListAltIcon, label: "Order List", path: "/orders" },
-  {
-    icon: PeopleIcon,
+  { 
+    icon: PeopleIcon, 
     label: "User",
     subItems: [
       { label: "Customer", path: "/customers" },
-      { label: "Shipper", path: "/shippers" },
-    ],
+      { label: "Shipper", path: "/shippers" }
+    ]
   },
   { icon: InsightsIcon, label: "Analytics", path: "/analytics" },
   { icon: StarBorderIcon, label: "Reviews", path: "/reviews" },
@@ -128,11 +128,11 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
       <Box sx={{ flex: 1, mt: 0.5, overflow: "auto" }}>
         {menuItems.map((item) => {
           const Icon = item.icon;
-
+          
           if (item.subItems) {
             const isOpen = openSubmenu === item.label;
             const hasActiveChild = item.subItems.some(
-              (subItem) => location.pathname === subItem.path
+              subItem => location.pathname === subItem.path
             );
 
             return (
@@ -167,8 +167,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                       </Typography>
                     )}
                   </Box>
-                  {!isCollapsed &&
-                    (isOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
+                  {!isCollapsed && (
+                    isOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />
+                  )}
                 </StyledLink>
 
                 {/* Submenu items */}
@@ -176,7 +177,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
                   <Box sx={{ ml: 3 }}>
                     {item.subItems.map((subItem) => {
                       const isActive = location.pathname === subItem.path;
-
+                      
                       return (
                         <StyledLink
                           key={subItem.path}
@@ -207,7 +208,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 
           // Regular menu items without submenu
           const isActive = location.pathname === item.path;
-
+          
           return (
             <StyledLink
               key={item.path}

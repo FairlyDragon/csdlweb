@@ -13,7 +13,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
           <Route path='foods' element={<Food />} />
-          {/* <Route path='orders' element={<Order />} /> */}
+          <Route path='orders' element={<Order />} />
         </Route>
       </Routes>
     </BrowserRouter>

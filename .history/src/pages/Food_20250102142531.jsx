@@ -270,6 +270,12 @@ export default function Foods() {
     localStorage.setItem("dishes", JSON.stringify(items));
   };
 
+  // Reset về trang 1 khi đổi category
+  const handleCategoryChange = (newCategory) => {
+    setSelectedCategory(newCategory);
+    setCurrentPage(1); // Reset về trang 1 khi đổi category
+  };
+
   // Hàm lọc và sắp xếp products
   const getFilteredAndSortedProducts = () => {
     let result = [...products];
@@ -380,30 +386,28 @@ export default function Foods() {
               startAdornment={
                 <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
               }
-              renderValue={(selected) => (
-                <Box
-                  sx={{ display: "flex", alignItems: "center", width: "100%" }}
-                >
-                  <Typography sx={{ flexGrow: 1 }}>Price</Typography>
-                  {selected === "highToLow" ? (
-                    <ArrowDownward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : selected === "lowToHigh" ? (
-                    <ArrowUpward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : null}
-                </Box>
-              )}
+              endAdornment={
+                sortPrice === "highToLow" ? (
+                  <ArrowDownward sx={{ color: "#637381", fontSize: 20 }} />
+                ) : sortPrice === "lowToHigh" ? (
+                  <ArrowUpward sx={{ color: "#637381", fontSize: 20 }} />
+                ) : null
+              }
+              renderValue={(selected) => {
+                switch (selected) {
+                  case "highToLow":
+                    return "Price";
+                  case "lowToHigh":
+                    return "Price";
+                  default:
+                    return "Price";
+                }
+              }}
               sx={{
                 height: "40px",
                 bgcolor: "white",
                 "& .MuiOutlinedInput-notchedOutline": {
                   borderColor: "#DFE3E8",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#919EAB",
                 },
               }}
             >

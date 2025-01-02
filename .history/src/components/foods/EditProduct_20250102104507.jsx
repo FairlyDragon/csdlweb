@@ -155,14 +155,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                 />
               </Box>
               <Box sx={{ width: "280px" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 1,
-                  }}
-                >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
                   <Typography sx={{ color: "#637381", fontSize: "14px" }}>
                     Rating
                   </Typography>
@@ -171,10 +164,7 @@ const EditProduct = ({ open, product, onClose, onSave, onDelete }) => {
                       <Switch
                         checked={formData.isActive}
                         onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            isActive: e.target.checked,
-                          }))
+                          setFormData((prev) => ({ ...prev, isActive: e.target.checked }))
                         }
                         color="success"
                       />

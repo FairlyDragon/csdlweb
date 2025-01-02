@@ -380,30 +380,28 @@ export default function Foods() {
               startAdornment={
                 <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
               }
-              renderValue={(selected) => (
-                <Box
-                  sx={{ display: "flex", alignItems: "center", width: "100%" }}
-                >
-                  <Typography sx={{ flexGrow: 1 }}>Price</Typography>
-                  {selected === "highToLow" ? (
-                    <ArrowDownward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : selected === "lowToHigh" ? (
-                    <ArrowUpward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : null}
-                </Box>
-              )}
+              endAdornment={
+                sortPrice === "highToLow" ? (
+                  <ArrowDownward sx={{ color: "#637381", fontSize: 20 }} />
+                ) : sortPrice === "lowToHigh" ? (
+                  <ArrowUpward sx={{ color: "#637381", fontSize: 20 }} />
+                ) : null
+              }
+              renderValue={(selected) => {
+                switch (selected) {
+                  case "highToLow":
+                    return "Price";
+                  case "lowToHigh":
+                    return "Price";
+                  default:
+                    return "Price";
+                }
+              }}
               sx={{
                 height: "40px",
                 bgcolor: "white",
                 "& .MuiOutlinedInput-notchedOutline": {
                   borderColor: "#DFE3E8",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#919EAB",
                 },
               }}
             >

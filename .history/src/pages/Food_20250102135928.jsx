@@ -24,7 +24,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AddMenu from "../components/foods/AddMenu";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
+import { ArrowDownward, ArrowUpward } from '@mui/icons-material';
 
 const TRANSITION_DURATION = 800; // Tăng thời gian transition
 const LOADING_DELAY = 600; // Thời gian loading giả lập
@@ -128,6 +128,19 @@ export default function Foods() {
 
   // Tính toán tổng số trang dựa trên số món ăn
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+
+  // Lọc products theo category
+  const filteredProducts =
+    selectedCategory === "all"
+      ? products
+      : products.filter((p) => p.category === selectedCategory);
+
+  // Lấy products cho trang hiện tại từ danh sách đã được lọc
+  const getCurrentPageProducts = () => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return filteredProducts.slice(startIndex, endIndex);
+  };
 
   const handlePageChange = async (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -270,20 +283,24 @@ export default function Foods() {
     localStorage.setItem("dishes", JSON.stringify(items));
   };
 
+  // Reset về trang 1 khi đổi category
+  const handleCategoryChange = (newCategory) => {
+    setSelectedCategory(newCategory);
+    setCurrentPage(1); // Reset về trang 1 khi đổi category
+  };
+
   // Hàm lọc và sắp xếp products
   const getFilteredAndSortedProducts = () => {
     let result = [...products];
 
-    // Lọc theo category
+    // Lọc theo category trước
     if (selectedCategory !== "all") {
-      result = result.filter(
-        (product) => product.category === selectedCategory
-      );
+      result = result.filter(product => product.category === selectedCategory);
     }
 
     // Lọc theo trạng thái stock
     if (stockFilter !== "all") {
-      result = result.filter((product) =>
+      result = result.filter(product => 
         stockFilter === "inStock" ? product.isActive : !product.isActive
       );
     }
@@ -298,7 +315,7 @@ export default function Foods() {
     return result;
   };
 
-  // Lấy products cho trang hiện tại (giữ lại chỉ một hàm này)
+  // Lấy products cho trang hiện tại sau khi đã lọc và sắp xếp
   const getCurrentPageProducts = () => {
     const filteredAndSortedProducts = getFilteredAndSortedProducts();
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -380,30 +397,25 @@ export default function Foods() {
               startAdornment={
                 <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
               }
-              renderValue={(selected) => (
-                <Box
-                  sx={{ display: "flex", alignItems: "center", width: "100%" }}
-                >
-                  <Typography sx={{ flexGrow: 1 }}>Price</Typography>
-                  {selected === "highToLow" ? (
-                    <ArrowDownward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : selected === "lowToHigh" ? (
-                    <ArrowUpward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : null}
-                </Box>
-              )}
+              endAdornment={
+                sortPrice === "highToLow" ? (
+                  <ArrowDownward sx={{ color: "#637381", fontSize: 20 }} />
+                ) : sortPrice === "lowToHigh" ? (
+                  <ArrowUpward sx={{ color: "#637381", fontSize: 20 }} />
+                ) : null
+              }
+              renderValue={(selected) => {
+                switch(selected) {
+                  case "highToLow": return "Price";
+                  case "lowToHigh": return "Price";
+                  default: return "Price";
+                }
+              }}
               sx={{
                 height: "40px",
                 bgcolor: "white",
                 "& .MuiOutlinedInput-notchedOutline": {
                   borderColor: "#DFE3E8",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#919EAB",
                 },
               }}
             >
@@ -426,13 +438,10 @@ export default function Foods() {
                 <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
               }
               renderValue={(selected) => {
-                switch (selected) {
-                  case "inStock":
-                    return "In Stock";
-                  case "outOfStock":
-                    return "Out of Stock";
-                  default:
-                    return "Stock Status";
+                switch(selected) {
+                  case "inStock": return "In Stock";
+                  case "outOfStock": return "Out of Stock";
+                  default: return "Stock Status";
                 }
               }}
               sx={{

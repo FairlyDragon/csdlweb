@@ -129,6 +129,13 @@ export default function Foods() {
   // Tính toán tổng số trang dựa trên số món ăn
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
 
+  // Lọc products theo category
+  const filteredProducts =
+    selectedCategory === "all"
+      ? products
+      : products.filter((p) => p.category === selectedCategory);
+  
+
   const handlePageChange = async (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       try {
@@ -270,11 +277,17 @@ export default function Foods() {
     localStorage.setItem("dishes", JSON.stringify(items));
   };
 
+  // Reset về trang 1 khi đổi category
+  const handleCategoryChange = (newCategory) => {
+    setSelectedCategory(newCategory);
+    setCurrentPage(1); // Reset về trang 1 khi đổi category
+  };
+
   // Hàm lọc và sắp xếp products
   const getFilteredAndSortedProducts = () => {
     let result = [...products];
 
-    // Lọc theo category
+    // Lọc theo category trước
     if (selectedCategory !== "all") {
       result = result.filter(
         (product) => product.category === selectedCategory
@@ -298,7 +311,7 @@ export default function Foods() {
     return result;
   };
 
-  // Lấy products cho trang hiện tại (giữ lại chỉ một hàm này)
+  // Lấy products cho trang hiện tại sau khi đã lọc và sắp xếp
   const getCurrentPageProducts = () => {
     const filteredAndSortedProducts = getFilteredAndSortedProducts();
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -380,30 +393,28 @@ export default function Foods() {
               startAdornment={
                 <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
               }
-              renderValue={(selected) => (
-                <Box
-                  sx={{ display: "flex", alignItems: "center", width: "100%" }}
-                >
-                  <Typography sx={{ flexGrow: 1 }}>Price</Typography>
-                  {selected === "highToLow" ? (
-                    <ArrowDownward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : selected === "lowToHigh" ? (
-                    <ArrowUpward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
-                  ) : null}
-                </Box>
-              )}
+              endAdornment={
+                sortPrice === "highToLow" ? (
+                  <ArrowDownward sx={{ color: "#637381", fontSize: 20 }} />
+                ) : sortPrice === "lowToHigh" ? (
+                  <ArrowUpward sx={{ color: "#637381", fontSize: 20 }} />
+                ) : null
+              }
+              renderValue={(selected) => {
+                switch (selected) {
+                  case "highToLow":
+                    return "Price";
+                  case "lowToHigh":
+                    return "Price";
+                  default:
+                    return "Price";
+                }
+              }}
               sx={{
                 height: "40px",
                 bgcolor: "white",
                 "& .MuiOutlinedInput-notchedOutline": {
                   borderColor: "#DFE3E8",
-                },
-                "&:hover .MuiOutlinedInput-notchedOutline": {
-                  borderColor: "#919EAB",
                 },
               }}
             >

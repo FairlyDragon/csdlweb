@@ -377,22 +377,14 @@ export default function Foods() {
                 setCurrentPage(1);
               }}
               displayEmpty
-              startAdornment={
-                <FilterListIcon sx={{ color: "#637381", mr: 1 }} />
-              }
+              startAdornment={<FilterListIcon sx={{ color: "#637381", mr: 1 }} />}
               renderValue={(selected) => (
-                <Box
-                  sx={{ display: "flex", alignItems: "center", width: "100%" }}
-                >
+                <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                   <Typography sx={{ flexGrow: 1 }}>Price</Typography>
                   {selected === "highToLow" ? (
-                    <ArrowDownward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
+                    <ArrowDownward sx={{ color: "#637381", fontSize: 20, ml: 1 }} />
                   ) : selected === "lowToHigh" ? (
-                    <ArrowUpward
-                      sx={{ color: "#637381", fontSize: 20, ml: 1 }}
-                    />
+                    <ArrowUpward sx={{ color: "#637381", fontSize: 20, ml: 1 }} />
                   ) : null}
                 </Box>
               )}
