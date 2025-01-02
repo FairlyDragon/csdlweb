@@ -193,16 +193,16 @@ export default function Foods() {
       id: Date.now(),
       isActive: true, // Mặc định là còn hàng
     };
-
+    
     // Thêm món mới vào đầu mảng products
     setProducts([productToAdd, ...products]);
-
+    
     // Reset về trang đầu tiên để hiển thị món mới
     setCurrentPage(1);
-
+    
     // Đóng dialog thêm món
     setAddMenuOpen(false);
-
+    
     // Lưu vào localStorage
     localStorage.setItem("dishes", JSON.stringify([productToAdd, ...products]));
   };
