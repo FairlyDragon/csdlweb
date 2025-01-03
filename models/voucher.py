@@ -5,7 +5,7 @@ from uuid import uuid4
 
 
 class Voucher(BaseModel): 
-    voucher_id: str = Field(default_factory=lambda: str(uuid4())) 
+    voucher_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 
     code: str 
     discount_percentage: float 
     start_date: datetime 

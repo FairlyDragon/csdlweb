@@ -21,7 +21,7 @@ class DeliveryStatusEnum(str, Enum):
 #     set_at: datetime = Field(default_factory=datetime.now())
     
 class OrderDelivery(BaseModel): 
-    delivery_id: str = Field(default_factory=lambda: str(uuid4())) 
+    delivery_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 
     order_id: str 
     shipper_id: str 
     delivery_status: DeliveryStatusEnum

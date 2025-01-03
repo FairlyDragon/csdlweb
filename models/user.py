@@ -10,7 +10,7 @@ class UserRole(str, Enum):
     admin = "admin"
     
 class User(BaseModel): 
-    user_id: str = Field(default_factory=lambda: str(uuid4())) 
+    user_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 
     name: str 
     email: Optional[EmailStr] = None
     password: str 

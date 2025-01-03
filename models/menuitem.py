@@ -8,7 +8,7 @@ from enum import Enum
 #     out_of_stock = "out_of_stock"
     
 class MenuItem(BaseModel): 
-    menuitem_id: str = Field(default_factory=lambda: str(uuid4())) 
+    menuitem_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 
     name: str 
     description: Optional[str] = None 
     price: float 

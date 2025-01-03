@@ -16,7 +16,7 @@ class OrderStatus(str, Enum):
     cancelled = "cancelled"
     
 class Order(BaseModel):
-    order_id: str = Field(default_factory=lambda: str(uuid.uuid4())) 
+    order_id: str = Field(default_factory=lambda: str(uuid.uuid4()), alias="_id") 
     user_id: str 
     order_date: datetime = Field(default_factory=datetime.now) 
     order_items: List[OrderItem]

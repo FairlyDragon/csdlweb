@@ -14,7 +14,7 @@ class PaymentStatus(str, Enum):
     failed = "failed"
     
 class Payment(BaseModel): 
-    payment_id: str = Field(default_factory=lambda: str(uuid4())) 
+    payment_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 
     order_id: str 
     payment_method: PaymentMethod   
     amount: float

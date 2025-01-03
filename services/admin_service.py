@@ -93,39 +93,39 @@ async def get_figures_dashboard_center_in_general(figures_type: str, periodicity
     now = datetime.now()
     
     if periodicity == "daily":
-        monday = await get_monday_of_current_time(now)
-        timeline = await get_timeline_daily(monday)
+        monday = get_monday_of_current_time(now)
+        timeline = get_timeline_daily(monday)
         
         if "order" in figures_type:
-            return await get_total_orders_list_in_dashboard_center(periodicity, timeline)
+            return await get_total_orders_list_in_dashboard_center(timeline)
         
         elif "revenue" in figures_type:
-            return await get_total_revenue_list_in_dashboard_center(periodicity, timeline)
+            return await get_total_revenue_list_in_dashboard_center(timeline)
         
         else:
-            return await get_customers_map_list_in_dashboard_center(periodicity, timeline)  
+            return await get_customers_map_list_in_dashboard_center(timeline)  
             
     elif periodicity == "weekly":
-        timeline = await get_timeline_weekly(now)
+        timeline = get_timeline_weekly(now)
         if "order" in figures_type:
-            return await get_total_orders_list_in_dashboard_center(periodicity, timeline)
+            return await get_total_orders_list_in_dashboard_center(timeline)
         
         elif "revenue" in figures_type:
-            return await get_total_revenue_list_in_dashboard_center(periodicity, timeline)
+            return await get_total_revenue_list_in_dashboard_center(timeline)
         
         else:
-            return await get_customers_map_list_in_dashboard_center(periodicity, timeline)
+            return await get_customers_map_list_in_dashboard_center(timeline)
     
     elif periodicity == "monthly": 
-        timeline = await get_timeline_monthly(now) 
+        timeline = get_timeline_monthly(now) 
         if "order" in figures_type:
-            return await get_total_orders_list_in_dashboard_center(periodicity, timeline)
+            return await get_total_orders_list_in_dashboard_center(timeline)
         
         elif "revenue" in figures_type:
-            return await get_total_revenue_list_in_dashboard_center(periodicity, timeline)
+            return await get_total_revenue_list_in_dashboard_center(timeline)
         
         else:
-            return await get_customers_map_list_in_dashboard_center(periodicity, timeline)
+            return await get_customers_map_list_in_dashboard_center(timeline)
         
 
 # Get all payments

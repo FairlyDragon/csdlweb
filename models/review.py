@@ -4,7 +4,7 @@ from datetime import datetime
 import uuid 
 
 class Review(BaseModel): 
-    review_id: str = Field(default_factory=lambda: str(uuid.uuid4())) 
+    review_id: str = Field(default_factory=lambda: str(uuid.uuid4()), alias = "_id" )
     user_id: str 
     menuitem_id: str 
     rating: int = Field(..., ge=1, le=5) 
