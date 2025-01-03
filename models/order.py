@@ -10,10 +10,8 @@ class OrderItem(BaseModel):
     subtotal: float
     
 class OrderStatus(str, Enum):
-    pending = "pending"
-    processing = "processing"
-    delivered = "delivered"
-    cancelled = "cancelled"
+    accepted = "accepted"
+    canceled = "canceled"
     
 class Order(BaseModel):
     order_id: str = Field(default_factory=lambda: str(uuid.uuid4()), alias="_id") 

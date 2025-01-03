@@ -6,44 +6,44 @@ from services.time_service import *
 
 ### Dashboard Header
 async def read_dashboard_header(time_period: TimePeriod = Depends(get_time_period)) -> DashBoardHeaderResponseSchema:
-    days = await get_time_difference(time_period.start_date, time_period.end_date).days
+    time_differ = get_time_difference(time_period.start_date, time_period.end_date) # periodicity length
+    days = time_differ.days
     
     # current periodical data
     total_orders_current, total_delivered_current, \
-        total_cancelled_current, total_revenue_current \
+        total_canceled_current, total_revenue_current \
             = await get_dashboard_header_data(time_period.start_date, time_period.end_date)
 
     # former periodical data
-    periodicity_length_time = await get_time_difference(time_period.start_date, time_period.end_date)
     end_date_former = time_period.start_date - timedelta(seconds=1)
-    start_date_former = await get_time_difference(end_date_former, periodicity_length_time)
+    start_date_former = end_date_former - time_differ
     
     total_orders_former, total_delivered_former, \
-        total_cancelled_former, total_revenue_former \
+        total_canceled_former, total_revenue_former \
             = await get_dashboard_header_data(start_date_former, end_date_former)
          
     # initialize figures response   
-    total_orders = await initialize_figures_header_response(total_orders_current, total_orders_former, days)
-    total_delivered = await initialize_figures_header_response(total_delivered_current, total_delivered_former, days)
-    total_cancelled = await initialize_figures_header_response(total_cancelled_current, total_cancelled_former, days)
-    total_revenue = await initialize_figures_header_response(total_revenue_current, total_revenue_former, days)
+    total_orders = initialize_figures_header_response(total_orders_current, total_orders_former, days)
+    total_delivered = initialize_figures_header_response(total_delivered_current, total_delivered_former, days)
+    total_canceled = initialize_figures_header_response(total_canceled_current, total_canceled_former, days)
+    total_revenue = initialize_figures_header_response(total_revenue_current, total_revenue_former, days)
     
-    return await initialize_dashboard_header_response(total_orders, total_delivered, total_cancelled, total_revenue)  
+    return initialize_dashboard_header_response(total_orders, total_delivered, total_canceled, total_revenue)  
 
 ### Dashboard Center
 # Pie Chart
 async def read_dashboard_center_piechart() -> PieChartResponseSchema:
 
     # Get the first day of the previous month
-    first_day_previous_month = await first_day_of_previous_month(now)
+    first_day_previous_month = first_day_of_previous_month(now)
     # Get the last day of the previous month
-    last_day_previous_month = await last_day_of_previous_month(now)
+    last_day_previous_month = last_day_of_previous_month(now)
     # Get the dashboard header data of the previous month
     total_orders_previous_month, total_customer_previous_month, total_revenue_previous_month \
             = await get_dashboard_center_piechart_in_period_time(first_day_previous_month, last_day_previous_month)
             
     # Get the first day of the current month
-    first_day_current_month = await get_start_of_month(now)
+    first_day_current_month = get_start_of_month(now)
     now = datetime.now()
     # Get the dashboard header data of the current month 
     total_orders_current_month, total_customer_current_month, total_revenue_current_month \
@@ -55,7 +55,7 @@ async def read_dashboard_center_piechart() -> PieChartResponseSchema:
     total_revenue_percentage = int(round(total_revenue_current_month / total_revenue_previous_month * 100, 2))
      
     # initialize pie chart response                        
-    return await initialize_pie_chart_response(total_order_percentage, customer_growth_percentage, total_revenue_percentage)
+    return initialize_pie_chart_response(total_order_percentage, customer_growth_percentage, total_revenue_percentage)
 
 # Dashboard center: in general. All charts (except pie chart) are handled in this function
 # Dashboard center: total orders
