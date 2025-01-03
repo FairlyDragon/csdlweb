@@ -9,13 +9,13 @@ class UserRole(str, Enum):
     shipper = "shipper" 
     admin = "admin"
     
-class User(BaseModel):
-    user_id: str = Field(default_factory=lambda: str(uuid4()))
-    name: str
-    email: Optional[EmailStr]
-    password: str
-    phone_number: str
-    address: str
-    created_at: datetime = Field(default_factory=lambda: datetime.now())
+class User(BaseModel): 
+    user_id: str = Field(default_factory=lambda: str(uuid4())) 
+    name: str 
+    email: Optional[EmailStr] = None
+    password: str 
+    phone_number: str 
+    address: Optional[str] = None 
+    created_at: datetime = Field(default_factory=datetime.now)
     role: UserRole
 

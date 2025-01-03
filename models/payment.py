@@ -16,7 +16,7 @@ class PaymentStatus(str, Enum):
 class Payment(BaseModel): 
     payment_id: str = Field(default_factory=lambda: str(uuid4())) 
     order_id: str 
-    payment_method: PaymentMethod
-    created_at: datetime = Field(default_factory=lambda: datetime.now())    
+    payment_method: PaymentMethod   
     amount: float
     status: PaymentStatus
+    created_at: datetime = Field(default_factory=datetime.now)
