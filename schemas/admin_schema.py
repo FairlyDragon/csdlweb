@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 
 class TimePeriod(BaseModel):
@@ -7,7 +7,7 @@ class TimePeriod(BaseModel):
 
 class FiguresHeaderResponseSchema(BaseModel):
     figures: int | float
-    change: int # percentage change
+    growth_rate: int = Field(..., ge=0, le=100) # percentage change
     days: int
     
 class DashBoardHeaderResponseSchema(BaseModel):
@@ -18,6 +18,6 @@ class DashBoardHeaderResponseSchema(BaseModel):
     # total_products_sold: int
     
 class PieChartResponseSchema(BaseModel): # unit is percentage
-    total_order: int
-    customer_growth: int
-    total_revenue: int
+    total_order_percentage: int = Field(..., ge=0, le=100)
+    customer_growth_percentage: int = Field(..., ge=0, le=100)
+    total_revenue_percentage: int = Field(..., ge=0, le=100)

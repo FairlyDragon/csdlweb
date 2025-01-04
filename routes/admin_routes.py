@@ -4,7 +4,7 @@ from controllers.admin_controller import *
 router = APIRouter()
 # prefix = "/admin"
 
-router.get("/dashboard/header", response_description="Dashboard's header includes 4 values")(read_dashboard_header)
+router.get("/dashboard/header", response_description="Dashboard's header with filter period")(read_dashboard_header)
 
 router.get("/dashboard/center/piechart", response_description="Pie chart data of dashboard center")(read_dashboard_center_piechart)
 

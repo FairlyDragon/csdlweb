@@ -11,7 +11,7 @@ async def get_orders_by_status(status: str) -> list:
         raise HTTPException(status_code=404, detail=f"No {status} orders found") 
     
     order_ids = [order["order_id"] for order in order_delivery_by_status] 
-    orders = await db["orders"].find({"order_id": {"$in": order_ids}}).to_list(length=None) 
+    orders = await db["order"].find({"order_id": {"$in": order_ids}}).to_list(length=None) 
     
     return orders
 
@@ -24,7 +24,7 @@ async def get_orders_within_period(start_time, end_time) -> list:
 
 # Get all orders of all customers
 async def get_orders_of_all_customers() -> list:
-    orders = await db["orders"].find().to_list(100)
+    orders = await db["order"].find().to_list(100)
     if not orders:
         raise HTTPException(status_code=404, detail="No orders found")
     

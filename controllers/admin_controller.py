@@ -3,6 +3,7 @@ from schemas.admin_schema import *
 from services.admin_service import *
 from services.review_service import *
 from services.time_service import *
+from services.menu_service import *
 
 ### Dashboard Header
 async def read_dashboard_header(time_period: TimePeriod = Depends(get_time_period)) -> DashBoardHeaderResponseSchema:
@@ -33,7 +34,8 @@ async def read_dashboard_header(time_period: TimePeriod = Depends(get_time_perio
 ### Dashboard Center
 # Pie Chart
 async def read_dashboard_center_piechart() -> PieChartResponseSchema:
-
+    now = datetime.now()
+    
     # Get the first day of the previous month
     first_day_previous_month = first_day_of_previous_month(now)
     # Get the last day of the previous month
@@ -41,18 +43,31 @@ async def read_dashboard_center_piechart() -> PieChartResponseSchema:
     # Get the dashboard header data of the previous month
     total_orders_previous_month, total_customer_previous_month, total_revenue_previous_month \
             = await get_dashboard_center_piechart_in_period_time(first_day_previous_month, last_day_previous_month)
+       
             
     # Get the first day of the current month
     first_day_current_month = get_start_of_month(now)
-    now = datetime.now()
     # Get the dashboard header data of the current month 
     total_orders_current_month, total_customer_current_month, total_revenue_current_month \
             = await get_dashboard_center_piechart_in_period_time(first_day_current_month, now)
+      
             
     # transform data to percentage
-    total_order_percentage = int(round(total_orders_current_month / total_orders_previous_month * 100, 2))
-    customer_growth_percentage = int(round(total_customer_current_month / total_customer_previous_month * 100, 2))
-    total_revenue_percentage = int(round(total_revenue_current_month / total_revenue_previous_month * 100, 2))
+    
+    if total_orders_previous_month == 0:
+        total_order_percentage = 100
+    else: 
+        total_order_percentage = int(total_orders_current_month / total_orders_previous_month * 100)
+    
+    if total_customer_previous_month == 0:
+        customer_growth_percentage = 100
+    else:
+        customer_growth_percentage = int(total_customer_current_month / total_customer_previous_month * 100)
+    
+    if total_revenue_previous_month == 0:
+        total_revenue_percentage = 100
+    else:
+        total_revenue_percentage = int(total_revenue_current_month / total_revenue_previous_month * 100)
      
     # initialize pie chart response                        
     return initialize_pie_chart_response(total_order_percentage, customer_growth_percentage, total_revenue_percentage)
@@ -87,11 +102,9 @@ async def read_dashboard_center_customers_map(periodicity: str = "daily") -> lis
 
 # Dashboard footer: get the latest 'limit' customer reviews
 async def read_dashboard_footer_customer_reviews(skip: int = 0, limit: int = 5) -> list:
-    reviews = await get_customer_reviews()
-    reviews = await sorted_reviews_by_time(reviews)
-    
+    # get all customer reviews
+    reviews = await fetch_reviews()
     return reviews[skip: skip + limit]
-    
     
     
     

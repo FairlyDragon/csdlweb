@@ -18,13 +18,15 @@ def initialize_dashboard_header_response(total_orders, total_delivered, total_ca
 # Create a FiguresHeaderResponseSchema object
 def initialize_figures_header_response(figures_current, figures_former, days) -> FiguresHeaderResponseSchema:
     if figures_former == 0:
-        return FiguresHeaderResponseSchema(figures=figures_current, change=figures_current, days=days)
+        return FiguresHeaderResponseSchema(figures=figures_current, growth_rate=100, days=days)
     
-    return FiguresHeaderResponseSchema(figures=figures_current, change=int(round(figures_current / figures_former * 100, 2)), days=days)
+    return FiguresHeaderResponseSchema(figures=figures_current, growth_rate=int(figures_current / figures_former * 100), days=days)
 
 # Create a PieChartResponseSchema object
 def initialize_pie_chart_response(total_order, customer_growth, total_revenue) -> PieChartResponseSchema:
-    return PieChartResponseSchema(total_order=total_order, customer_growth=customer_growth, total_revenue=total_revenue)
+    return PieChartResponseSchema(total_order_percentage=total_order, \
+                customer_growth_percentage=customer_growth, \
+                    total_revenue_percentage=total_revenue)
 
 ############################## Helper functions used in common for admin and user modules
 
@@ -45,9 +47,9 @@ async def get_dashboard_header_data(start_time: datetime, end_time: datetime) ->
 # Get customers who made orders in a period of time
 async def get_customers_made_orders_in_period_time(start_time: datetime, end_time: datetime) -> list:
     orders = await get_orders_within_period(start_time, end_time)
-    customer_ids = set(order["customer_id"] for order in orders)
+    customer_ids = list(set(order["user_id"] for order in orders))
     
-    cursor = db["user"].find({"user_id": {"$in": list(customer_ids)}})
+    cursor = db["user"].find({"user_id": {"$in": customer_ids}})
     return await cursor.to_list(length=None)
         
 # Get the dashboard center pie chart data in a period of time      

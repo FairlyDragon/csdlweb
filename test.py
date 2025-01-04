@@ -8,8 +8,8 @@ from datetime import datetime, timedelta
 app = FastAPI()
 
 sample_reviews = [
-    {"review_id": "r1", "user_id": "u1", "menuitem_id": "m1", "rating": 5},
-    {"review_id": "r2", "user_id": "u2", "menuitem_id": "m2", "rating": 4},
+    {"review_id": "r1", "user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},
+    {"review_id": "r2", "user_id": "u2", "menuitem_id": "m2", "rating": 4, "comment": "Great service!", "review_date": datetime.now()},
 ]
 
 sample_users = [
