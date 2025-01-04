@@ -154,7 +154,7 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
       </DialogTitle>
 
       <DialogContent>
-        {/* Shipper Information Form */}
+        {/* Customer Information Form First */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
             Shipper Information
@@ -232,36 +232,20 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 <MenuItem value="Female">Female</MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              fullWidth
-              InputProps={{
-                endAdornment: (
-                  <IconButton
-                    onClick={() => setShowPassword(!showPassword)}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                  </IconButton>
-                ),
-              }}
-            />
           </Box>
+        </Box>
 
-          {/* Avatar Section - Now part of Information */}
-          <Box sx={{ mt: 2 }}>
+        {/* Avatar and Password Section */}
+        <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
+          {/* Avatar Box */}
+          <Box sx={{ flex: 1 }}>
             <Typography
-              variant="caption"
+              component="label"
               sx={{
                 color: "rgba(0, 0, 0, 0.6)",
-                fontSize: "0.75rem",
-                mb: 1,
+                fontSize: "12px",
                 display: "block",
+                marginBottom: "4px",
               }}
             >
               Avatar
@@ -273,10 +257,8 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 p: 2,
                 display: "flex",
                 alignItems: "center",
-                gap: 3,
+                gap: 2,
                 justifyContent: "center",
-                maxWidth: "400px",
-                margin: "0 auto",
               }}
             >
               <Box
@@ -284,24 +266,25 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 src={imagePreview}
                 alt="Avatar"
                 sx={{
-                  width: 80,
-                  height: 80,
+                  width: 60,
+                  height: 60,
                   borderRadius: "50%",
                   objectFit: "cover",
                 }}
               />
+
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Button
-                  size="small"
                   variant="outlined"
+                  size="small"
                   startIcon={<CloudUploadIcon />}
                   onClick={() => fileInputRef.current?.click()}
                 >
                   Upload
                 </Button>
                 <Button
-                  size="small"
                   variant="outlined"
+                  size="small"
                   color="error"
                   startIcon={<DeleteIcon />}
                   onClick={handleDeleteImage}
@@ -309,7 +292,48 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                   Remove
                 </Button>
               </Box>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleFileUpload}
+              />
             </Box>
+          </Box>
+
+          {/* Password Field */}
+          <Box sx={{ flex: 1 }}>
+            <Typography
+              component="label"
+              sx={{
+                color: "rgba(0, 0, 0, 0.6)",
+                fontSize: "12px",
+                display: "block",
+                marginBottom: "4px",
+              }}
+            >
+              Password
+            </Typography>
+            <TextField
+              fullWidth
+              type={showPassword ? "text" : "password"}
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                ),
+              }}
+            />
           </Box>
         </Box>
 
@@ -356,14 +380,6 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
           Save Changes
         </Button>
       </DialogActions>
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept="image/*"
-        style={{ display: "none" }}
-      />
     </Dialog>
   );
 };

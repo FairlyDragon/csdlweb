@@ -253,19 +253,16 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
             />
           </Box>
 
-          {/* Avatar Section - Now part of Information */}
-          <Box sx={{ mt: 2 }}>
-            <Typography
-              variant="caption"
-              sx={{
-                color: "rgba(0, 0, 0, 0.6)",
-                fontSize: "0.75rem",
-                mb: 1,
-                display: "block",
+          {/* Avatar Section */}
+          <FormControl fullWidth>
+            <InputLabel 
+              sx={{ 
+                backgroundColor: 'white',
+                px: 1
               }}
             >
               Avatar
-            </Typography>
+            </InputLabel>
             <Box
               sx={{
                 border: "1px solid rgba(0, 0, 0, 0.23)",
@@ -275,8 +272,9 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 alignItems: "center",
                 gap: 3,
                 justifyContent: "center",
-                maxWidth: "400px",
-                margin: "0 auto",
+                maxWidth: '400px',
+                margin: '0 auto',
+                mt: 1
               }}
             >
               <Box
@@ -310,7 +308,7 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 </Button>
               </Box>
             </Box>
-          </Box>
+          </FormControl>
         </Box>
 
         {/* Order History Section */}

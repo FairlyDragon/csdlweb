@@ -255,13 +255,13 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
 
           {/* Avatar Section - Now part of Information */}
           <Box sx={{ mt: 2 }}>
-            <Typography
-              variant="caption"
-              sx={{
-                color: "rgba(0, 0, 0, 0.6)",
-                fontSize: "0.75rem",
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                color: 'rgba(0, 0, 0, 0.6)',
+                fontSize: '0.75rem',
                 mb: 1,
-                display: "block",
+                display: 'block'
               }}
             >
               Avatar
@@ -275,8 +275,8 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 alignItems: "center",
                 gap: 3,
                 justifyContent: "center",
-                maxWidth: "400px",
-                margin: "0 auto",
+                maxWidth: '400px',
+                margin: '0 auto'
               }}
             >
               <Box
@@ -356,14 +356,6 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
           Save Changes
         </Button>
       </DialogActions>
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept="image/*"
-        style={{ display: "none" }}
-      />
     </Dialog>
   );
 };

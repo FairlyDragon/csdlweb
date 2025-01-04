@@ -127,15 +127,11 @@ const Shipper = () => {
   };
 
   const handleAddShipper = (newShipper) => {
-    setShippers((prev) => {
+    setShippers(prev => {
       const updatedShippers = [newShipper, ...prev];
-
+      
       setPage(1);
-
-      setFilteredShippers(updatedShippers);
-
-      localStorage.setItem("shippers", JSON.stringify(updatedShippers));
-
+      
       return updatedShippers;
     });
   };

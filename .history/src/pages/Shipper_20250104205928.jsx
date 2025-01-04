@@ -127,17 +127,7 @@ const Shipper = () => {
   };
 
   const handleAddShipper = (newShipper) => {
-    setShippers((prev) => {
-      const updatedShippers = [newShipper, ...prev];
-
-      setPage(1);
-
-      setFilteredShippers(updatedShippers);
-
-      localStorage.setItem("shippers", JSON.stringify(updatedShippers));
-
-      return updatedShippers;
-    });
+    setShippers((prev) => [newShipper, ...prev]);
   };
 
   const handleEditShipper = (editedShipper) => {
@@ -162,12 +152,6 @@ const Shipper = () => {
   const handleRowClick = (shipper) => {
     setSelectedShipper(shipper);
     setOpenEditDialog(true);
-  };
-
-  const getCurrentPageData = (data) => {
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return data.slice(startIndex, endIndex);
   };
 
   return (

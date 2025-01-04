@@ -254,20 +254,19 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
           </Box>
 
           {/* Avatar Section - Now part of Information */}
-          <Box sx={{ mt: 2 }}>
-            <Typography
-              variant="caption"
+          <FormControl fullWidth variant="outlined">
+            <InputLabel
+              shrink
               sx={{
-                color: "rgba(0, 0, 0, 0.6)",
-                fontSize: "0.75rem",
-                mb: 1,
-                display: "block",
+                bgcolor: "white",
+                px: 0.5,
               }}
             >
               Avatar
-            </Typography>
+            </InputLabel>
             <Box
               sx={{
+                mt: 2,
                 border: "1px solid rgba(0, 0, 0, 0.23)",
                 borderRadius: 1,
                 p: 2,
@@ -277,6 +276,14 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 justifyContent: "center",
                 maxWidth: "400px",
                 margin: "0 auto",
+                position: "relative",
+                "& .MuiInputLabel-root": {
+                  position: "absolute",
+                  top: -9,
+                  left: 10,
+                  fontSize: "0.75rem",
+                  color: "rgba(0, 0, 0, 0.6)",
+                },
               }}
             >
               <Box
@@ -310,7 +317,7 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 </Button>
               </Box>
             </Box>
-          </Box>
+          </FormControl>
         </Box>
 
         {/* Order History Section */}

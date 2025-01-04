@@ -33,7 +33,7 @@ const AddShipper = ({ open, onClose, onAdd, lastShipperId }) => {
       username: formData.username,
       password: formData.password,
       phone_number: "",
-      total_amount: 0.0,
+      total_amount: 0.00,
       updated_address: "",
       created_at: new Date().toISOString(),
       date_of_birth: new Date().toISOString(),
@@ -70,9 +70,7 @@ const AddShipper = ({ open, onClose, onAdd, lastShipperId }) => {
           <TextField
             label="Username"
             value={formData.username}
-            onChange={(e) =>
-              setFormData({ ...formData, username: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
             required
             fullWidth
           />
@@ -80,9 +78,7 @@ const AddShipper = ({ open, onClose, onAdd, lastShipperId }) => {
             label="Password"
             type="password"
             value={formData.password}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             required
             fullWidth
           />

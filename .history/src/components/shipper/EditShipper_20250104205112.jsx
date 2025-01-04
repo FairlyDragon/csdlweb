@@ -35,7 +35,7 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
     shipper_id: "",
     name: "",
     phone_number: "",
-    total_amount: 0.0,
+    total_amount: 0.00,
     username: "",
     password: "",
     updated_address: "",
@@ -67,7 +67,7 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
         shipper_id: shipper.shipper_id || "",
         name: shipper.name || "",
         phone_number: shipper.phone_number || "",
-        total_amount: shipper.total_amount || 0.0,
+        total_amount: shipper.total_amount || 0.00,
         username: shipper.username || "",
         password: shipper.password || "",
         updated_address: shipper.updated_address || "",
@@ -76,8 +76,7 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
           ? new Date(shipper.date_of_birth).toISOString().split("T")[0]
           : "",
         gender: shipper.gender || "",
-        image_url:
-          shipper.image_url || "https://example.com/default-avatar.jpg",
+        image_url: shipper.image_url || "https://example.com/default-avatar.jpg",
       });
       setImagePreview(
         shipper.image_url || "https://example.com/default-avatar.jpg"
@@ -154,7 +153,7 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
       </DialogTitle>
 
       <DialogContent>
-        {/* Shipper Information Form */}
+        {/* Customer Information Form First */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h6" sx={{ mb: 2 }}>
             Shipper Information
@@ -163,50 +162,35 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
             <TextField
               label="Name"
               value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               fullWidth
             />
             <TextField
               label="Username"
               value={formData.username}
-              onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
               fullWidth
             />
             <TextField
               label="Phone Number"
               value={formData.phone_number}
-              onChange={(e) =>
-                setFormData({ ...formData, phone_number: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
               fullWidth
             />
             <TextField
               label="Total Amount"
               type="number"
               value={formData.total_amount}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  total_amount: parseFloat(e.target.value),
-                })
-              }
+              onChange={(e) => setFormData({ ...formData, total_amount: parseFloat(e.target.value) })}
               fullWidth
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">₫</InputAdornment>
-                ),
+                startAdornment: <InputAdornment position="start">₫</InputAdornment>,
               }}
             />
             <TextField
               label="Address"
               value={formData.updated_address}
-              onChange={(e) =>
-                setFormData({ ...formData, updated_address: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, updated_address: e.target.value })}
               fullWidth
             />
             <TextField
@@ -232,36 +216,20 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 <MenuItem value="Female">Female</MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              fullWidth
-              InputProps={{
-                endAdornment: (
-                  <IconButton
-                    onClick={() => setShowPassword(!showPassword)}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                  </IconButton>
-                ),
-              }}
-            />
           </Box>
+        </Box>
 
-          {/* Avatar Section - Now part of Information */}
-          <Box sx={{ mt: 2 }}>
+        {/* Avatar and Password Section */}
+        <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
+          {/* Avatar Box */}
+          <Box sx={{ flex: 1 }}>
             <Typography
-              variant="caption"
+              component="label"
               sx={{
                 color: "rgba(0, 0, 0, 0.6)",
-                fontSize: "0.75rem",
-                mb: 1,
+                fontSize: "12px",
                 display: "block",
+                marginBottom: "4px",
               }}
             >
               Avatar
@@ -273,10 +241,8 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 p: 2,
                 display: "flex",
                 alignItems: "center",
-                gap: 3,
+                gap: 2,
                 justifyContent: "center",
-                maxWidth: "400px",
-                margin: "0 auto",
               }}
             >
               <Box
@@ -284,24 +250,25 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                 src={imagePreview}
                 alt="Avatar"
                 sx={{
-                  width: 80,
-                  height: 80,
+                  width: 60,
+                  height: 60,
                   borderRadius: "50%",
                   objectFit: "cover",
                 }}
               />
+
               <Box sx={{ display: "flex", gap: 1 }}>
                 <Button
-                  size="small"
                   variant="outlined"
+                  size="small"
                   startIcon={<CloudUploadIcon />}
                   onClick={() => fileInputRef.current?.click()}
                 >
                   Upload
                 </Button>
                 <Button
-                  size="small"
                   variant="outlined"
+                  size="small"
                   color="error"
                   startIcon={<DeleteIcon />}
                   onClick={handleDeleteImage}
@@ -309,7 +276,48 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
                   Remove
                 </Button>
               </Box>
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleFileUpload}
+              />
             </Box>
+          </Box>
+
+          {/* Password Field */}
+          <Box sx={{ flex: 1 }}>
+            <Typography
+              component="label"
+              sx={{
+                color: "rgba(0, 0, 0, 0.6)",
+                fontSize: "12px",
+                display: "block",
+                marginBottom: "4px",
+              }}
+            >
+              Password
+            </Typography>
+            <TextField
+              fullWidth
+              type={showPassword ? "text" : "password"}
+              value={formData.password}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </IconButton>
+                ),
+              }}
+            />
           </Box>
         </Box>
 
@@ -356,14 +364,6 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
           Save Changes
         </Button>
       </DialogActions>
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept="image/*"
-        style={{ display: "none" }}
-      />
     </Dialog>
   );
 };

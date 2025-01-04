@@ -132,10 +132,6 @@ const Shipper = () => {
 
       setPage(1);
 
-      setFilteredShippers(updatedShippers);
-
-      localStorage.setItem("shippers", JSON.stringify(updatedShippers));
-
       return updatedShippers;
     });
   };

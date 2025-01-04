@@ -356,14 +356,6 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
           Save Changes
         </Button>
       </DialogActions>
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept="image/*"
-        style={{ display: "none" }}
-      />
     </Dialog>
   );
 };

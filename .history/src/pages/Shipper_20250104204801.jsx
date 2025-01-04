@@ -21,33 +21,121 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import AddShipper from "../components/shipper/AddShipper";
-import EditShipper from "../components/shipper/EditShipper";
-
+import Add from "../components/customer/AddCustomer";
+import EditCustomer from "../components/customer/EditCustomer";
 // Sample data structure
-const initialShippers = [
+const initialCustomers = [
   {
-    shipper_id: "00001",
+    customer_id: "00001",
     name: "Nguyen Van A",
-    phone_number: "0123456789",
-    total_amount: 1500000.0,
-    username: "shipper1",
+    email: "customer1@gmail.com",
     password: "hashedpass1",
-    updated_address: "334 Nguyen Trai",
+    phone_number: "0123456789",
+    address: "334 Nguyen Trai",
     created_at: new Date("2024-01-04").toISOString(),
     date_of_birth: new Date("1990-01-15").toISOString(),
+    gender: "Male",
+    image_url: "https://example.com/default-avatar.jpg",
+  },
+  {
+    customer_id: "00002",
+    name: "Ho Thi B",
+    email: "customer2@gmail.com",
+    password: "hashedpass2",
+    phone_number: "0123456790",
+    address: "20 Tay Son",
+    created_at: new Date("2024-01-29").toISOString(),
+    date_of_birth: new Date("1992-05-20").toISOString(),
+    gender: "Female",
+    image_url: "https://example.com/default-avatar.jpg",
+  },
+  {
+    customer_id: "00003",
+    name: "Le Van C",
+    email: "customer3@gmail.com",
+    password: "hashedpass3",
+    phone_number: "0123456791",
+    address: "18 Quan Nhan",
+    created_at: new Date("2024-01-23").toISOString(),
+    date_of_birth: new Date("1988-03-10").toISOString(),
+    gender: "Male",
+    image_url: "https://example.com/default-avatar.jpg",
+  },
+  {
+    customer_id: "00004",
+    name: "Tran Minh D",
+    email: "customer4@gmail.com",
+    password: "hashedpass4",
+    phone_number: "0123456792",
+    address: "55 Tan Thai Tung",
+    created_at: new Date("2024-01-05").toISOString(),
+    date_of_birth: new Date("1995-07-22").toISOString(),
+    gender: "Male",
+    image_url: "https://example.com/default-avatar.jpg",
+  },
+  {
+    customer_id: "00005",
+    name: "Nguyen Van E",
+    email: "customer5@gmail.com",
+    password: "hashedpass5",
+    phone_number: "0123456793",
+    address: "36 Truong Chinh",
+    created_at: new Date("2024-01-29").toISOString(),
+    date_of_birth: new Date("1991-11-30").toISOString(),
+    gender: "Male",
+    image_url: "https://example.com/default-avatar.jpg",
+  },
+  {
+    customer_id: "00006",
+    name: "Ho Xuan Huong",
+    email: "customer6@gmail.com",
+    password: "hashedpass6",
+    phone_number: "0123456794",
+    address: "212 Thai Ha",
+    created_at: new Date("2024-01-15").toISOString(),
+    date_of_birth: new Date("1993-09-05").toISOString(),
+    gender: "Female",
+    image_url: "https://example.com/default-avatar.jpg",
+  },
+  {
+    customer_id: "00007",
+    name: "Chu Van An",
+    email: "customer7@gmail.com",
+    password: "hashedpass7",
+    phone_number: "0123456795",
+    address: "448 Pham Ngoc Thach",
+    created_at: new Date("2024-01-21").toISOString(),
+    date_of_birth: new Date("1987-12-15").toISOString(),
     gender: "Male",
     image_url: "https://example.com/default-avatar.jpg",
   },
 ];
 
 const Shipper = () => {
-  const [shippers, setShippers] = useState(() => {
-    const savedShippers = localStorage.getItem("shippers");
-    return savedShippers ? JSON.parse(savedShippers) : initialShippers;
+  // 1. Kiểm tra dữ liệu initialCustomers
+  console.log("Initial data:", initialCustomers);
+
+  // 2. Khởi tạo và kiểm tra state
+  const [customers, setCustomers] = useState(() => {
+    const savedCustomers = localStorage.getItem("customers");
+    console.log("Data from localStorage:", savedCustomers);
+    return savedCustomers ? JSON.parse(savedCustomers) : initialCustomers;
   });
 
-  const [filteredShippers, setFilteredShippers] = useState(shippers);
+  // 3. Kiểm tra filteredCustomers
+  const [filteredCustomers, setFilteredCustomers] = useState(customers);
+  console.log("Filtered customers:", filteredCustomers);
+
+  // 4. Đảm bảo cập nhật filteredCustomers khi customers thay đổi
+  useEffect(() => {
+    setFilteredCustomers(customers);
+  }, [customers]);
+
+  // Lưu vào localStorage khi customers thay đổi
+  useEffect(() => {
+    localStorage.setItem("customers", JSON.stringify(customers));
+  }, [customers]);
+
   const [page, setPage] = useState(1);
   const itemsPerPage = 5;
   const [dateSort, setDateSort] = useState("all");
@@ -57,16 +145,16 @@ const Shipper = () => {
   const [searchType, setSearchType] = useState("name");
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [selectedShipper, setSelectedShipper] = useState(null);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
 
-  useEffect(() => {
-    setFilteredShippers(shippers);
-  }, [shippers]);
+  // Lấy dữ liệu cho trang hiện tại
+  const getCurrentPageData = (customers) => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return customers.slice(startIndex, endIndex);
+  };
 
-  useEffect(() => {
-    localStorage.setItem("shippers", JSON.stringify(shippers));
-  }, [shippers]);
-
+  // Thêm hàm tính tuổi
   const calculateAge = (birthDate) => {
     if (!birthDate) return 0;
     try {
@@ -78,21 +166,26 @@ const Shipper = () => {
     }
   };
 
+  // Áp dụng tất cả bộ lọc
   useEffect(() => {
-    let result = [...shippers];
+    let result = [...customers];
 
+    // Filter theo DATE
     if (dateSort === "newest") {
       result.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     } else if (dateSort === "oldest") {
       result.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     }
 
+    // Filter theo GENDER
     if (genderFilter !== "all") {
       result = result.filter(
-        (shipper) => shipper.gender.toLowerCase() === genderFilter.toLowerCase()
+        (customer) =>
+          customer.gender.toLowerCase() === genderFilter.toLowerCase()
       );
     }
 
+    // Filter theo AGE
     if (ageSort !== "none") {
       result.sort((a, b) => {
         const ageA = calculateAge(a.date_of_birth);
@@ -101,73 +194,91 @@ const Shipper = () => {
       });
     }
 
+    // Search theo các trường
     if (searchQuery) {
-      result = result.filter((shipper) => {
-        const value = shipper[searchType]?.toLowerCase();
+      result = result.filter((customer) => {
+        const value = customer[searchType]?.toLowerCase();
         return value?.includes(searchQuery.toLowerCase());
       });
     }
 
-    setFilteredShippers(result);
-  }, [shippers, dateSort, genderFilter, ageSort, searchQuery, searchType]);
+    setFilteredCustomers(result);
+  }, [customers, dateSort, genderFilter, ageSort, searchQuery, searchType]);
 
+  // Reset tất cả filter
   const handleResetFilter = () => {
     setDateSort("all");
     setGenderFilter("all");
     setAgeSort("none");
     setSearchQuery("");
     setSearchType("name");
-    setFilteredShippers(shippers);
+    setFilteredCustomers(customers);
   };
 
-  const getLastShipperId = () => {
-    if (shippers.length === 0) return "00000";
-    const maxId = Math.max(...shippers.map((s) => Number(s.shipper_id)));
+  // Thêm console.log để kiểm tra
+  useEffect(() => {
+    console.log("Filtered customers:", filteredCustomers);
+    console.log("Current date sort:", dateSort);
+  }, [filteredCustomers, dateSort]);
+
+  // Hàm lấy customer_id cuối cùng
+  const getLastCustomerId = () => {
+    if (customers.length === 0) return "00000";
+    // Tìm customer_id lớn nhất
+    const maxId = Math.max(...customers.map((c) => Number(c.customer_id)));
     return String(maxId).padStart(5, "0");
   };
 
-  const handleAddShipper = (newShipper) => {
-    setShippers((prev) => {
-      const updatedShippers = [newShipper, ...prev];
-
-      setPage(1);
-
-      setFilteredShippers(updatedShippers);
-
-      localStorage.setItem("shippers", JSON.stringify(updatedShippers));
-
-      return updatedShippers;
+  // Thêm customer mới
+  const handleAddCustomer = (newCustomer) => {
+    setCustomers((prev) => {
+      // Kiểm tra xem ID đã tồn tại chưa
+      const existingIds = new Set(prev.map((c) => c.customer_id));
+      if (existingIds.has(newCustomer.customer_id)) {
+        // Nếu ID đã tồn tại, tạo ID mới
+        const maxId = Math.max(
+          ...Array.from(existingIds).map((id) => Number(id))
+        );
+        newCustomer.customer_id = String(maxId + 1).padStart(5, "0");
+      }
+      return [
+        {
+          ...newCustomer,
+          image_url: "https://example.com/default-avatar.jpg",
+        },
+        ...prev,
+      ]; // Thêm vào đầu mảng
     });
   };
 
-  const handleEditShipper = (editedShipper) => {
-    setShippers((prev) =>
-      prev.map((shipper) =>
-        shipper.shipper_id === editedShipper.shipper_id
-          ? { ...editedShipper, created_at: shipper.created_at }
-          : shipper
+  // Sửa customer
+  const handleEditCustomer = (editedCustomer) => {
+    setCustomers((prev) =>
+      prev.map((customer) =>
+        customer.customer_id === editedCustomer.customer_id
+          ? {
+              ...editedCustomer,
+              created_at: customer.created_at,
+            }
+          : customer
       )
     );
   };
 
-  const handleDeleteShipper = (shipperId) => {
-    if (window.confirm("Are you sure you want to delete this shipper?")) {
-      setShippers((prev) =>
-        prev.filter((shipper) => shipper.shipper_id !== shipperId)
+  // Xóa customer
+  const handleDeleteCustomer = (customerId) => {
+    if (window.confirm("Are you sure you want to delete this customer?")) {
+      setCustomers((prev) =>
+        prev.filter((customer) => customer.customer_id !== customerId)
       );
       setOpenEditDialog(false);
     }
   };
 
-  const handleRowClick = (shipper) => {
-    setSelectedShipper(shipper);
+  // Thêm hàm xử lý khi click vào row
+  const handleRowClick = (customer) => {
+    setSelectedCustomer(customer);
     setOpenEditDialog(true);
-  };
-
-  const getCurrentPageData = (data) => {
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    return data.slice(startIndex, endIndex);
   };
 
   return (
@@ -184,7 +295,7 @@ const Shipper = () => {
           variant="h5"
           sx={{ color: "#212B36", fontSize: "24px", fontWeight: 700 }}
         >
-          Shipper
+          Customer
         </Typography>
 
         <Button
@@ -201,7 +312,7 @@ const Shipper = () => {
             py: 1,
           }}
         >
-          Add Shipper
+          Add Customer
         </Button>
       </Box>
 
@@ -261,9 +372,9 @@ const Shipper = () => {
           sx={{ minWidth: 150 }}
         >
           <MenuItem value="name">Search by Name</MenuItem>
-          <MenuItem value="username">Search by Username</MenuItem>
+          <MenuItem value="email">Search by Email</MenuItem>
           <MenuItem value="phone_number">Search by Phone</MenuItem>
-          <MenuItem value="updated_address">Search by Address</MenuItem>
+          <MenuItem value="address">Search by Address</MenuItem>
         </Select>
 
         <TextField
@@ -333,7 +444,7 @@ const Shipper = () => {
                 DATE
               </TableCell>
               <TableCell sx={{ color: "#637381", fontWeight: 600 }}>
-                USERNAME
+                EMAIL
               </TableCell>
               <TableCell sx={{ color: "#637381", fontWeight: 600 }}>
                 GENDER
@@ -344,11 +455,11 @@ const Shipper = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredShippers && filteredShippers.length > 0 ? (
-              getCurrentPageData(filteredShippers).map((shipper) => (
+            {filteredCustomers && filteredCustomers.length > 0 ? (
+              getCurrentPageData(filteredCustomers).map((customer) => (
                 <TableRow
-                  key={shipper.shipper_id}
-                  onClick={() => handleRowClick(shipper)}
+                  key={customer.customer_id}
+                  onClick={() => handleRowClick(customer)}
                   sx={{
                     "&:hover": {
                       backgroundColor: "#F4F6F8",
@@ -359,8 +470,8 @@ const Shipper = () => {
                   <TableCell>
                     <Box
                       component="img"
-                      src={shipper.image_url}
-                      alt={shipper.name}
+                      src={customer.image_url}
+                      alt={customer.name}
                       sx={{
                         width: 40,
                         height: 40,
@@ -370,7 +481,7 @@ const Shipper = () => {
                     />
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
-                    {shipper.name}
+                    {customer.name}
                   </TableCell>
                   <TableCell
                     sx={{
@@ -379,22 +490,22 @@ const Shipper = () => {
                       wordWrap: "break-word",
                     }}
                   >
-                    {shipper.updated_address}
+                    {customer.address}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
-                    {shipper.created_at
-                      ? format(new Date(shipper.created_at), "dd MMM yyyy")
+                    {customer.created_at
+                      ? format(new Date(customer.created_at), "dd MMM yyyy")
                       : ""}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
-                    {shipper.username}
+                    {customer.email}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
-                    {shipper.gender}
+                    {customer.gender}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
-                    {shipper.date_of_birth
-                      ? calculateAge(shipper.date_of_birth)
+                    {customer.date_of_birth
+                      ? calculateAge(customer.date_of_birth)
                       : 0}
                   </TableCell>
                 </TableRow>
@@ -402,7 +513,7 @@ const Shipper = () => {
             ) : (
               <TableRow>
                 <TableCell colSpan={7} align="center">
-                  No shippers found
+                  No customers found
                 </TableCell>
               </TableRow>
             )}
@@ -438,11 +549,11 @@ const Shipper = () => {
             setPage((prev) =>
               Math.min(
                 prev + 1,
-                Math.ceil(filteredShippers.length / itemsPerPage)
+                Math.ceil(filteredCustomers.length / itemsPerPage)
               )
             )
           }
-          disabled={page === Math.ceil(filteredShippers.length / itemsPerPage)}
+          disabled={page === Math.ceil(filteredCustomers.length / itemsPerPage)}
           sx={{
             minWidth: "32px",
             height: "32px",
@@ -456,26 +567,26 @@ const Shipper = () => {
         </Button>
 
         <Typography sx={{ color: "#637381", ml: 2 }}>
-          Page {page} of {Math.ceil(filteredShippers.length / itemsPerPage)}
+          Page {page} of {Math.ceil(filteredCustomers.length / itemsPerPage)}
         </Typography>
       </Box>
 
-      <AddShipper
+      <AddCustomer
         open={openAddDialog}
         onClose={() => setOpenAddDialog(false)}
-        onAdd={handleAddShipper}
-        lastShipperId={getLastShipperId()}
+        onAdd={handleAddCustomer}
+        lastCustomerId={getLastCustomerId()}
       />
 
-      <EditShipper
+      <EditCustomer
         open={openEditDialog}
-        shipper={selectedShipper}
+        customer={selectedCustomer}
         onClose={() => {
           setOpenEditDialog(false);
-          setSelectedShipper(null);
+          setSelectedCustomer(null);
         }}
-        onSave={handleEditShipper}
-        onDelete={handleDeleteShipper}
+        onSave={handleEditCustomer}
+        onDelete={handleDeleteCustomer}
       />
     </Box>
   );

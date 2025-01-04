@@ -252,63 +252,51 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
               }}
             />
           </Box>
+        </Box>
 
-          {/* Avatar Section - Now part of Information */}
-          <Box sx={{ mt: 2 }}>
-            <Typography
-              variant="caption"
-              sx={{
-                color: "rgba(0, 0, 0, 0.6)",
-                fontSize: "0.75rem",
-                mb: 1,
-                display: "block",
-              }}
-            >
-              Avatar
-            </Typography>
+        {/* Avatar Box */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Avatar
+          </Typography>
+          <Box
+            sx={{
+              border: "1px solid rgba(0, 0, 0, 0.23)",
+              borderRadius: 1,
+              p: 3,
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              justifyContent: "center",
+            }}
+          >
             <Box
+              component="img"
+              src={imagePreview}
+              alt="Avatar"
               sx={{
-                border: "1px solid rgba(0, 0, 0, 0.23)",
-                borderRadius: 1,
-                p: 2,
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-                justifyContent: "center",
-                maxWidth: "400px",
-                margin: "0 auto",
+                width: 100,
+                height: 100,
+                borderRadius: "50%",
+                objectFit: "cover",
               }}
-            >
-              <Box
-                component="img"
-                src={imagePreview}
-                alt="Avatar"
-                sx={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-              />
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  startIcon={<CloudUploadIcon />}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  Upload
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="error"
-                  startIcon={<DeleteIcon />}
-                  onClick={handleDeleteImage}
-                >
-                  Remove
-                </Button>
-              </Box>
+            />
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button
+                variant="outlined"
+                startIcon={<CloudUploadIcon />}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Upload
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={handleDeleteImage}
+              >
+                Remove
+              </Button>
             </Box>
           </Box>
         </Box>
@@ -356,14 +344,6 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
           Save Changes
         </Button>
       </DialogActions>
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept="image/*"
-        style={{ display: "none" }}
-      />
     </Dialog>
   );
 };

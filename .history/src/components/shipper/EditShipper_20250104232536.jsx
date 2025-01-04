@@ -163,59 +163,42 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
             <TextField
               label="Name"
               value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               fullWidth
             />
             <TextField
               label="Username"
               value={formData.username}
-              onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
               fullWidth
             />
             <TextField
               label="Phone Number"
               value={formData.phone_number}
-              onChange={(e) =>
-                setFormData({ ...formData, phone_number: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
               fullWidth
             />
             <TextField
               label="Total Amount"
               type="number"
               value={formData.total_amount}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  total_amount: parseFloat(e.target.value),
-                })
-              }
+              onChange={(e) => setFormData({ ...formData, total_amount: parseFloat(e.target.value) })}
               fullWidth
               InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">₫</InputAdornment>
-                ),
+                startAdornment: <InputAdornment position="start">₫</InputAdornment>,
               }}
             />
             <TextField
               label="Address"
               value={formData.updated_address}
-              onChange={(e) =>
-                setFormData({ ...formData, updated_address: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, updated_address: e.target.value })}
               fullWidth
             />
             <TextField
               label="Date of Birth"
               type="date"
               value={formData.date_of_birth}
-              onChange={(e) =>
-                setFormData({ ...formData, date_of_birth: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
               InputLabelProps={{ shrink: true }}
               fullWidth
             />
@@ -224,9 +207,7 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
               <Select
                 value={formData.gender}
                 label="Gender"
-                onChange={(e) =>
-                  setFormData({ ...formData, gender: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
               >
                 <MenuItem value="Male">Male</MenuItem>
                 <MenuItem value="Female">Female</MenuItem>
@@ -236,79 +217,62 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
               label="Password"
               type={showPassword ? "text" : "password"}
               value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               fullWidth
               InputProps={{
                 endAdornment: (
-                  <IconButton
-                    onClick={() => setShowPassword(!showPassword)}
-                    edge="end"
-                  >
+                  <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
                     {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                   </IconButton>
                 ),
               }}
             />
           </Box>
+        </Box>
 
-          {/* Avatar Section - Now part of Information */}
-          <Box sx={{ mt: 2 }}>
-            <Typography
-              variant="caption"
-              sx={{
-                color: "rgba(0, 0, 0, 0.6)",
-                fontSize: "0.75rem",
-                mb: 1,
-                display: "block",
-              }}
-            >
-              Avatar
-            </Typography>
+        {/* Avatar Box */}
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            Avatar
+          </Typography>
+          <Box
+            sx={{
+              border: "1px solid rgba(0, 0, 0, 0.23)",
+              borderRadius: 1,
+              p: 3,
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              justifyContent: "center",
+            }}
+          >
             <Box
+              component="img"
+              src={imagePreview}
+              alt="Avatar"
               sx={{
-                border: "1px solid rgba(0, 0, 0, 0.23)",
-                borderRadius: 1,
-                p: 2,
-                display: "flex",
-                alignItems: "center",
-                gap: 3,
-                justifyContent: "center",
-                maxWidth: "400px",
-                margin: "0 auto",
+                width: 100,
+                height: 100,
+                borderRadius: "50%",
+                objectFit: "cover",
               }}
-            >
-              <Box
-                component="img"
-                src={imagePreview}
-                alt="Avatar"
-                sx={{
-                  width: 80,
-                  height: 80,
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-              />
-              <Box sx={{ display: "flex", gap: 1 }}>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  startIcon={<CloudUploadIcon />}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  Upload
-                </Button>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="error"
-                  startIcon={<DeleteIcon />}
-                  onClick={handleDeleteImage}
-                >
-                  Remove
-                </Button>
-              </Box>
+            />
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button
+                variant="outlined"
+                startIcon={<CloudUploadIcon />}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Upload
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                startIcon={<DeleteIcon />}
+                onClick={handleDeleteImage}
+              >
+                Remove
+              </Button>
             </Box>
           </Box>
         </Box>
@@ -356,14 +320,6 @@ const EditShipper = ({ open, shipper, onClose, onSave, onDelete }) => {
           Save Changes
         </Button>
       </DialogActions>
-
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        accept="image/*"
-        style={{ display: "none" }}
-      />
     </Dialog>
   );
 };
