@@ -21,3 +21,22 @@ class PieChartResponseSchema(BaseModel): # unit is percentage
     total_order_percentage: int = Field(..., ge=0, le=100)
     customer_growth_percentage: int = Field(..., ge=0, le=100)
     total_revenue_percentage: int = Field(..., ge=0, le=100)
+
+class AddMenuItem(BaseModel):
+    name: str
+    description: str
+    price: float
+    category: str
+    image_url: str
+    is_active: bool = True
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "Pizza Margherita",
+                "description": "Classic Italian pizza with tomatoes, mozzarella, and basil.",
+                "price": 12.99,
+                "category": "Pizza",
+                "image_url": "https://example.com/images/pizza_margherita.jpg"
+            }
+        }

@@ -105,6 +105,29 @@ async def read_dashboard_footer_customer_reviews(skip: int = 0, limit: int = 5) 
     # get all customer reviews
     reviews = await fetch_reviews()
     return reviews[skip: skip + limit]
+
+
+
+##### FOODS ######
+async def create_menu_item(menu_item: AddMenuItem) -> dict: # 
+    # create a MenuItem instance from the request body
+    menu_item_data = MenuItem( 
+                              name=menu_item.name, 
+                              description=menu_item.description, 
+                              price=menu_item.price, 
+                              category=menu_item.category, 
+                              image_url=menu_item.image_url,
+                              is_active=menu_item.is_active
+                              ) 
+    # convert the MenuItem instance to a dictionary 
+    menu_item_dict = menu_item_data.model_dump(by_alias=True) 
+    
+    new_menu_item = await db["menuitem"].insert_one(menu_item_dict) 
+    created_menu_item = await db["menuitem"].find_one({"_id": new_menu_item.inserted_id}) 
+    if not created_menu_item: 
+        raise HTTPException(status_code=404, detail="Menu item not found") 
+    
+    return created_menu_item
     
     
     
