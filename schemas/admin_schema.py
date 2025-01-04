@@ -31,12 +31,13 @@ class AddMenuItem(BaseModel):
     is_active: bool = True
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "name": "Pizza Margherita",
                 "description": "Classic Italian pizza with tomatoes, mozzarella, and basil.",
                 "price": 12.99,
                 "category": "Pizza",
-                "image_url": "https://example.com/images/pizza_margherita.jpg"
+                "image_url": "https://example.com/images/pizza_margherita.jpg",
+                "is_active": "false"
             }
         }
