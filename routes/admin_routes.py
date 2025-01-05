@@ -17,5 +17,13 @@ router.get("dashboard/center/customers_map", response_description="Customers map
 router.get("/dashboard/footer", response_description="Customer reviews")(read_dashboard_footer_customer_reviews)
 
 # FOODS
-router.post("/foods/menuitems", response_description="Add a new menu item")(create_menu_item)
+router.post("/foods/menuitems", response_description="Add a new menu item")(create_menuitem)
+
+router.put("/foods/menuitems/{menuitem_id}", response_description="Update a menu item by ID")(update_menuitem)
+
+router.delete("/foods/menuitems/{menuitem_id}", response_description="Delete a menu item by ID")(delete_menuitem)
+
+router.get("/foods/menuitems/", response_description="Get menu items by fitler")(read_menuitems_by_filter)
+
+router.put("/foods/discount/{discount_percentage}", response_description="Set discount percentage")(update_discount)
 

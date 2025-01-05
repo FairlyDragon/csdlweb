@@ -126,3 +126,16 @@ async def get_payments_within_period(start_time: datetime, end_time: datetime) -
     cursor = collection.find({"created_at": {"$gte": start_time, "$lte": end_time}})
      
     return await cursor.to_list(length=None)
+
+# Set discount percentage for all menu items
+async def set_discount_percentage(discount_percentage: int) -> dict:
+    collection = db["menuitem"]
+    result = await collection.update_many(
+        {}, 
+        {"$set": {"discount": discount_percentage}}
+    
+    )
+    return {
+        "message": "Discount percentage set successfully", 
+        "modified_count": result.modified_count
+        }

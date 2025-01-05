@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 from datetime import datetime
 
 class TimePeriod(BaseModel):
@@ -22,13 +23,13 @@ class PieChartResponseSchema(BaseModel): # unit is percentage
     customer_growth_percentage: int = Field(..., ge=0, le=100)
     total_revenue_percentage: int = Field(..., ge=0, le=100)
 
-class AddMenuItem(BaseModel):
-    name: str
-    description: str
-    price: float
-    category: str
-    image_url: str
-    is_active: bool = True
+class MenuItemResponseSchema(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    price: Optional[float]  = None
+    category: Optional[str] = None
+    image_url: Optional[str] = None
+    is_active: Optional[bool] = True
 
     class Config:
         json_schema_extra = {
@@ -41,3 +42,5 @@ class AddMenuItem(BaseModel):
                 "is_active": "false"
             }
         }
+        
+

@@ -8,7 +8,11 @@ class UserRole(str, Enum):
     customer = "customer" 
     shipper = "shipper" 
     admin = "admin"
-    
+
+class GenderEnum(str, Enum):
+    male = "male"
+    female = "female"
+     
 class User(BaseModel): 
     user_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 
     name: str 
@@ -18,4 +22,6 @@ class User(BaseModel):
     address: Optional[str] = None 
     created_at: datetime = Field(default_factory=datetime.now)
     role: UserRole
+    gender: GenderEnum
+    date_of_birth: datetime
 

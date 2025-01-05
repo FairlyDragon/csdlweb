@@ -109,26 +109,68 @@ async def read_dashboard_footer_customer_reviews(skip: int = 0, limit: int = 5) 
 
 
 ##### FOODS ######
-async def create_menu_item(menu_item: AddMenuItem) -> dict: # 
+# Create a new menu item
+async def create_menuitem(menuitem: MenuItemResponseSchema) -> dict: # 
     # create a MenuItem instance from the request body
-    menu_item_data = MenuItem( 
-                              name=menu_item.name, 
-                              description=menu_item.description, 
-                              price=menu_item.price, 
-                              category=menu_item.category, 
-                              image_url=menu_item.image_url,
-                              is_active=menu_item.is_active
+    menuitem_data = MenuItem( 
+                              name=menuitem.name, 
+                              description=menuitem.description, 
+                              price=menuitem.price, 
+                              category=menuitem.category, 
+                              image_url=menuitem.image_url,
+                              is_active=menuitem.is_active
                               ) 
     # convert the MenuItem instance to a dictionary 
-    menu_item_dict = menu_item_data.model_dump(by_alias=True) 
+    menuitem_dict = menuitem_data.model_dump(by_alias=True) 
     
-    new_menu_item = await db["menuitem"].insert_one(menu_item_dict) 
-    created_menu_item = await db["menuitem"].find_one({"_id": new_menu_item.inserted_id}) 
-    if not created_menu_item: 
+    # insert the new menu item into the database
+    new_menuitem = await db["menuitem"].insert_one(menuitem_dict) 
+    created_menuitem = await db["menuitem"].find_one({"_id": new_menuitem.inserted_id}) 
+    if not created_menuitem: 
         raise HTTPException(status_code=404, detail="Menu item not found") 
     
-    return created_menu_item
+    return created_menuitem
+
+# Update a menu item by ID
+async def update_menuitem(menuitem_id: str, menuitem: MenuItemResponseSchema) -> dict:
+    update_data = {k: v for k, v in menuitem.model_dump().items() if v is not None} 
+    if update_data: 
+        result = await db["menuitem"].update_one({"_id": menuitem_id}, {"$set": update_data}) 
+        if result.modified_count == 0: 
+            raise HTTPException(status_code=404, detail="Menu item not found") 
     
+    updated_menuitem = await db["menuitem"].find_one({"_id": menuitem_id}) 
+    if not updated_menuitem: 
+        raise HTTPException(status_code=404, detail="Menu item not found") 
+    
+    return updated_menuitem
+
+# Delete a menu item by ID
+async def delete_menuitem(menuitem_id: str) -> dict:
+    deleted_menuitem = await db["menuitem"].find_one_and_delete({"_id": menuitem_id}) 
+    if not deleted_menuitem: 
+        raise HTTPException(status_code=404, detail="Menu item not found") 
+    
+    return deleted_menuitem
+
+# Read menu items by filter
+async def read_menuitems_by_filter(category: Optional[str] = Query(None, example="dishes"), 
+                            sort_by_price: Optional[str] = Query(None, example="high to low"), 
+                            stock_status: Optional[str] = Query(None, example="in stock")
+                        ) -> list[dict]:
+    
+    return await get_menu_items_by_filter(
+        category=category, 
+        sort_by_price=sort_by_price, 
+        stock_status=stock_status)
+    
+
+# Create a new discount
+async def update_discount(discount_percentage: int) -> dict:
+    return await set_discount_percentage(discount_percentage)
+
+
+
     
     
     
