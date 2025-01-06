@@ -38,62 +38,22 @@ export function OrderList({ orders, onOrderSelect }) {
       case "completed":
         return {
           label: "Completed",
-          sx: {
-            bgcolor: "#B2E0D9",
-            color: "#00B69B",
-            fontWeight: 700,
-            fontSize: "0.75rem",
-            height: "24px",
-            borderRadius: "6px",
-            "& .MuiChip-label": {
-              px: 2,
-            },
-          },
+          sx: { bgcolor: "#E8F5E9", color: "#2E7D32" },
         };
       case "processing":
         return {
           label: "Processing",
-          sx: {
-            bgcolor: "#E0D7FF",
-            color: "#6226EF",
-            fontWeight: 700,
-            fontSize: "0.75rem",
-            height: "24px",
-            borderRadius: "6px",
-            "& .MuiChip-label": {
-              px: 2,
-            },
-          },
+          sx: { bgcolor: "#E3F2FD", color: "#1976D2" },
         };
       case "rejected":
         return {
           label: "Rejected",
-          sx: {
-            bgcolor: "#FFE7D9",
-            color: "#EF3826",
-            fontWeight: 700,
-            fontSize: "0.75rem",
-            height: "24px",
-            borderRadius: "6px",
-            "& .MuiChip-label": {
-              px: 2,
-            },
-          },
+          sx: { bgcolor: "#FFEBEE", color: "#D32F2F" },
         };
       default:
         return {
-          label: "Process",
-          sx: {
-            bgcolor: "#FFF7CD",
-            color: "#B78103",
-            fontWeight: 600,
-            fontSize: "0.75rem",
-            height: "24px",
-            borderRadius: "6px",
-            "& .MuiChip-label": {
-              px: 2,
-            },
-          },
+          label: "Pending",
+          sx: { bgcolor: "#FFF3E0", color: "#E65100" },
         };
     }
   };

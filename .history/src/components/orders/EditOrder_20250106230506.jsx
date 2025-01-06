@@ -231,7 +231,6 @@ export function EditOrder({ order, onClose, onAccept, onReject }) {
                   Đã được áp dụng discount {order.discount_applied}% thành công
                 </Typography>
               </Box>
-              
               <Box
                 sx={{
                   display: "flex",

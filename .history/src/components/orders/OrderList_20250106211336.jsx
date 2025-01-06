@@ -54,9 +54,9 @@ export function OrderList({ orders, onOrderSelect }) {
         return {
           label: "Processing",
           sx: {
-            bgcolor: "#E0D7FF",
-            color: "#6226EF",
-            fontWeight: 700,
+            bgcolor: "#EBF8FF",
+            color: "#0C53B7",
+            fontWeight: 600,
             fontSize: "0.75rem",
             height: "24px",
             borderRadius: "6px",
@@ -70,8 +70,8 @@ export function OrderList({ orders, onOrderSelect }) {
           label: "Rejected",
           sx: {
             bgcolor: "#FFE7D9",
-            color: "#EF3826",
-            fontWeight: 700,
+            color: "#B72136",
+            fontWeight: 600,
             fontSize: "0.75rem",
             height: "24px",
             borderRadius: "6px",

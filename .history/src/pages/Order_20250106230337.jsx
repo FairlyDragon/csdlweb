@@ -15,7 +15,7 @@ const sampleOrders = [
     status: "waiting",
     note: "",
     voucher_id: "v00002",
-    discount_applied: 5,
+    discount_applied: 0,
     // Thông tin từ bảng Customer
     customer: {
       customer_id: "c00002",

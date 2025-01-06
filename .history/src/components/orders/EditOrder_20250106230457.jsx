@@ -226,12 +226,6 @@ export function EditOrder({ order, onClose, onAccept, onReject }) {
                 </Box>
               ))}
 
-              <Box sx={{ mt: 1 }}>
-                <Typography variant="body2" color="text.secondary">
-                  Đã được áp dụng discount {order.discount_applied}% thành công
-                </Typography>
-              </Box>
-              
               <Box
                 sx={{
                   display: "flex",
@@ -263,6 +257,7 @@ export function EditOrder({ order, onClose, onAccept, onReject }) {
                     .toFixed(2)}
                 </Typography>
               </Box>
+              
             </Box>
           </Grid>
         </Grid>

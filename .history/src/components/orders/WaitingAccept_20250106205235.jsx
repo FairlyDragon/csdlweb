@@ -167,12 +167,12 @@ export function WaitingAccept({ orders, onOrderSelect }) {
                     label="Process"
                     size="small"
                     sx={{
-                      bgcolor: "#FFF7CD",
-                      color: "#B78103",
-                      fontWeight: 600,
+                      bgcolor: "#FFF3E0",
+                      color: "#E65100",
+                      fontWeight: 500,
                       fontSize: "0.75rem",
                       height: "24px",
-                      borderRadius: "6px",
+                      borderRadius: "12px",
                       "& .MuiChip-label": {
                         px: 2,
                       },

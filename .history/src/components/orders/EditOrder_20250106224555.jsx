@@ -226,12 +226,6 @@ export function EditOrder({ order, onClose, onAccept, onReject }) {
                 </Box>
               ))}
 
-              <Box sx={{ mt: 1 }}>
-                <Typography variant="body2" color="text.secondary">
-                  Đã được áp dụng discount {order.discount_applied}% thành công
-                </Typography>
-              </Box>
-              
               <Box
                 sx={{
                   display: "flex",
@@ -258,6 +252,33 @@ export function EditOrder({ order, onClose, onAccept, onReject }) {
                       (sum, item) =>
                         sum +
                         (item.quantity || 0) * (item.menuitem?.price || 0),
+                      0
+                    )
+                    .toFixed(2)}
+                </Typography>
+              </Box>
+
+              <Box sx={{ mt: 1 }}>
+                {order.order_details.map((item) => (
+                  <Typography
+                    key={item.order_details_id}
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    Áp dụng {item.menuitem?.discount}% discount cho{" "}
+                    {item.menuitem?.name}
+                  </Typography>
+                ))}
+              </Box>
+
+              <Box sx={{ mt: 1 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Tổng giảm giá: $
+                  {order.order_details
+                    ?.reduce(
+                      (sum, item) =>
+                        sum +
+                        (item.quantity || 0) * (item.menuitem?.discount || 0) * (item.menuitem?.price || 0) / 100,
                       0
                     )
                     .toFixed(2)}
