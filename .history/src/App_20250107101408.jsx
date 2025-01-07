@@ -18,7 +18,7 @@ function App() {
           <Route path='orders' element={<Order />} />
           <Route path='customers' element={<Customer />} />
           <Route path='shippers' element={<Shipper />} />
-          <Route path='vouchers' element={<Voucher/>} />
+          <Route path='vouchers' element={<Voucher/>}
         </Route>
       </Routes>
     </BrowserRouter>
