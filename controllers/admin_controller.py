@@ -155,8 +155,8 @@ async def delete_menuitem(menuitem_id: str) -> dict:
 
 # Read menu items by filter
 async def read_menuitems_by_filter(category: Optional[str] = Query(None, example="dishes"), 
-                            sort_by_price: Optional[str] = Query(None, example="high to low"), 
-                            stock_status: Optional[str] = Query(None, example="in stock")
+                            sort_by_price: Optional[str] = Query(None, example="high_to_low"), 
+                            stock_status: Optional[str] = Query(None, example="in_stock")
                         ) -> list[dict]:
     
     return await get_menu_items_by_filter(

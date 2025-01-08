@@ -1,11 +1,12 @@
-
+from middlewares.cors_middleware import setup_cors
 from fastapi import APIRouter, FastAPI
-# from fastapi.middleware.cors import CORSMiddleware
-from config.database import DB_NAME, db, client
+from db.database import DB_NAME, db, client
 from routes.admin_routes import router as admin_router
 from datetime import datetime, timedelta    
 
 app = FastAPI()
+
+setup_cors(app)
 
 sample_reviews = [
     {"review_id": "r1", "user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},
@@ -36,7 +37,7 @@ sample_payments = [
 ]
 
 sample_menu_items = [
-    {"menuitem_id": "m1", "name": "Pizza", "description": "Delicious cheese pizza", "price": 20.0,
+    {"_id": "m1", "name": "Pizza", "description": "Delicious cheese pizza", "price": 20.0,
      "category": "Main Course", "average_rating": 4.5, "discount": None, "is_active": True,
      "image_url": "http://example.com/pizza.jpg"},
 ]

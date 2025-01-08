@@ -12,7 +12,7 @@ router.get("/dashboard/center/total_orders", response_description="Total orders 
 
 router.get("/dashboard/center/total_revenue", response_description="Total revenue figures list of dashboard center")(read_dashboard_center_total_revenue)
 
-router.get("dashboard/center/customers_map", response_description="Customers map figures list of dashboard center")(read_dashboard_center_customers_map)
+router.get("/dashboard/center/customers_map", response_description="Customers map figures list of dashboard center")(read_dashboard_center_customers_map)
 
 router.get("/dashboard/footer", response_description="Customer reviews")(read_dashboard_footer_customer_reviews)
 
@@ -23,6 +23,7 @@ router.put("/foods/menuitems/{menuitem_id}", response_description="Update a menu
 
 router.delete("/foods/menuitems/{menuitem_id}", response_description="Delete a menu item by ID")(delete_menuitem)
 
+## Issue here
 router.get("/foods/menuitems/", response_description="Get menu items by fitler")(read_menuitems_by_filter)
 
 router.put("/foods/discount/{discount_percentage}", response_description="Set discount percentage")(update_discount)

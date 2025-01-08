@@ -1,5 +1,5 @@
 # This file contains the service functions for the admin module
-from config.database import db
+from db.database import db
 from schemas.admin_schema import *
 from services.time_service import *
 from models.order import OrderStatus

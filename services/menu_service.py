@@ -1,7 +1,7 @@
 from models.menuitem import MenuItem
 from datetime import datetime
 from typing import Optional
-from config.database import db
+from db.database import db
 from fastapi import HTTPException, Query
 
 # Get all menu items
@@ -33,15 +33,15 @@ async def get_menu_items_by_filter(
         filtered_items = [item for item in filtered_items if item["category"] == category.strip().lower()] 
         
     if stock_status: 
-        if stock_status.strip().lower() == "in stock": 
+        if stock_status.strip().lower() == "in_stock": 
             filtered_items = [item for item in filtered_items if item["is_active"]] 
-        elif stock_status.strip().lower() == "out of stock": 
+        elif stock_status.strip().lower() == "out_of_stock": 
             filtered_items = [item for item in filtered_items if not item["is_active"]]
     
     if sort_by_price: 
-        if sort_by_price.strip().lower() == "low to high": 
+        if sort_by_price.strip().lower() == "low_to_high": 
             filtered_items = sorted(filtered_items, key=lambda x: x["price"]) 
-        elif sort_by_price.strip().lower() == "high to low": 
+        elif sort_by_price.strip().lower() == "high_to_low": 
             filtered_items = sorted(filtered_items, key=lambda x: x["price"], reverse=True) 
             
     return filtered_items

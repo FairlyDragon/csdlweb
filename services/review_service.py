@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from config.database import db
+from db.database import db
 from schemas.review_schema import ReviewResponseSchema
 
 # Get all customer reviews and sort from lastest to oldest

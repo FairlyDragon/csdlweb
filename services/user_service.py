@@ -1,6 +1,6 @@
-from app.config.database import db
-from app.schemas.admin_schema import *
-from app.services.time_service import *
+from db.database import db
+from schemas.admin_schema import *
+from services.time_service import *
 
 # Get customers by phone number   
 async def get_customers_by_phone_number(phone_number: str):

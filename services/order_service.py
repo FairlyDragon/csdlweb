@@ -1,4 +1,4 @@
-from config.database import db
+from db.database import db
 from schemas.admin_schema import *
 from services.time_service import *
 from models.orderdelivery import DeliveryStatusEnum
