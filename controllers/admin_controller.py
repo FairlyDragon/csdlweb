@@ -204,6 +204,22 @@ async def read_vouchers_by_status(status: str = Path(..., example="available")) 
     
     return list_vouchers
 
+# Update a voucher by voucher id
+async def update_voucher(voucher: UpdateVoucherSchema) -> dict: # in essence, this returns Voucher instance but replace _id with voucher_id
+    # convert the Voucher instance to a dictionary. And only keep the non-None values to ensure data integrity
+    update_data = {k: v for k, v in voucher.model_dump().items() if v is not None}
+    
+    # update the voucher in the database
+    updated_voucher = await update_voucher_by_id(voucher.voucher_id, update_data)
+    
+    if not updated_voucher:
+        raise HTTPException(status_code=404, detail="Voucher not found")
+    
+    # REPLACE _id with the voucher_id 
+    updated_voucher.setdefault("voucher_id", updated_voucher.pop("_id"))
+    
+    return updated_voucher
+
 
     
     

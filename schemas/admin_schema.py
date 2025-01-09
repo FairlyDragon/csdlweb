@@ -85,5 +85,27 @@ class CreateVoucherSchema(BaseModel):
             }
         }
     
+class UpdateVoucherSchema(BaseModel):
+    voucher_id: str
+    code: Optional[str] = None
+    discount_percentage: Optional[float] = None
+    discount_amount: Optional[float] = None
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    minimum_order_amount: Optional[float] = None
+    total_usage_limit: Optional[int] = None
+    used: Optional[int] = None
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "voucher_id": "grdrdg51fdsghdf0h2",
+                "code": "CHANGED_CODE",
+                "discount_percentage": 10,
+                "discount_amount": 10,
+                "start_date": "2025-01-01",
+                "end_date": "2025-01-31"
+            }
+        }
         
 

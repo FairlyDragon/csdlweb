@@ -190,4 +190,16 @@ async def get_vouchers_by_status(status: str) -> list[dict]:
         raise HTTPException(status_code=404, detail="No vouchers found")
     
     return result
+
+# Update a voucher by voucher id
+async def update_voucher_by_id(voucher_id: str, update_data: dict) -> dict:
+    collection = db["voucher"]
+    result = await collection.update_one({"_id": voucher_id}, {"$set": update_data})
+    
+    if not result.modified_count:
+        raise HTTPException(status_code=404, detail="Voucher not found")
+    
+    return await collection.find_one({"_id": voucher_id})
+    
+
     

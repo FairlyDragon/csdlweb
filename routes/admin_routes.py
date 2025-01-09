@@ -19,7 +19,7 @@ router.get("/dashboard/footer", response_description="Customer reviews")(read_da
 # FOODS
 router.post("/foods/menuitems", response_description="Add a new menu item")(create_menuitem)
 
-router.put("/foods/menuitems/{menuitem_id}", response_description="Update a menu item by ID")(update_menuitem)
+router.put("/foods/menuitems", response_description="Update a menu item by ID")(update_menuitem)
 
 router.delete("/foods/menuitems/{menuitem_id}", response_description="Delete a menu item by ID")(delete_menuitem)
 
@@ -32,5 +32,7 @@ router.put("/foods/discount/{discount_percentage}", response_description="Set di
 router.post("/vouchers", response_description="Create a new voucher")(create_voucher)
 
 router.get("/vouchers/{status}", response_description="Get vouchers by status")(read_vouchers_by_status)
+
+router.put("/vouchers", response_description="Update a voucher by voucher id")(update_voucher)
 
 
