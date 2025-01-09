@@ -15,13 +15,13 @@ class GenderEnum(str, Enum):
      
 class User(BaseModel): 
     user_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 
-    name: str 
+    name: Optional[str] = None
     email: Optional[EmailStr] = None
     password: str 
-    phone_number: str 
+    phone_number: Optional[str] = None 
     address: Optional[str] = None 
     created_at: datetime = Field(default_factory=datetime.now)
     role: UserRole
-    gender: GenderEnum
-    date_of_birth: datetime
+    gender: Optional[GenderEnum] = None
+    date_of_birth: Optional[datetime] = None
 

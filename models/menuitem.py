@@ -13,7 +13,7 @@ class MenuItem(BaseModel):
     description: Optional[str] = None 
     price: float 
     category: str 
-    average_rating: Optional[float] = None 
+    average_rating: Optional[float] = 0
     discount: Optional[float] = 0.0 
     is_active: bool = True
     image_url: str

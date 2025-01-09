@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import datetime
+from models.voucher import Voucher
 
 class TimePeriod(BaseModel):
     start_date: datetime
@@ -23,12 +24,13 @@ class PieChartResponseSchema(BaseModel): # unit is percentage
     customer_growth_percentage: int = Field(..., ge=0, le=100)
     total_revenue_percentage: int = Field(..., ge=0, le=100)
 
-class MenuItemResponseSchema(BaseModel):
-    name: Optional[str] = None
-    description: Optional[str] = None
-    price: Optional[float]  = None
-    category: Optional[str] = None
-    image_url: Optional[str] = None
+class CreateMenuItemSchema(BaseModel):
+    menuitem_id: Optional[str] = None
+    name: str
+    description: str
+    price: float
+    category: str
+    image_url: str
     is_active: Optional[bool] = True
 
     class Config:
@@ -38,9 +40,50 @@ class MenuItemResponseSchema(BaseModel):
                 "description": "Classic Italian pizza with tomatoes, mozzarella, and basil.",
                 "price": 12.99,
                 "category": "Pizza",
-                "image_url": "https://example.com/images/pizza_margherita.jpg",
-                "is_active": "false"
+                "image_url": "https://example.com/images/pizza_margherita.jpg"
             }
         }
+        
+class UpdateMenuItemSchema(BaseModel):
+    menuitem_id: str
+    name: Optional[str] = None
+    price: Optional[float]  = None
+    description: Optional[str] = None
+    category: Optional[str] = None
+    image_url: Optional[str] = None
+    is_active: Optional[bool] = None
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "menuitem_id": "grdrdg51fdsghdf0h2",
+                "name": "Pizza Margherita",
+                "price": 12.99
+            }
+        }
+
+        
+class CreateVoucherSchema(BaseModel):
+    code: str 
+    discount_percentage: float 
+    discount_amount: float
+    start_date: datetime 
+    end_date: datetime 
+    minimum_order_amount: float 
+    total_usage_limit: int
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "code": "SUMMER10",
+                "discount_percentage": 10,
+                "discount_amount": 10,
+                "start_date": "2025-01-01",
+                "end_date": "2025-01-31",
+                "minimum_order_amount": 100,
+                "total_usage_limit": 100
+            }
+        }
+    
         
 

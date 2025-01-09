@@ -23,8 +23,14 @@ router.put("/foods/menuitems/{menuitem_id}", response_description="Update a menu
 
 router.delete("/foods/menuitems/{menuitem_id}", response_description="Delete a menu item by ID")(delete_menuitem)
 
-## Issue here
-router.get("/foods/menuitems/", response_description="Get menu items by fitler")(read_menuitems_by_filter)
+router.get("/foods/menuitems", response_description="Get menu items by fitler")(read_menuitems_by_filter)
 
 router.put("/foods/discount/{discount_percentage}", response_description="Set discount percentage")(update_discount)
+#### FOODS is on pending
+
+# VOUCHERS
+router.post("/vouchers", response_description="Create a new voucher")(create_voucher)
+
+router.get("/vouchers/{status}", response_description="Get vouchers by status")(read_vouchers_by_status)
+
 

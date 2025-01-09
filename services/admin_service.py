@@ -4,6 +4,7 @@ from schemas.admin_schema import *
 from services.time_service import *
 from models.order import OrderStatus
 from models.payment import PaymentStatus
+from models.voucher import Voucher
 from services.order_service import *
 
 # Create a DashboardResponseSchema object
@@ -139,3 +140,47 @@ async def set_discount_percentage(discount_percentage: int) -> dict:
         "message": "Discount percentage set successfully", 
         "modified_count": result.modified_count
         }
+ 
+# Insert a new voucher to the database
+async def insert_voucher_to_db(voucher: Voucher) -> dict:
+    collection = db["voucher"]
+    result = await collection.insert_one(voucher.model_dump(by_alias=True))
+    if not result.inserted_id:
+        raise HTTPException(status_code=500, detail="Failed to insert voucher")
+    
+    return await collection.find_one({"_id": result.inserted_id})
+
+# Get vouchers by status
+async def get_vouchers_by_status(status: str) -> list[dict]: 
+    collection = db["voucher"]
+    status = status.strip().lower()
+    
+    if status not in ["available", "expired", "used"]:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    
+    now = datetime.now()
+    
+    if status == "available":
+        cursor = collection.find({
+            "start_date": {"$lte": now}, 
+            "end_date": {"$gte": now}, 
+            "used": {"$lt": {"$toInt": "$total_usage_limit"}} 
+        })
+    
+    elif status == "expired":
+        cursor = collection.find({
+            "$or": [
+                {"end_date": {"$lt": now}}, 
+                {"used": {"$gte": {"$toInt": "$total_usage_limit"}}} 
+            ]
+        })
+    
+    elif status == "used":
+        cursor = collection.find({"used": {"$gt": 0}})
+    
+    result = await cursor.to_list(length=None)
+    if not result:
+        raise HTTPException(status_code=404, detail="No vouchers found")
+    
+    return result
+    

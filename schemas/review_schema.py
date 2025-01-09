@@ -1,12 +1,12 @@
 from datetime import datetime
 from pydantic import BaseModel, Field
 
-class ReviewResponseSchema(BaseModel):
+class ReviewDashBoardResponseSchema(BaseModel):
     review_id: str
-    customer_id: str
+    customer_id: str # Review model has user_id field instead of customer_id
     menuitem_id: str
-    name: str
+    name: str       # Review model DONT has this field
     rating: int 
     comment: str
-    time_ago: datetime
-    image_url: str
+    review_date: datetime
+    image_url: str  # Review model DONT has this field

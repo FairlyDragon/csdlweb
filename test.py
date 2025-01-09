@@ -21,8 +21,8 @@ sample_users = [
 ]
 
 sample_vouchers = [
-    {"voucher_id": "v1", "code": "DISCOUNT10", "discount_percentage": 10.0, "start_date": datetime.now(),
-     "end_date": datetime.now() + timedelta(days=30), "minimum_order_amount": 50.0, "total_usage_limit": 100},
+    {"code": "DISCOUNT10", "discount_percentage": 10.0, "start_date": datetime.now(),
+     "end_date": datetime.now() + timedelta(days=30), "minimum_order_amount": 50.0, "total_usage_limit": 100, "used": 0},
 ]
 
 sample_orders = [
