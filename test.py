@@ -5,16 +5,17 @@ from routes.admin_routes import router as admin_router
 from datetime import datetime, timedelta    
 
 from models.voucher import Voucher # to test
+from models.review import Review # to test
 import logging
 app = FastAPI()
 
 setup_cors(app)
 
 sample_reviews = [
-    {"review_id": "r1", "user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},
-    {"review_id": "r2", "user_id": "u2", "menuitem_id": "m2", "rating": 4, "comment": "Great service!", "review_date": datetime.now()},
+    {"user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},
+    {"user_id": "u2", "menuitem_id": "m2", "rating": 4, "comment": "Great service!", "review_date": datetime.now()},
 ]
-
+sample_reviews = [Review(**review).model_dump(by_alias=True) for review in sample_reviews]
 sample_users = [
     {"user_id": "u1", "name": "John Doe", "email": "john@example.com", "password": "hashed_password1",
      "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer"},

@@ -21,7 +21,7 @@ def initialize_figures_header_response(figures_current, figures_former, days) ->
     if figures_former == 0:
         return FiguresHeaderResponseSchema(figures=figures_current, growth_rate=100, days=days)
     
-    return FiguresHeaderResponseSchema(figures=figures_current, growth_rate=int(figures_current / figures_former * 100), days=days)
+    return FiguresHeaderResponseSchema(figures=figures_current, growth_rate=int((figures_current - figures_former) / figures_former * 100), days=days)
 
 # Create a PieChartResponseSchema object
 def initialize_pie_chart_response(total_order, customer_growth, total_revenue) -> PieChartResponseSchema:

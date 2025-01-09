@@ -105,7 +105,10 @@ async def read_dashboard_center_customers_map(periodicity: str = "daily") -> lis
 async def read_dashboard_footer_customer_reviews(skip: int = 0, limit: int = 5) -> list[ReviewDashBoardResponseSchema]:
     # get all customer reviews
     reviews = await fetch_reviews()
-    return [ReviewDashBoardResponseSchema(**review) for review in reviews[skip: skip + limit]]
+    if skip > len(reviews) or not reviews:
+        raise HTTPException(status_code=404, detail="No reviews found")
+    
+    return reviews[skip: skip + limit]
 
 
 
