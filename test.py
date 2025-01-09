@@ -13,7 +13,15 @@ setup_cors(app)
 
 sample_reviews = [
     {"user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},
-    {"user_id": "u2", "menuitem_id": "m2", "rating": 4, "comment": "Great service!", "review_date": datetime.now()},
+    {"user_id": "u2", "menuitem_id": "m1", "rating": 4, "comment": "Great service!", "review_date": datetime.now()},
+    {"user_id": "u4", "menuitem_id": "m1", "rating": 4, "comment": "Excellent taste!", "review_date": "2025-01-09T16:03:32.532738"},
+    {"user_id": "u2", "menuitem_id": "m2", "rating": 5, "comment": "Fast delivery!", "review_date": "2025-01-09T16:03:32.532747"},
+    {"user_id": "u4", "menuitem_id": "m1", "rating": 2, "comment": "Delicious food!", "review_date": "2025-01-09T16:03:32.532751"},
+    {"user_id": "u3", "menuitem_id": "m1", "rating": 1, "comment": "Could be better.", "review_date": "2025-01-09T16:03:32.532754"},
+    {"user_id": "u2", "menuitem_id": "m1", "rating": 5, "comment": "Fast delivery!", "review_date": "2025-01-09T16:03:32.532758"},
+    {"user_id": "u2", "menuitem_id": "m1", "rating": 4, "comment": "Not bad!", "review_date": "2025-01-09T16:03:32.532761"},
+    {"user_id": "u2", "menuitem_id": "m1", "rating": 3, "comment": "Could be better.", "review_date": "2025-01-09T16:03:32.532765"},
+    {"user_id": "u2", "menuitem_id": "m1", "rating": 5, "comment": "Will order again!", "review_date": "2025-01-09T16:03:32.532768"},
 ]
 sample_reviews = [Review(**review).model_dump(by_alias=True) for review in sample_reviews]
 sample_users = [

@@ -9,7 +9,7 @@ class TimePeriod(BaseModel):
 
 class FiguresHeaderResponseSchema(BaseModel):
     figures: int | float
-    growth_rate: int = Field(..., ge=0, le=100) # percentage change
+    growth_rate: int = Field(..., le=100) # percentage change
     days: int
     
 class DashBoardHeaderResponseSchema(BaseModel):
