@@ -163,17 +163,24 @@ async def get_vouchers_by_status(status: str) -> list[dict]:
     if status == "available":
         cursor = collection.find({
             "start_date": {"$lte": now}, 
-            "end_date": {"$gte": now}, 
-            "used": {"$lt": {"$toInt": "$total_usage_limit"}} 
+            "end_date": {"$gte": now},
+            "$expr": {
+                "$lt": ["$used", "$total_usage_limit"]  # Properly compare fields within $expr
+            }
         })
     
     elif status == "expired":
         cursor = collection.find({
             "$or": [
                 {"end_date": {"$lt": now}}, 
-                {"used": {"$gte": {"$toInt": "$total_usage_limit"}}} 
+                {
+                    "$expr": {
+                        "$gte": ["$used", "$total_usage_limit"]  # Similar fix here
+                    }
+                } 
             ]
         })
+    
     
     elif status == "used":
         cursor = collection.find({"used": {"$gt": 0}})

@@ -4,6 +4,8 @@ from db.database import DB_NAME, db, client
 from routes.admin_routes import router as admin_router
 from datetime import datetime, timedelta    
 
+from models.voucher import Voucher # to test
+import logging
 app = FastAPI()
 
 setup_cors(app)
@@ -24,6 +26,7 @@ sample_vouchers = [
     {"code": "DISCOUNT10", "discount_percentage": 10.0, "start_date": datetime.now(),
      "end_date": datetime.now() + timedelta(days=30), "minimum_order_amount": 50.0, "total_usage_limit": 100, "used": 0},
 ]
+sample_voucherss = [Voucher(**voucher).model_dump(by_alias=True) for voucher in sample_vouchers]
 
 sample_orders = [
     {"order_id": "o1", "user_id": "u1", "order_date": datetime.now(), "total_amount": 100.0, "status": "accepted",
@@ -58,7 +61,7 @@ router.include_router(admin_router, prefix="/admin", tags=["admin"])
 @app.on_event("startup")
 async def startup_event():
     # Create collections and insert sample data
-    await db["voucher"].insert_many(sample_vouchers)
+    await db["voucher"].insert_many(sample_voucherss)
     await db["user"].insert_many(sample_users)
     await db["review"].insert_many(sample_reviews)
     await db["order"].insert_many(sample_orders)
@@ -70,7 +73,9 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_event():
+    logging.info("Shutdown event triggered")
     # Drop the database on server shutdown
     await client.drop_database(DB_NAME)
+    logging.info("Database dropped")
 
 app.include_router(router)
