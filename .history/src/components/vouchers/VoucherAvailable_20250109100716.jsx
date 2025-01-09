@@ -1,0 +1,213 @@
+import { Card, CardContent, Typography, Box, Grid, Stack } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ElectricBoltIcon from "@mui/icons-material/ElectricBolt";
+import PropTypes from "prop-types";
+import { format, differenceInHours, differenceInDays } from "date-fns";
+import { useState, useEffect } from "react";
+import Pagination from "@mui/material/Pagination";
+
+const VoucherAvailable = ({ vouchers }) => {
+  const [page, setPage] = useState(1);
+  const vouchersPerPage = 9;
+
+  const handleCopyCode = (code) => {
+    navigator.clipboard.writeText(code);
+    alert(`Copied: ${code}`);
+  };
+
+  const shouldShowFlashSale = (endDate) => {
+    const now = new Date();
+    const end = new Date(endDate);
+    return differenceInDays(end, now) <= 1;
+  };
+
+  const getTimeRemaining = (endDate) => {
+    const now = new Date();
+    const end = new Date(endDate);
+
+    const hoursLeft = differenceInHours(end, now);
+    const minutesLeft = Math.floor((end - now) / (1000 * 60)) % 60;
+    const secondsLeft = Math.floor((end - now) / 1000) % 60;
+
+    return `${hoursLeft.toString().padStart(2, "0")} h ${minutesLeft
+      .toString()
+      .padStart(2, "0")} m ${secondsLeft.toString().padStart(2, "0")} s`;
+  };
+
+  // Sort vouchers by creation date/ID (newest first)
+  const sortedVouchers = [...vouchers].sort((a, b) =>
+    b.voucher_id.localeCompare(a.voucher_id)
+  );
+
+  const FlashSaleTimer = ({ endDate }) => {
+    const [timeLeft, setTimeLeft] = useState("");
+
+    useEffect(() => {
+      const interval = setInterval(() => {
+        const timeRemaining = getTimeRemaining(endDate);
+        setTimeLeft(timeRemaining);
+
+        if (timeRemaining === "00 h 00 m 00 s") {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }, [endDate]);
+
+    return (
+      <Box
+        sx={{
+          background: "linear-gradient(45deg, #FFD700 30%, #FFA500 90%)",
+          p: 1.5,
+          borderRadius: 2,
+          mb: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          boxShadow: "0 2px 8px rgba(255, 215, 0, 0.3)",
+        }}
+      >
+        <Stack direction="row" spacing={1} alignItems="center">
+          <ElectricBoltIcon sx={{ color: "#000" }} />
+          <Typography sx={{ color: "#000", fontWeight: 600 }}>
+            Flash Sale
+          </Typography>
+        </Stack>
+        <Typography sx={{ color: "#000", fontWeight: 500 }}>
+          {timeLeft}
+        </Typography>
+      </Box>
+    );
+  };
+
+  // Calculate pagination
+  const indexOfLastVoucher = page * vouchersPerPage;
+  const indexOfFirstVoucher = indexOfLastVoucher - vouchersPerPage;
+  const currentVouchers = sortedVouchers.slice(
+    indexOfFirstVoucher,
+    indexOfLastVoucher
+  );
+  const pageCount = Math.ceil(sortedVouchers.length / vouchersPerPage);
+
+  return (
+    <>
+      <Grid container spacing={3}>
+        {currentVouchers.map((voucher) => (
+          <Grid item xs={12} sm={6} md={4} key={voucher.voucher_id}>
+            <Card
+              sx={{
+                borderRadius: 2,
+                border: "1px solid #e0e0e0",
+                boxShadow: "none",
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#1a237e",
+                    fontSize: "32px",
+                  }}
+                >
+                  {voucher.discount_percentage
+                    ? `${voucher.discount_percentage}% OFF`
+                    : `$${voucher.discount_amount} OFF`}
+                </Typography>
+                <Typography
+                  sx={{
+                    color: "#1a237e",
+                    fontWeight: 500,
+                    fontSize: "16px",
+                    mb: 2,
+                  }}
+                >
+                  {voucher.description}
+                </Typography>
+
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  sx={{ mb: 2 }}
+                >
+                  <Typography
+                    sx={{
+                      color: "#2196f3",
+                      fontSize: "14px",
+                    }}
+                  >
+                    Code: {voucher.code}
+                  </Typography>
+                  <Box
+                    onClick={() => handleCopyCode(voucher.code)}
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 0.5,
+                      color: "#2196f3",
+                      cursor: "pointer",
+                      "&:hover": {
+                        opacity: 0.8,
+                      },
+                    }}
+                  >
+                    <ContentCopyIcon fontSize="small" />
+                    <Typography>Copy</Typography>
+                  </Box>
+                </Stack>
+
+                {/* Flash Sale Timer - Only show if less than 1 day remaining */}
+                {shouldShowFlashSale(voucher.end_date) && (
+                  <FlashSaleTimer endDate={voucher.end_date} />
+                )}
+
+                <Stack spacing={0.5}>
+                  <Typography variant="body2" color="text.secondary">
+                    • {format(new Date(voucher.start_date), "dd/MM/yyyy HH:mm")}{" "}
+                    - {format(new Date(voucher.end_date), "dd/MM/yyyy HH:mm")}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    • Minimum order amount: ${voucher.minimum_order_amount}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    • Total usage limit: {voucher.total_usage_limit}
+                  </Typography>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+      {pageCount > 1 && (
+        <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
+          <Pagination
+            count={pageCount}
+            page={page}
+            onChange={(e, value) => setPage(value)}
+            color="primary"
+          />
+        </Box>
+      )}
+    </>
+  );
+};
+
+VoucherAvailable.propTypes = {
+  vouchers: PropTypes.arrayOf(
+    PropTypes.shape({
+      voucher_id: PropTypes.string.isRequired,
+      code: PropTypes.string.isRequired,
+      start_date: PropTypes.string.isRequired,
+      end_date: PropTypes.string.isRequired,
+      discount_percentage: PropTypes.number,
+      discount_amount: PropTypes.number,
+      minimum_order_amount: PropTypes.number.isRequired,
+      total_usage_limit: PropTypes.number.isRequired,
+      description: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};
+
+export default VoucherAvailable;
