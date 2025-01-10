@@ -179,8 +179,14 @@ async def update_discount(discount_percentage: int) -> dict:
 
 # Create a new voucher
 async def create_voucher(voucher: CreateVoucherSchema) -> dict: # in essence, this returns Voucher instance but replace _id with voucher_id
+    # check if the voucher start date is before the end date
     if voucher.start_date > voucher.end_date:
         raise HTTPException(status_code=400, detail="Start date must be before end date")
+    
+    # check if the voucher code already exists
+    available_voucher = await get_vouchers_by_status("available")
+    if voucher.code in [voucher.code for voucher in available_voucher]:
+        raise HTTPException(status_code=400, detail="Voucher code already exists")
     
     # create a Voucher instance before inserting it into the database
     insert_voucher = Voucher(code = voucher.code, 

@@ -33,6 +33,9 @@ router.post("/vouchers", response_description="Create a new voucher")(create_vou
 
 router.get("/vouchers/{status}", response_description="Get vouchers by status")(read_vouchers_by_status)
 
-router.put("/vouchers", response_description="Update a voucher by voucher id")(update_voucher)
+# router.put("/vouchers", response_description="Update a voucher by voucher id")(update_voucher)
 
+
+# ORDERS (Order List)
+# router.get("/orders", response_description="Get order list")(read_order_list)
 
