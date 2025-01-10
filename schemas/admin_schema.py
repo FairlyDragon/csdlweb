@@ -52,7 +52,7 @@ class UpdateMenuItemSchema(BaseModel):
     category: Optional[str] = None
     image_url: Optional[str] = None
     is_active: Optional[bool] = None
-    
+
     class Config:
         json_schema_extra = {
             "example": {
