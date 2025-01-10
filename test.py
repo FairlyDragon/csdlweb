@@ -26,9 +26,9 @@ sample_reviews = [
 sample_reviews = [Review(**review).model_dump(by_alias=True) for review in sample_reviews]
 sample_users = [
     {"user_id": "u1", "name": "John Doe", "email": "john@example.com", "password": "hashed_password1",
-     "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer"},
+     "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=18Szt2GUkFNpRcSEtIo0VGJa5jbIY5Jux"},
     {"user_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed_password2",
-     "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer"},
+     "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=18Szt2GUkFNpRcSEtIo0VGJa5jbIY5Jux"},
 ]
 
 sample_vouchers = [

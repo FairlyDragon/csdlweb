@@ -1,5 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, Field
+from typing import Optional
 
 class ReviewDashBoardResponseSchema(BaseModel):
     review_id: str
@@ -10,3 +11,4 @@ class ReviewDashBoardResponseSchema(BaseModel):
     comment: str
     review_date: datetime
     image_url: str  # Review model DONT has this field
+    avatar_url: Optional[str] = None  # Review model DONT has this field

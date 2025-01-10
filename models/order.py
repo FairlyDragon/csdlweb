@@ -10,7 +10,10 @@ class OrderItem(BaseModel):
     subtotal: float
     
 class OrderStatus(str, Enum):
-    accepted = "accepted"
+    pending = "pending"
+    processing = "processing"
+    rejected = "rejected"
+    completed = "completed"
     canceled = "canceled"
     
 class Order(BaseModel):

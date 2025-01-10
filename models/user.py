@@ -24,4 +24,5 @@ class User(BaseModel):
     role: UserRole
     gender: Optional[GenderEnum] = None
     date_of_birth: Optional[datetime] = None
+    avatar_url: Optional[str] = None
 

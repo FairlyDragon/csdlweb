@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
-from models.voucher import Voucher
+from models.payment import PaymentMethod, PaymentStatus
+from models.order import OrderItem, OrderStatus
 
 class TimePeriod(BaseModel):
     start_date: datetime
@@ -107,5 +108,28 @@ class UpdateVoucherSchema(BaseModel):
                 "end_date": "2025-01-31"
             }
         }
+        
+class AdminOrderListResponseSchema(BaseModel):
+    order_id: str
+    user_id: str
+    name: str
+    email: str
+    phone: str
+    address: str
+    
+    payment_method: PaymentMethod
+    payment_status: PaymentStatus
+    
+    order_date: datetime
+    order_items: List[OrderItem]
+    num_of_items: int 
+    note: Optional[str] = None
+    status: OrderStatus
+    
+    voucher_code: Optional[str] = None
+    discount_applied: float
+    
+    
+    
         
 

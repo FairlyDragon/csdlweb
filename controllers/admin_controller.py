@@ -129,7 +129,7 @@ async def create_menuitem(menuitem: CreateMenuItemSchema) -> dict:  # in essence
 # Update a menu item by ID
 async def update_menuitem(menuitem: UpdateMenuItemSchema) -> dict: # in essence, this returns MenuItem instance but replace _id with menuitem_id
     # convert the MenuItem instance to a dictionary 
-    update_data = {k: v for k, v in menuitem.model_dump().items() if v is not None}
+    update_data = {k: v for k, v in menuitem.model_dump().items()}
     
     # update the menu item in the database
     if update_data: 
@@ -215,8 +215,8 @@ async def read_vouchers_by_status(status: str = Path(..., example="available")) 
 
 # Update a voucher by voucher id
 async def update_voucher(voucher: UpdateVoucherSchema) -> dict: # in essence, this returns Voucher instance but replace _id with voucher_id
-    # convert the Voucher instance to a dictionary. And only keep the non-None values to ensure data integrity
-    update_data = {k: v for k, v in voucher.model_dump().items() if v is not None}
+    # convert the Voucher instance to a dictionary. NOOOAnd only keep the non-None values to ensure data integrity
+    update_data = {k: v for k, v in voucher.model_dump().items()}
     
     # update the voucher in the database
     updated_voucher = await update_voucher_by_id(voucher.voucher_id, update_data)
