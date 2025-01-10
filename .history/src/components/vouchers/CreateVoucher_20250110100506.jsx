@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
+import { voucherService } from "../../services/VoucherService";
 
 const CreateVoucher = ({ onAddVoucher, onClose }) => {
   const [formData, setFormData] = useState({
@@ -35,20 +36,14 @@ const CreateVoucher = ({ onAddVoucher, onClose }) => {
         code: formData.code,
         start_date: formData.start,
         end_date: formData.end,
-        discount_percentage:
-          formData.discountType === "percentage"
-            ? Number(formData.discountValue)
-            : 0,
-        discount_amount:
-          formData.discountType === "amount"
-            ? Number(formData.discountValue)
-            : 0,
+        discount_percentage: formData.discountType === "percentage" ? Number(formData.discountValue) : 0,
+        discount_amount: formData.discountType === "amount" ? Number(formData.discountValue) : 0,
         minimum_order_amount: Number(formData.minimum_order_amount),
         total_usage_limit: Number(formData.total_usage),
       };
       await onAddVoucher(newVoucher);
     } catch (error) {
-      setError(error.message || "Error creating voucher");
+      console.error("Error submitting voucher:", error);
     }
   };
 

@@ -48,7 +48,7 @@ const CreateVoucher = ({ onAddVoucher, onClose }) => {
       };
       await onAddVoucher(newVoucher);
     } catch (error) {
-      setError(error.message || "Error creating voucher");
+      console.error("Error submitting voucher:", error);
     }
   };
 

@@ -48,9 +48,7 @@ const Setting = () => {
         </Tabs>
       </Box>
 
-      {activeTab === 0 && (
-        <Basic isActive={isActive} setIsActive={setIsActive} />
-      )}
+      {activeTab === 0 && <Basic isActive={isActive} setIsActive={setIsActive} />}
       {activeTab === 1 && <Fee />}
     </Box>
   );

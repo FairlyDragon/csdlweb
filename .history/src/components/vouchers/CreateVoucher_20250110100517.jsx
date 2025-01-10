@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import PropTypes from "prop-types";
+import { voucherService } from "../../services/VoucherService";
 
 const CreateVoucher = ({ onAddVoucher, onClose }) => {
   const [formData, setFormData] = useState({
@@ -48,7 +49,7 @@ const CreateVoucher = ({ onAddVoucher, onClose }) => {
       };
       await onAddVoucher(newVoucher);
     } catch (error) {
-      setError(error.message || "Error creating voucher");
+      console.error("Error submitting voucher:", error);
     }
   };
 

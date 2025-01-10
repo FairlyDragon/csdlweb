@@ -6,7 +6,6 @@ import {
   TextareaAutosize,
 } from "@mui/material";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import PropTypes from "prop-types";
 
 const Basic = ({ isActive, setIsActive }) => {
   return (
@@ -133,11 +132,6 @@ const Basic = ({ isActive, setIsActive }) => {
       </Box>
     </Box>
   );
-};
-
-Basic.propTypes = {
-  isActive: PropTypes.bool.isRequired,
-  setIsActive: PropTypes.func.isRequired,
 };
 
 export default Basic;
