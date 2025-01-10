@@ -154,8 +154,8 @@ const Fee = () => {
         </Button>
 
         {/* Dialog for adding new fee */}
-        <Dialog
-          open={openDialog}
+        <Dialog 
+          open={openDialog} 
           onClose={() => setOpenDialog(false)}
           PaperProps={{
             sx: {
@@ -164,16 +164,14 @@ const Fee = () => {
             },
           }}
         >
-          <DialogTitle
-            sx={{
-              pb: 2,
-              color: "#212B36",
-              fontWeight: 600,
-            }}
-          >
+          <DialogTitle sx={{ 
+            pb: 2,
+            color: "#212B36",
+            fontWeight: 600,
+          }}>
             Add New Fee
           </DialogTitle>
-
+          
           <DialogContent sx={{ pb: 3 }}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <TextField
@@ -188,17 +186,13 @@ const Fee = () => {
                   size="small"
                   label="Value"
                   value={newFee.value}
-                  onChange={(e) =>
-                    setNewFee({ ...newFee, value: e.target.value })
-                  }
+                  onChange={(e) => setNewFee({ ...newFee, value: e.target.value })}
                   sx={{ flex: 1 }}
                 />
                 <Select
                   size="small"
                   value={newFee.type}
-                  onChange={(e) =>
-                    setNewFee({ ...newFee, type: e.target.value })
-                  }
+                  onChange={(e) => setNewFee({ ...newFee, type: e.target.value })}
                   sx={{ width: "100px" }}
                 >
                   <MenuItem value="$">$</MenuItem>

@@ -6,16 +6,12 @@ import {
   IconButton,
   Select,
   MenuItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 
 const Fee = () => {
-  const [openDialog, setOpenDialog] = useState(false);
+  const [showAddFeeForm, setShowAddFeeForm] = useState(false);
   const [newFee, setNewFee] = useState({ name: "", value: "", type: "$" });
   const [additionalFees, setAdditionalFees] = useState([
     { name: "VAT", value: "10", type: "%" },
@@ -26,7 +22,7 @@ const Fee = () => {
     if (newFee.name && newFee.value) {
       setAdditionalFees([...additionalFees, newFee]);
       setNewFee({ name: "", value: "", type: "$" });
-      setOpenDialog(false);
+      setShowAddFeeForm(false);
     }
   };
 
@@ -60,9 +56,13 @@ const Fee = () => {
             }}
           >
             <Box>
-              <Typography sx={{ color: "#637381" }}>DISTRICT</Typography>
+              <Typography sx={{ color: "#637381" }}>
+                DISTRICT
+              </Typography>
             </Box>
-            <Typography sx={{ color: "#637381" }}>DELIVERY CHANGES</Typography>
+            <Typography sx={{ color: "#637381" }}>
+               DELIVERY CHANGES
+            </Typography>
           </Box>
 
           {[
@@ -140,9 +140,68 @@ const Fee = () => {
           ))}
         </Box>
 
+        {showAddFeeForm && (
+          <Box
+            sx={{
+              mb: 2,
+              p: 2,
+              bgcolor: "#F4F6F8",
+              borderRadius: 1,
+            }}
+          >
+            <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+              <TextField
+                size="small"
+                placeholder="Fee name"
+                value={newFee.name}
+                onChange={(e) => setNewFee({ ...newFee, name: e.target.value })}
+                sx={{ flex: 1 }}
+              />
+              <TextField
+                size="small"
+                placeholder="Value"
+                value={newFee.value}
+                onChange={(e) =>
+                  setNewFee({ ...newFee, value: e.target.value })
+                }
+                sx={{ width: "80px" }}
+              />
+              <Select
+                size="small"
+                value={newFee.type}
+                onChange={(e) => setNewFee({ ...newFee, type: e.target.value })}
+                sx={{ width: "70px" }}
+              >
+                <MenuItem value="$">$</MenuItem>
+                <MenuItem value="%">%</MenuItem>
+              </Select>
+            </Box>
+            <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
+              <Button
+                size="small"
+                onClick={() => setShowAddFeeForm(false)}
+                sx={{ color: "#637381" }}
+              >
+                Cancel
+              </Button>
+              <Button
+                size="small"
+                variant="contained"
+                onClick={handleAddFee}
+                sx={{
+                  bgcolor: "#00AB55",
+                  "&:hover": { bgcolor: "#007B55" },
+                }}
+              >
+                Add
+              </Button>
+            </Box>
+          </Box>
+        )}
+
         <Button
           variant="contained"
-          onClick={() => setOpenDialog(true)}
+          onClick={() => setShowAddFeeForm(true)}
           sx={{
             bgcolor: "#00AB55",
             "&:hover": {
@@ -152,81 +211,6 @@ const Fee = () => {
         >
           + Add Fee
         </Button>
-
-        {/* Dialog for adding new fee */}
-        <Dialog
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
-          PaperProps={{
-            sx: {
-              width: "400px",
-              maxWidth: "90%",
-            },
-          }}
-        >
-          <DialogTitle
-            sx={{
-              pb: 2,
-              color: "#212B36",
-              fontWeight: 600,
-            }}
-          >
-            Add New Fee
-          </DialogTitle>
-
-          <DialogContent sx={{ pb: 3 }}>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <TextField
-                fullWidth
-                size="small"
-                label="Fee Name"
-                value={newFee.name}
-                onChange={(e) => setNewFee({ ...newFee, name: e.target.value })}
-              />
-              <Box sx={{ display: "flex", gap: 2 }}>
-                <TextField
-                  size="small"
-                  label="Value"
-                  value={newFee.value}
-                  onChange={(e) =>
-                    setNewFee({ ...newFee, value: e.target.value })
-                  }
-                  sx={{ flex: 1 }}
-                />
-                <Select
-                  size="small"
-                  value={newFee.type}
-                  onChange={(e) =>
-                    setNewFee({ ...newFee, type: e.target.value })
-                  }
-                  sx={{ width: "100px" }}
-                >
-                  <MenuItem value="$">$</MenuItem>
-                  <MenuItem value="%">%</MenuItem>
-                </Select>
-              </Box>
-            </Box>
-          </DialogContent>
-
-          <DialogActions sx={{ px: 3, pb: 3 }}>
-            <Button
-              onClick={() => setOpenDialog(false)}
-              sx={{ color: "#637381" }}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleAddFee}
-              sx={{
-                bgcolor: "#00AB55",
-                "&:hover": { bgcolor: "#007B55" },
-              }}
-            >
-              Add
-            </Button>
-          </DialogActions>
-        </Dialog>
       </Box>
     </Box>
   );
