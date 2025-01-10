@@ -185,7 +185,7 @@ async def create_voucher(voucher: CreateVoucherSchema) -> dict: # in essence, th
     
     # check if the voucher code already exists
     available_voucher = await get_vouchers_by_status("available")
-    if voucher.code in [voucher.code for voucher in available_voucher]:
+    if voucher.code in [voucher["code"] for voucher in available_voucher]:
         raise HTTPException(status_code=400, detail="Voucher code already exists")
     
     # create a Voucher instance before inserting it into the database

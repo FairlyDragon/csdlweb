@@ -51,7 +51,7 @@ sample_payments = [
 sample_menu_items = [
     {"_id": "m1", "name": "Pizza", "description": "Delicious cheese pizza", "price": 20.0,
      "category": "Main Course", "average_rating": 4.5, "discount": None, "is_active": True,
-     "image_url": "http://example.com/pizza.jpg"},
+     "image_url": "https://drive.google.com/file/d/18Szt2GUkFNpRcSEtIo0VGJa5jbIY5Jux/view?usp=sharing"},
 ]
 
 sample_order_deliveries = [
