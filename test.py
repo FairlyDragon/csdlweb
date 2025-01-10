@@ -1,3 +1,4 @@
+from middlewares.auth_middleware import setup_auth_middleware
 from middlewares.cors_middleware import setup_cors
 from fastapi import APIRouter, FastAPI
 from db.database import DB_NAME, db, client
@@ -10,6 +11,8 @@ import logging
 app = FastAPI()
 
 setup_cors(app)
+
+setup_auth_middleware(app)
 
 sample_reviews = [
     {"user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},
@@ -30,6 +33,8 @@ sample_users = [
      "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
     {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed_password2",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
+    {"_id": "s1", "name": "Fast Delivery", "email": "fastdelivery@gmail.com", "password": "hashed_password3",
+     "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "admin", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
 ]
 
 sample_vouchers = [
@@ -39,13 +44,13 @@ sample_vouchers = [
 sample_voucherss = [Voucher(**voucher).model_dump(by_alias=True) for voucher in sample_vouchers]
 
 sample_orders = [
-    {"order_id": "o1", "user_id": "u1", "order_date": datetime.now(), "total_amount": 100.0, "status": "accepted",
+    {"_id": "o1", "user_id": "u1", "order_date": datetime.now(), "total_amount": 100.0, "status": "accepted",
      "note": "Leave at the door", "voucher_id": "v1", "discount_applied": 10.0,
      "order_items": [{"menuitem_id": "m1", "quantity": 2, "subtotal": 40.0}]},
 ]
 
 sample_payments = [
-    {"payment_id": "p1", "order_id": "o1", "payment_method": "credit_card", "amount": 90.0,
+    {"_id": "p1", "order_id": "o1", "payment_method": "credit_card", "amount": 90.0,
      "created_at": datetime.now(), "status": "success"},
 ]
 
@@ -56,11 +61,11 @@ sample_menu_items = [
 ]
 
 sample_order_deliveries = [
-    {"delivery_id": "d1", "order_id": "o1", "shipper_id": "s1", "delivery_status": "delivered"},
+    {"_id": "d1", "order_id": "o1", "shipper_id": "s1", "delivery_status": "delivered"},
 ]
 
 sample_shippers = [
-    {"shipper_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0},
+    {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "email": "fastdelivery@gmail.com", "password": "hashed_password1", "updated_address": "123 Main St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA", "role": "shipper"},
 ]
 
 

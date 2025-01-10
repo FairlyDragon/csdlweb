@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from schemas.user_schema import UserSchema
+
 def signup_user(user: UserSchema):
     pass
 

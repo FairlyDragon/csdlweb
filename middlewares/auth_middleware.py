@@ -29,3 +29,6 @@ class AuthMiddleware(BaseHTTPMiddleware):
 
         response = await call_next(request)
         return response
+    
+def setup_auth_middleware(app):
+    app.add_middleware(AuthMiddleware, allowed_roles=["admin", "shipper", "customer"])

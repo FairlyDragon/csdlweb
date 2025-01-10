@@ -1,5 +1,5 @@
 # from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from uuid import uuid4
 from models.user import UserRole, GenderEnum
@@ -9,13 +9,13 @@ class Shipper(BaseModel):
     shipper_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 
     name: str 
     phone_number: str 
-    total_amount: float		
-    username: str		
+    total_amount: float	
+    email: EmailStr	
     password: str		
     updated_address: str		
     created_at: datetime		
     date_of_birth: datetime		
     gender: GenderEnum		# male or female
     avatar_url: Optional[str] = None
-    role: UserRole 
+    role: UserRole = UserRole.shipper
 

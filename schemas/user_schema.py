@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from models.user import UserRole
+from typing import Optional
 
 class UserSchema(BaseModel):
-    username: str
     email: str
     password: str
-    role: UserRole
+    role: Optional[UserRole]
