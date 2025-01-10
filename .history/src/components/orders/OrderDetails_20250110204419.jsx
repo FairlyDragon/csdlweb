@@ -39,7 +39,7 @@ const OrderDetails = () => {
           </Button>
         </Link>
         <Typography variant="h5" sx={{ ml: 2, fontWeight: 600 }}>
-          Order Details: #{orderDetails.order_details_id.padStart(3, '0')}
+          Order Details: #{orderDetails.id.padStart(3, '0')}
         </Typography>
       </Box>
 
@@ -52,7 +52,7 @@ const OrderDetails = () => {
                 Order Date
               </Typography>
               <Typography>
-                {new Date(orderDetails.order_date).toLocaleString()}
+                {new Date(orderDetails.orderDate).toLocaleString()}
               </Typography>
             </Box>
             <Box>

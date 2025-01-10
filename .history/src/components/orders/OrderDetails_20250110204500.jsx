@@ -52,7 +52,7 @@ const OrderDetails = () => {
                 Order Date
               </Typography>
               <Typography>
-                {new Date(orderDetails.order_date).toLocaleString()}
+                {new Date(orderDetails.orderDate).toLocaleString()}
               </Typography>
             </Box>
             <Box>

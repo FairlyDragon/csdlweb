@@ -1,53 +1,51 @@
 import { useState, useEffect, useCallback } from "react";
-import PropTypes from "prop-types";
 import { Box, Card, Typography, Select, MenuItem, Button } from "@mui/material";
-import { Download, PictureAsPdf } from "@mui/icons-material";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Area,
 } from "recharts";
 import { dashboardService } from "../../services/DashBoardService";
+import { Download, PictureAsPdf } from "@mui/icons-material";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import ExcelJS from 'exceljs';
+import PropTypes from "prop-types";
 
-const RevenueChart = () => {
-  const [period, setPeriod] = useState("daily");
+const CustomerMap = () => {
+  const [period, setPeriod] = useState("weekly");
   const [data, setData] = useState([]);
 
   const fetchData = useCallback(async (periodicity) => {
     try {
-      const validPeriodicity = periodicity || "daily";
-      const response = await dashboardService.getTotalRevenue(validPeriodicity);
+      const validPeriodicity = periodicity || "weekly";
+      const response = await dashboardService.getCustomersMap(validPeriodicity);
 
       let formattedData;
       switch (validPeriodicity) {
         case "daily":
           formattedData = response.map((value, index) => ({
-            date: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index],
-            revenue: value,
+            name: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][index],
+            customers: value,
           }));
           break;
 
         case "weekly":
           formattedData = response.map((value, index) => ({
-            date: `Week ${index + 1}`,
-            revenue: value,
+            name: `Week ${index + 1}`,
+            customers: value,
           }));
           break;
 
         case "monthly":
           formattedData = response.map((value, index) => ({
-            date: new Date(2024, index, 1).toLocaleDateString("en-US", {
+            name: new Date(2024, index, 1).toLocaleDateString("en-US", {
               month: "short",
             }),
-            revenue: value,
+            customers: value,
           }));
           break;
 
@@ -57,7 +55,7 @@ const RevenueChart = () => {
 
       setData(formattedData);
     } catch (error) {
-      console.error("Error fetching revenue data:", error);
+      console.error("Error fetching customer map data:", error);
     }
   }, []);
 
@@ -69,60 +67,46 @@ const RevenueChart = () => {
     setPeriod(event.target.value);
   };
 
-  const getYAxisTickFormatter = (value) => {
-    return `$${value}`;
-  };
-
-  const getYAxisDomain = () => {
-    switch (period) {
-      case "daily":
-        return [0, 1000];
-      case "weekly":
-        return [500, 5000];
-      case "monthly":
-        return [2000, 15000];
-      default:
-        return [0, 1000];
-    }
-  };
-
   const handleSavePDF = () => {
     const doc = new jsPDF();
-    doc.text("Total Revenue Report", 14, 10);
+    doc.text("Customer Map Report", 14, 10);
     autoTable(doc, {
-      head: [["Period", "Revenue ($)"]],
-      body: data.map((item) => [item.date, item.revenue]),
+      head: [["Period", "Customers"]],
+      body: data.map((item) => [item.name, item.customers]),
     });
-    doc.save(`total_revenue_${period}.pdf`);
+    doc.save(`customer_map_${period}.pdf`);
   };
 
   const handleSaveExcel = async () => {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Total Revenue');
+    const worksheet = workbook.addWorksheet('Customer Map');
 
+    // Định dạng header
     worksheet.columns = [
-      { header: 'Period', key: 'date', width: 15 },
-      { header: 'Revenue ($)', key: 'revenue', width: 15 }
+      { header: 'Period', key: 'name', width: 15 },
+      { header: 'Customers', key: 'customers', width: 15 }
     ];
 
+    // Style cho header
     worksheet.getRow(1).font = { bold: true };
     worksheet.getRow(1).fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FF4842' } // Màu đỏ
+      fgColor: { argb: '10B981' } // Màu xanh lá
     };
     worksheet.getRow(1).alignment = { horizontal: 'center' };
 
-    // Format revenue column to currency
+    // Thêm data
     worksheet.addRows(data);
-    worksheet.getColumn('revenue').numFmt = '$#,##0.00';
 
+    // Style cho data
     worksheet.eachRow((row, rowNumber) => {
       if (rowNumber > 1) {
         row.alignment = { horizontal: 'center' };
       }
     });
 
+    // Tạo và tải file
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], { 
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
@@ -130,9 +114,29 @@ const RevenueChart = () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `total_revenue_${period}.xlsx`;
+    a.download = `customer_map_${period}.xlsx`;
     a.click();
     window.URL.revokeObjectURL(url);
+  };
+
+  const getYAxisDomain = (periodicity) => {
+    switch (periodicity) {
+      case "daily":
+        return [0, 100];
+      case "weekly":
+        return [100, 700];
+      case "monthly":
+        return [700, 5000];
+      default:
+        return [0, 100];
+    }
+  };
+
+  const formatXAxisTick = (value, periodicity) => {
+    if (periodicity === "monthly") {
+      return value.charAt(0);
+    }
+    return value;
   };
 
   return (
@@ -163,16 +167,7 @@ const RevenueChart = () => {
               mb: 0.5,
             }}
           >
-            Total Revenue
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: "13px",
-              color: "#6B7280",
-              lineHeight: 1.5,
-            }}
-          >
-            The total revenue by {period}
+            Customer Map
           </Typography>
         </Box>
 
@@ -182,21 +177,21 @@ const RevenueChart = () => {
             value={period}
             onChange={handlePeriodChange}
             sx={{
-              minWidth: 100,
+              minWidth: 75,
               height: 36,
               fontSize: "14px",
               bgcolor: "#FFFFFF",
               "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#FF4842",
+                borderColor: "#10B981",
                 borderRadius: "8px",
               },
               "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#FF4842",
+                borderColor: "#10B981",
               },
               "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#FF4842",
+                borderColor: "#10B981",
               },
-              color: "#FF4842",
+              color: "#10B981",
             }}
           >
             <MenuItem value="daily">Daily</MenuItem>
@@ -210,95 +205,69 @@ const RevenueChart = () => {
             startIcon={<PictureAsPdf />}
             onClick={handleSavePDF}
             sx={{
+              minWidth: 25,
               height: 36,
-              borderColor: "#FF4842",
-              color: "#FF4842",
+              borderColor: "#10B981",
+              color: "#10B981",
+              borderRadius: "8px",
+              padding: "8px",
               "&:hover": {
-                borderColor: "#FF4842",
-                backgroundColor: "rgba(255, 72, 66, 0.08)",
+                borderColor: "#10B981",
+                backgroundColor: "rgba(16, 185, 129, 0.08)",
               },
             }}
-          >
-            PDF
-          </Button>
+          />
+
           <Button
             variant="outlined"
             size="small"
             startIcon={<Download />}
             onClick={handleSaveExcel}
             sx={{
+              minWidth: 25,
               height: 36,
-              borderColor: "#FF4842",
-              color: "#FF4842",
+              borderColor: "#10B981",
+              color: "#10B981",
+              borderRadius: "8px",
+              padding: "8px",
               "&:hover": {
-                borderColor: "#FF4842",
-                backgroundColor: "rgba(255, 72, 66, 0.08)",
+                borderColor: "#10B981",
+                backgroundColor: "rgba(16, 185, 129, 0.08)",
               },
             }}
-          >
-            Excel
-          </Button>
+          />
         </Box>
       </Box>
 
       <Box sx={{ height: 320, mx: -3 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
+          <BarChart
             data={data}
             margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
           >
-            <defs>
-              <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#FF4842" stopOpacity={0.1} />
-                <stop offset="95%" stopColor="#FF4842" stopOpacity={0.01} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              stroke="rgba(145, 158, 171, 0.2)"
-            />
             <XAxis
-              dataKey="date"
+              dataKey="name"
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#919EAB", fontSize: 11 }}
               dy={10}
+              tickFormatter={(value) => formatXAxisTick(value, period)}
             />
             <YAxis
               axisLine={false}
               tickLine={false}
               tick={{ fill: "#919EAB", fontSize: 11 }}
               dx={-10}
-              tickFormatter={getYAxisTickFormatter}
-              domain={getYAxisDomain()}
+              domain={getYAxisDomain(period)}
             />
             <Tooltip content={<CustomTooltip />} cursor={false} />
-            <Line
-              type="monotone"
-              dataKey="revenue"
-              stroke="#FF4842"
-              strokeWidth={2}
-              dot={{
-                r: 4,
-                fill: "#FF4842",
-                strokeWidth: 2,
-                stroke: "#fff",
-              }}
-              activeDot={{
-                r: 6,
-                fill: "#FF4842",
-                strokeWidth: 2,
-                stroke: "#fff",
-              }}
+            <Bar
+              dataKey="customers"
+              fill="#10B981"
+              radius={[4, 4, 0, 0]}
+              barSize={40}
             />
-            <Area
-              type="monotone"
-              dataKey="revenue"
-              stroke="none"
-              fill="url(#colorRevenue)"
-            />
-          </LineChart>
+          </BarChart>
         </ResponsiveContainer>
       </Box>
     </Card>
@@ -327,7 +296,7 @@ const CustomTooltip = ({ active, payload, label }) => {
           mb: 0.25,
         }}
       >
-        {`$${payload[0].value}`}
+        {`${payload[0].value} Customers`}
       </Typography>
       <Typography
         sx={{
@@ -357,4 +326,4 @@ CustomTooltip.defaultProps = {
   label: "",
 };
 
-export default RevenueChart;
+export default CustomerMap;

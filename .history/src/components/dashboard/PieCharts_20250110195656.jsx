@@ -12,7 +12,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { dashboardService } from "../../services/DashBoardService";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import ExcelJS from 'exceljs';
+import ExcelJS from "exceljs";
 
 export default function PieCharts() {
   const [showChart, setShowChart] = useState(true);
@@ -84,47 +84,47 @@ export default function PieCharts() {
 
   const handleSaveExcel = async () => {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Pie Chart');
+    const worksheet = workbook.addWorksheet("Pie Chart");
 
     // Định dạng columns
     worksheet.columns = [
-      { header: 'Metric', key: 'name', width: 20 },
-      { header: 'Percentage', key: 'percentage', width: 15 }
+      { header: "Metric", key: "name", width: 20 },
+      { header: "Percentage", key: "percentage", width: 15 },
     ];
 
     // Style cho header
     worksheet.getRow(1).font = { bold: true };
     worksheet.getRow(1).fill = {
-      type: 'pattern',
-      pattern: 'solid',
-      fgColor: { argb: 'F97316' } // Màu cam
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "F97316" }, // Màu cam
     };
-    worksheet.getRow(1).alignment = { horizontal: 'center' };
+    worksheet.getRow(1).alignment = { horizontal: "center" };
 
     // Thêm data
     worksheet.addRows(
-      data.map(item => ({
+      data.map((item) => ({
         name: item.name,
-        percentage: `${item.value}%`
+        percentage: `${item.value}%`,
       }))
     );
 
     // Style cho data rows
     worksheet.eachRow((row, rowNumber) => {
       if (rowNumber > 1) {
-        row.alignment = { horizontal: 'center' };
+        row.alignment = { horizontal: "center" };
       }
     });
 
     // Tạo và tải file
     const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { 
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     });
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'pie_chart_report.xlsx';
+    a.download = "pie_chart_report.xlsx";
     a.click();
     window.URL.revokeObjectURL(url);
   };

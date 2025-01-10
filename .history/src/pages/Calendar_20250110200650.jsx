@@ -796,7 +796,7 @@ const Calendar = () => {
           color: newEvent.color || "#1a73e8",
         });
       }
-    }, []);
+    }, [newEvent]);
 
     const handleSubmit = () => {
       if (formData.title.trim()) {
