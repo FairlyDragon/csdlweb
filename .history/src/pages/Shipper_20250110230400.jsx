@@ -16,7 +16,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { format } from "date-fns";
+import { format, differenceInYears } from "date-fns";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -66,6 +66,17 @@ const Shipper = () => {
   useEffect(() => {
     localStorage.setItem("shippers", JSON.stringify(shippers));
   }, [shippers]);
+
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return 0;
+    try {
+      const today = new Date();
+      const birthdayDate = new Date(birthDate);
+      return differenceInYears(today, birthdayDate);
+    } catch {
+      return 0;
+    }
+  };
 
   useEffect(() => {
     let result = [...shippers];
@@ -310,7 +321,11 @@ const Shipper = () => {
                 NAME
               </TableCell>
               <TableCell
-                sx={{ color: "#637381", fontWeight: 600, maxWidth: "250px" }}
+                sx={{
+                  color: "#637381",
+                  fontWeight: 600,
+                  maxWidth: "250px",
+                }}
               >
                 ADDRESS
               </TableCell>
@@ -321,13 +336,10 @@ const Shipper = () => {
                 EMAIL
               </TableCell>
               <TableCell sx={{ color: "#637381", fontWeight: 600 }}>
-                PHONE
-              </TableCell>
-              <TableCell sx={{ color: "#637381", fontWeight: 600 }}>
                 GENDER
               </TableCell>
               <TableCell sx={{ color: "#637381", fontWeight: 600 }}>
-                AMOUNT
+                AGE
               </TableCell>
             </TableRow>
           </TableHead>
@@ -375,16 +387,15 @@ const Shipper = () => {
                       : ""}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
-                    {shipper.email ? shipper.email : "N/A"}
-                  </TableCell>
-                  <TableCell sx={{ color: "#212B36" }}>
-                    {shipper.phone_number}
+                    {shipper.email}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
                     {shipper.gender}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
-                    ${shipper.total_amount.toLocaleString()}
+                    {shipper.date_of_birth
+                      ? calculateAge(shipper.date_of_birth)
+                      : 0}
                   </TableCell>
                 </TableRow>
               ))

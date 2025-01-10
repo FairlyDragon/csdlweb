@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    # volumes:
+    #   - ./src:/app/src
+    environment:
+      - NODE_ENV=production
+      - VITE_API_URL=http://localhost:5173/api
+    # networks:
+    #   - app-network
+
+  # backend:
+  #   image: backend-image
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=prod
+  #   networks:
+  #     - app-network
+# networks:
+#   app-network:
+#     driver: bridge

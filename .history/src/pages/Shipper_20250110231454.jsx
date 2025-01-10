@@ -16,7 +16,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { format } from "date-fns";
+import { format, differenceInYears } from "date-fns";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -66,6 +66,17 @@ const Shipper = () => {
   useEffect(() => {
     localStorage.setItem("shippers", JSON.stringify(shippers));
   }, [shippers]);
+
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return 0;
+    try {
+      const today = new Date();
+      const birthdayDate = new Date(birthDate);
+      return differenceInYears(today, birthdayDate);
+    } catch {
+      return 0;
+    }
+  };
 
   useEffect(() => {
     let result = [...shippers];
@@ -299,19 +310,13 @@ const Shipper = () => {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: "#F4F6F8" }}>
-              <TableCell
-                sx={{ color: "#637381", fontWeight: 600, width: "80px" }}
-              >
+              <TableCell sx={{ color: "#637381", fontWeight: 600, width: "80px" }}>
                 AVATAR
               </TableCell>
-              <TableCell
-                sx={{ color: "#637381", fontWeight: 600, width: "180px" }}
-              >
+              <TableCell sx={{ color: "#637381", fontWeight: 600, width: "180px" }}>
                 NAME
               </TableCell>
-              <TableCell
-                sx={{ color: "#637381", fontWeight: 600, maxWidth: "250px" }}
-              >
+              <TableCell sx={{ color: "#637381", fontWeight: 600, maxWidth: "250px" }}>
                 ADDRESS
               </TableCell>
               <TableCell sx={{ color: "#637381", fontWeight: 600 }}>
@@ -375,7 +380,7 @@ const Shipper = () => {
                       : ""}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
-                    {shipper.email ? shipper.email : "N/A"}
+                    {shipper.email}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
                     {shipper.phone_number}

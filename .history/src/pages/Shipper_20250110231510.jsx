@@ -16,7 +16,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { format } from "date-fns";
+import { format, differenceInYears } from "date-fns";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -66,6 +66,17 @@ const Shipper = () => {
   useEffect(() => {
     localStorage.setItem("shippers", JSON.stringify(shippers));
   }, [shippers]);
+
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return 0;
+    try {
+      const today = new Date();
+      const birthdayDate = new Date(birthDate);
+      return differenceInYears(today, birthdayDate);
+    } catch {
+      return 0;
+    }
+  };
 
   useEffect(() => {
     let result = [...shippers];
@@ -375,7 +386,7 @@ const Shipper = () => {
                       : ""}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
-                    {shipper.email ? shipper.email : "N/A"}
+                    {shipper.email}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
                     {shipper.phone_number}

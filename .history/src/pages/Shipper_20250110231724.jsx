@@ -375,7 +375,8 @@ const Shipper = () => {
                       : ""}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
-                    {shipper.email ? shipper.email : "N/A"}
+                    {shipper.email || 'N/A'}
+                    {console.log('Shipper email:', shipper.email)}
                   </TableCell>
                   <TableCell sx={{ color: "#212B36" }}>
                     {shipper.phone_number}
