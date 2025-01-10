@@ -14,21 +14,22 @@ setup_cors(app)
 sample_reviews = [
     {"user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},
     {"user_id": "u2", "menuitem_id": "m1", "rating": 4, "comment": "Great service!", "review_date": datetime.now()},
-    {"user_id": "u4", "menuitem_id": "m1", "rating": 4, "comment": "Excellent taste!", "review_date": "2025-01-09T16:03:32.532738"},
+    {"user_id": "u2", "menuitem_id": "m1", "rating": 4, "comment": "Excellent taste!", "review_date": "2025-01-09T16:03:32.532738"},
     {"user_id": "u2", "menuitem_id": "m2", "rating": 5, "comment": "Fast delivery!", "review_date": "2025-01-09T16:03:32.532747"},
-    {"user_id": "u4", "menuitem_id": "m1", "rating": 2, "comment": "Delicious food!", "review_date": "2025-01-09T16:03:32.532751"},
-    {"user_id": "u3", "menuitem_id": "m1", "rating": 1, "comment": "Could be better.", "review_date": "2025-01-09T16:03:32.532754"},
+    {"user_id": "u1", "menuitem_id": "m1", "rating": 2, "comment": "Delicious food!", "review_date": "2025-01-09T16:03:32.532751"},
+    {"user_id": "u2", "menuitem_id": "m1", "rating": 1, "comment": "Could be better.", "review_date": "2025-01-09T16:03:32.532754"},
     {"user_id": "u2", "menuitem_id": "m1", "rating": 5, "comment": "Fast delivery!", "review_date": "2025-01-09T16:03:32.532758"},
     {"user_id": "u2", "menuitem_id": "m1", "rating": 4, "comment": "Not bad!", "review_date": "2025-01-09T16:03:32.532761"},
     {"user_id": "u2", "menuitem_id": "m1", "rating": 3, "comment": "Could be better.", "review_date": "2025-01-09T16:03:32.532765"},
     {"user_id": "u2", "menuitem_id": "m1", "rating": 5, "comment": "Will order again!", "review_date": "2025-01-09T16:03:32.532768"},
 ]
 sample_reviews = [Review(**review).model_dump(by_alias=True) for review in sample_reviews]
+
 sample_users = [
-    {"user_id": "u1", "name": "John Doe", "email": "john@example.com", "password": "hashed_password1",
-     "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=18Szt2GUkFNpRcSEtIo0VGJa5jbIY5Jux"},
-    {"user_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed_password2",
-     "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=18Szt2GUkFNpRcSEtIo0VGJa5jbIY5Jux"},
+    {"_id": "u1", "name": "John Doe", "email": "john@example.com", "password": "hashed_password1",
+     "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
+    {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed_password2",
+     "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
 ]
 
 sample_vouchers = [
