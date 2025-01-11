@@ -66,11 +66,7 @@ sample_order_deliveries = [
 ]
 
 sample_shippers = [
-<<<<<<< HEAD
-    {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "updated_address": "123 Main St", "created_at": datetime.now(), "email": "shipper1@gmail.com", "date_of_birth": "1990-01-01", "gender": "male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
-=======
     {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "email": "fastdelivery@gmail.com", "password": "hashed_password1", "updated_address": "123 Main St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA", "role": "shipper"},
->>>>>>> test-auth
 ]
 
 

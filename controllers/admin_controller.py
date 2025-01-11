@@ -1,4 +1,5 @@
 from fastapi import Depends, Path
+from schemas.user_schema import CustomerResponseSchema
 from services.user_service import *
 from schemas.admin_schema import *
 from services.admin_service import *
