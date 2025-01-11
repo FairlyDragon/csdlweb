@@ -1,5 +1,5 @@
 # from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 from uuid import uuid4
 from models.user import UserRole, GenderEnum
@@ -17,5 +17,5 @@ class Shipper(BaseModel):
     date_of_birth: datetime		
     gender: GenderEnum		# male or female
     avatar_url: Optional[str] = None
-    role: UserRole 
+    role: UserRole = UserRole.shipper
 

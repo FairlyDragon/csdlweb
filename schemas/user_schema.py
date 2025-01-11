@@ -4,7 +4,6 @@ from pydantic import BaseModel, EmailStr
 from models.user import GenderEnum, UserRole
 
 class UserSchema(BaseModel):
-    username: str
     email: str
     password: str
     role: UserRole

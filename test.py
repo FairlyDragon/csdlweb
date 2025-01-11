@@ -1,7 +1,9 @@
+from middlewares.auth_middleware import setup_auth_middleware
 from middlewares.cors_middleware import setup_cors
 from fastapi import APIRouter, FastAPI
 from db.database import DB_NAME, db, client
 from routes.admin_routes import router as admin_router
+from routes.auth_routes import router as auth_router
 from datetime import datetime, timedelta    
 
 from models.voucher import Voucher # to test
@@ -10,6 +12,8 @@ import logging
 app = FastAPI()
 
 setup_cors(app)
+
+# setup_auth_middleware(app)
 
 sample_reviews = [
     {"user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},
@@ -30,6 +34,8 @@ sample_users = [
      "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
     {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed_password2", "gender": "female", "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
+    {"_id": "s1", "name": "I AM ADMIN", "email": "fastdelivery@gmail.com", "password": "hashed_password3",
+     "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "admin", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
 ]
 
 sample_vouchers = [
@@ -60,13 +66,18 @@ sample_order_deliveries = [
 ]
 
 sample_shippers = [
+<<<<<<< HEAD
     {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "updated_address": "123 Main St", "created_at": datetime.now(), "email": "shipper1@gmail.com", "date_of_birth": "1990-01-01", "gender": "male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
+=======
+    {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "email": "fastdelivery@gmail.com", "password": "hashed_password1", "updated_address": "123 Main St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA", "role": "shipper"},
+>>>>>>> test-auth
 ]
 
 
 
 router = APIRouter()
 router.include_router(admin_router, prefix="/admin", tags=["admin"])
+router.include_router(auth_router, prefix="/auth", tags=["auth"])
 
 @app.on_event("startup")
 async def startup_event():
