@@ -1,3 +1,5 @@
+from models.shipper import Shipper
+from models.user import User
 from models.user import UserRole
 from schemas.user_schema import UserSchema
 from db.database import db
@@ -23,10 +25,16 @@ async def find_user_by_email(email: str):
         return None
     
 # Insert all kinds of users into database
-async def create_user(user: UserSchema):
-    if user.role == UserRole.shipper:
-        await db["shipper"].insert_one(user.model_dump(by_alias=True))
+async def create_user(user: dict) -> dict:  
+    if user["role"] == UserRole.shipper:
+        user_model_to_insert_into_db = Shipper(**user)
+        inserted_user = await db["shipper"].insert_one(user_model_to_insert_into_db.model_dump(by_alias=True))
+    elif user["role"] == UserRole.customer:
+        user_model_to_insert_into_db = User(**user)
+        inserted_user = await db["user"].insert_one(user_model_to_insert_into_db.model_dump(by_alias=True))
     else:
-        await db["user"].insert_one(user.model_dump(by_alias=True))
+        raise HTTPException(status_code=400, detail="Invalid user role")
+        
+    return inserted_user
     
     

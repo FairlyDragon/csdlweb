@@ -7,3 +7,4 @@ motor
 typing
 python-jose
 bcrypt
+python-multipart
