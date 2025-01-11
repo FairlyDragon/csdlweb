@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
+from models.orderdelivery import DeliveryStatusEnum
 from models.payment import PaymentMethod, PaymentStatus
 from models.order import OrderItem, OrderStatus
 
@@ -128,6 +129,24 @@ class AdminOrderListResponseSchema(BaseModel):
     
     voucher_code: Optional[str] = None
     discount_applied: float
+    
+class DeliveryHistoryResponseSchema(BaseModel):
+    order_id: str
+    order_date: datetime
+    order_items: List[OrderItem]
+    
+    # Different from OrderHistoryResponseSchema (right below) at here
+    delivery_status: DeliveryStatusEnum    # delivering, delivered, failed
+    payment_amount: float
+    
+class OrderHistoryResponseSchema(BaseModel):
+    order_id: str
+    order_date: datetime
+    order_items: List[OrderItem]
+    
+    # Different from DeliveryHistoryResponseSchema (right above) at here
+    order_status: OrderStatus      # pending, processing, rejected, completed, canceled
+    payment_amount: float
     
     
     

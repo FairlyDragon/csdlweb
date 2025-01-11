@@ -21,10 +21,10 @@ class Order(BaseModel):
     user_id: str 
     order_date: datetime = Field(default_factory=datetime.now) 
     order_items: List[OrderItem]
-    total_amount: float 
+    total_amount: float                     # including delivery fee and discount directly from restaurant (NOT VOUCHER???)  
     status: str 
     note: Optional[str] = None 
     voucher_id: Optional[str] = None 
-    discount_applied: Optional[float] = None
+    discount_applied: Optional[float] = None    # discount AMOUNT (not percentage) of voucher applied
     
     

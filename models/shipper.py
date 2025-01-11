@@ -10,7 +10,7 @@ class Shipper(BaseModel):
     name: str 
     phone_number: str 
     total_amount: float		
-    username: str		
+    email: str		
     password: str		
     updated_address: str		
     created_at: datetime		

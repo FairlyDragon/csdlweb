@@ -1,10 +1,12 @@
 from fastapi import Depends, Path
+from services.user_service import *
 from schemas.admin_schema import *
 from services.admin_service import *
 from services.review_service import *
 from services.time_service import *
 from services.menu_service import *
 from models.voucher import *
+from services.shipper_service import *
 
 ### Dashboard Header
 async def read_dashboard_header(time_period: TimePeriod = Depends(get_time_period)) -> DashBoardHeaderResponseSchema:
@@ -228,6 +230,52 @@ async def update_voucher(voucher: UpdateVoucherSchema) -> dict: # in essence, th
     updated_voucher.setdefault("voucher_id", updated_voucher.pop("_id"))
     
     return updated_voucher
+
+###### SHIPPERS ######
+# Get shippers
+async def read_shippers() -> list[dict]:    # in essence, this returns list of Shipper instances but replace _id with shipper_id
+    # get shippers from db
+    shippers_from_db = await get_shippers()
+    
+    # replace _id with shipper_id
+    for shipper in shippers_from_db:
+        shipper.setdefault("shipper_id", shipper.pop("_id"))
+    
+    return shippers_from_db
+
+# Get delivery history by shipper id
+async def read_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]:
+    # get delivery history by shipper id
+    delivery_history = await get_delivery_history_by_shipper_id(shipper_id)
+    
+    return delivery_history
+
+###### CUSTOMERS ######
+# Get customers
+async def read_customers() -> list[dict]:
+    # get customers from db
+    customers_from_db = await get_customers()
+    
+    # transform the customers from db to the desired format: eliminate the password field and replace _id with customer_id
+    transformed_customers = []
+    for customer in customers_from_db:
+        # replace _id with customer_id
+        customer.setdefault("customer_id", customer.pop("_id"))
+        
+        # model dump to CustomerResponseSchema in order to hide the password field and ensure integrity
+        customer = CustomerResponseSchema(**customer).model_dump()
+        transformed_customers.append(customer)
+    
+    return transformed_customers
+
+# Get order history by customer id
+async def read_order_history_by_customer_id(customer_id: str) -> list[dict]:
+    # get order history by customer id
+    order_history = await get_order_history_by_customer_id(customer_id)
+    
+    return order_history
+
+
 
 
     
