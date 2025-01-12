@@ -9,7 +9,7 @@ class ShipperSchema(BaseModel):
     phone_number: str
     total_amount: float
     email: str
-    updated_address: Optional[str] = None
+    address: Optional[str] = None
     created_at: datetime
     date_of_birth: datetime
     gender: GenderEnum

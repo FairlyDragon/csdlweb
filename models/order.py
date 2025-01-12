@@ -26,5 +26,6 @@ class Order(BaseModel):
     note: Optional[str] = None 
     voucher_id: Optional[str] = None 
     discount_applied: Optional[float] = None    # discount AMOUNT (not percentage) of voucher applied
+    delivery_fee: float
     
     

@@ -135,18 +135,21 @@ class DeliveryHistoryResponseSchema(BaseModel):
     order_date: datetime
     order_items: List[OrderItem]
     
-    # Different from OrderHistoryResponseSchema (right below) at here
-    delivery_status: DeliveryStatusEnum    # delivering, delivered, failed
-    payment_amount: float
+    profit: float
     
+    # Aggregated data
+    # total_order_quantity: int
+    # total_cod: float
 class OrderHistoryResponseSchema(BaseModel):
     order_id: str
     order_date: datetime
     order_items: List[OrderItem]
     
-    # Different from DeliveryHistoryResponseSchema (right above) at here
-    order_status: OrderStatus      # pending, processing, rejected, completed, canceled
     payment_amount: float
+    # Aggregated data
+    # total_order_quantity: int
+    # total_purchase]: float
+    
     
     
     

@@ -114,7 +114,6 @@ async def read_dashboard_footer_customer_reviews(skip: int = 0, limit: int = 5) 
     return reviews[skip: skip + limit]
 
 
-
 ##### FOODS ######
 # Create a new menu item
 async def create_menuitem(menuitem: CreateMenuItemSchema) -> dict:  # in essence, this returns MenuItem instance but replace _id with menuitem_id
@@ -238,9 +237,12 @@ async def read_shippers() -> list[dict]:    # in essence, this returns list of S
     # get shippers from db
     shippers_from_db = await get_shippers()
     
-    # replace _id with shipper_id
+    # transform the shippers from db to the desired format: eliminate the password field and replace _id with shipper_id
     for shipper in shippers_from_db:
+        # replace _id with shipper_id
         shipper.setdefault("shipper_id", shipper.pop("_id"))
+        # Ensure to hide the password
+        shipper.pop("password")
     
     return shippers_from_db
 
@@ -249,7 +251,30 @@ async def read_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]:
     # get delivery history by shipper id
     delivery_history = await get_delivery_history_by_shipper_id(shipper_id)
     
-    return delivery_history
+    transformed_delivery_history = []
+    
+    # transform the delivery history to the desired format: replace _id with order_id
+    for delivery in delivery_history:
+        order_id = delivery["order_id"]
+        # Get order with _id = order_id
+        order = await db["order"].find_one({"_id": order_id})
+        
+        # Only show "completed" orders because there's a "profit" column
+        if order["status"] == OrderStatus.completed:
+            transformed_delivery_history.append(DeliveryHistoryResponseSchema(
+                order_id=order_id, 
+                order_date=order["order_date"],
+                order_items=[OrderItem(**item).model_dump() for item in order["order_items"]],
+                profit=order["total_amount"],)
+                    .model_dump())
+            
+    
+    transformed_delivery_history.append({
+        "total_order_quantity": len(transformed_delivery_history),
+        "total_cod": sum(delivery["profit"] for delivery in transformed_delivery_history)
+        })
+
+    return transformed_delivery_history
 
 ###### CUSTOMERS ######
 # Get customers
@@ -277,8 +302,21 @@ async def read_order_history_by_customer_id(customer_id: str) -> list[dict]:
     transformed_order_history = []
     # transform the order history to the desired format: replace _id with order_id
     for order in order_history:
-        order.setdefault("order_id", order.pop("_id"))
-        transformed_order_history.append(order)
+        
+        # Only add the order_id field if the order is "completed"
+        if order["status"] == OrderStatus.completed:
+            transformed_order_history.append(OrderHistoryResponseSchema(
+                order_id=order["_id"], 
+                order_date=order["order_date"], 
+                order_items=[OrderItem(**item).model_dump() for item in order["order_items"]], 
+                payment_amount=order["total_amount"])
+            .model_dump())
+    
+    # Aggregate the order history
+    transformed_order_history.append({
+        "total_order_quantity": len(transformed_order_history),
+        "total_purchase": sum(order["payment_amount"] for order in transformed_order_history)
+        })
     
     return transformed_order_history
 

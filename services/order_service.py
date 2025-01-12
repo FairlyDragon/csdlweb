@@ -1,19 +1,15 @@
 from db.database import db
 from schemas.admin_schema import *
 from services.time_service import *
-from models.orderdelivery import DeliveryStatusEnum
 
-
-# Get orders by status 
+# Get orders by status (pending, processing, rejected, completed, canceled)
 async def get_orders_by_status(status: str) -> list:
-    order_delivery_by_status = await db["order_delivery"].find({"delivery_status": status}).to_list(length=None) 
-    if not order_delivery_by_status: 
+    order_by_status = await db["order"].find({"status": status}).to_list(length=None) 
+    if not order_by_status: 
         raise HTTPException(status_code=404, detail=f"No {status} orders found") 
-    
-    order_ids = [order["order_id"] for order in order_delivery_by_status] 
-    orders = await db["order"].find({"order_id": {"$in": order_ids}}).to_list(length=None) 
-    
-    return orders
+
+    return order_by_status
+
 
 # Get order within a time period (from 'order' collection)
 async def get_orders_within_period(start_time, end_time) -> list: 
@@ -30,14 +26,16 @@ async def get_orders_of_all_customers() -> list:
     
     return orders
 
-# Get delivered orders within a period of time
-async def get_delivered_orders_within_period(start_time, end_time) -> list:
-    delivered_orders = await get_orders_by_status(DeliveryStatusEnum.delivered)
+# Get order history by customer id
+async def get_order_history_by_customer_id(customer_id: str) -> list[dict]:
+    order_history = await db["order"].find({"user_id": customer_id}).to_list(length=None)
+    if not order_history:
+        raise HTTPException(status_code=404, detail="No order history found")
+    
+    return order_history
+
+# Get completed orders within a period of time
+async def get_completed_orders_within_period(start_time, end_time) -> list:
+    delivered_orders = await get_orders_by_status(OrderStatus.completed)
     
     return [order for order in delivered_orders if start_time <= order["order_date"] <= end_time]
-    
-# Get on-the-way orders 
-async def get_delivering_orders() -> list:
-    delivering_orders = await get_orders_by_status(DeliveryStatusEnum.delivering)
-    
-    return delivering_orders

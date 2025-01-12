@@ -36,7 +36,7 @@ async def get_dashboard_header_data(start_time: datetime, end_time: datetime) ->
     orders = await get_orders_within_period(start_time, end_time)
     
     total_orders = len(orders)
-    total_delivered = len(await get_delivered_orders_within_period(start_time=start_time, end_time=end_time))
+    total_delivered = len(await get_completed_orders_within_period(start_time=start_time, end_time=end_time))
     
     total_canceled = len([o for o in orders if o["status"] == OrderStatus.canceled])
     

@@ -45,6 +45,8 @@ router.get("/customers", response_description="Get customers")(read_customers)
 
 router.get("/customers/{customer_id}", response_description="Get order history by customer id")(read_order_history_by_customer_id)
 
+
+
 # ORDERS (Order List)
 # router.get("/orders", response_description="Get order list")(read_order_list)
 

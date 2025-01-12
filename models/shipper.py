@@ -1,5 +1,5 @@
 # from typing import Optional
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from datetime import datetime
 from uuid import uuid4
 from models.user import UserRole, GenderEnum
@@ -12,7 +12,7 @@ class Shipper(BaseModel):
     total_amount: float		
     email: str		
     password: str		
-    updated_address: str		
+    address: str		
     created_at: datetime		
     date_of_birth: datetime		
     gender: GenderEnum		# male or female
