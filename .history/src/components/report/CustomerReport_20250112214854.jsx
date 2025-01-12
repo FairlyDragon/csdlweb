@@ -16,13 +16,13 @@ import {
 } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { format, parseISO, isWithinInterval } from "date-fns";
-import ExcelJS from "exceljs";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import ExcelJS from 'exceljs';
 
-export default function ShipperReport() {
+export default function CustomerReport() {
   const [search, setSearch] = useState("");
-  const [searchType, setSearchType] = useState("name");
+  const [searchType, setSearchType] = useState("name"); // name, email, phone
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -51,20 +51,22 @@ export default function ShipperReport() {
     }
   };
 
+  // Sample data
   const reportData = [
     {
-      id: "S0001",
-      name: "Nguyen Van B",
-      email: "nguyenvanb@email.com",
-      phone: "0987654321",
-      address: "123 Le Loi",
-      created_at: "2024-09-05",
-      totalDelivery: 20,
-      totalIncome: 200,
+      id: "C0001",
+      name: "Nguyen Van A",
+      email: "nguyenvana@email.com",
+      phone: "0123456789",
+      address: "334 Nguyen Trai",
+      created_at: "2024-09-04",
+      totalOrder: 31,
+      totalPurchase: 100,
     },
     // Add more data...
   ];
 
+  // Filter data
   const filteredData = reportData.filter((row) => {
     const matchesSearch =
       searchType === "name"
@@ -84,40 +86,35 @@ export default function ShipperReport() {
     return matchesSearch && withinDateRange;
   });
 
+  // Export functions
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Shipper Report");
+    const worksheet = workbook.addWorksheet('Customer Report');
 
-    worksheet.mergeCells("A1:H1");
-    worksheet.getCell("A1").value = "Shipper Report";
-    worksheet.getCell("A1").font = {
+    // Add title
+    worksheet.mergeCells('A1:H1');
+    worksheet.getCell('A1').value = 'Customer Report';
+    worksheet.getCell('A1').font = {
       size: 16,
       bold: true,
-      color: { argb: "000000" },
+      color: { argb: '000000' }
     };
-    worksheet.getCell("A1").alignment = {
-      horizontal: "center",
-      vertical: "middle",
+    worksheet.getCell('A1').alignment = {
+      horizontal: 'center',
+      vertical: 'middle'
     };
 
-    worksheet.addRow([
-      "ID",
-      "NAME",
-      "EMAIL",
-      "PHONE",
-      "ADDRESS",
-      "DATE",
-      "Total Delivery",
-      "Total Income",
-    ]);
+    // Add headers
+    worksheet.addRow(['ID', 'NAME', 'EMAIL', 'PHONE', 'ADDRESS', 'DATE', 'Total Order', 'Total Purchase']);
     worksheet.getRow(2).font = { bold: true };
     worksheet.getRow(2).fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: "f4f6f8" },
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'f4f6f8' }
     };
 
-    filteredData.forEach((row) => {
+    // Add data
+    filteredData.forEach(row => {
       worksheet.addRow([
         row.id,
         row.name,
@@ -125,51 +122,48 @@ export default function ShipperReport() {
         row.phone,
         row.address,
         formatDate(row.created_at),
-        row.totalDelivery,
-        row.totalIncome,
+        row.totalOrder,
+        row.totalPurchase
       ]);
     });
 
+    // Add summary row
     const lastRow = worksheet.rowCount + 1;
     worksheet.mergeCells(`A${lastRow}:F${lastRow}`);
-    worksheet.getCell(`G${lastRow}`).value = "Total:";
+    worksheet.getCell(`G${lastRow}`).value = 'Total:';
     worksheet.getCell(`G${lastRow}`).font = { bold: true };
-    worksheet.getCell(`G${lastRow + 1}`).value = filteredData.reduce(
-      (sum, row) => sum + row.totalDelivery,
-      0
-    );
-    worksheet.getCell(`H${lastRow + 1}`).value = filteredData.reduce(
-      (sum, row) => sum + row.totalIncome,
-      0
-    );
+    worksheet.getCell(`G${lastRow + 1}`).value = filteredData.reduce((sum, row) => sum + row.totalOrder, 0);
+    worksheet.getCell(`H${lastRow + 1}`).value = filteredData.reduce((sum, row) => sum + row.totalPurchase, 0);
 
-    worksheet.columns.forEach((column) => {
+    // Style all cells
+    worksheet.columns.forEach(column => {
       column.width = 15;
-      column.alignment = { horizontal: "left", vertical: "middle" };
+      column.alignment = { horizontal: 'left', vertical: 'middle' };
     });
 
-    worksheet.getColumn("G").numFmt = "#,##0";
-    worksheet.getColumn("H").numFmt = "$#,##0.00";
+    // Style specific columns
+    worksheet.getColumn('G').numFmt = '#,##0';  // Total Order column
+    worksheet.getColumn('H').numFmt = '$#,##0.00';  // Total Purchase column
 
-    worksheet.eachRow((row) => {
+    // Add borders
+    worksheet.eachRow((row, rowNumber) => {
       row.eachCell((cell) => {
         cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
         };
       });
     });
 
+    // Generate & Save File
     const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = url;
-    link.download = "shipper_report.xlsx";
+    link.download = 'customer_report.xlsx';
     link.click();
     window.URL.revokeObjectURL(url);
     handleClose();
@@ -186,8 +180,8 @@ export default function ShipperReport() {
           "Phone",
           "Address",
           "Date",
-          "Total Delivery",
-          "Total Income",
+          "Total Order",
+          "Total Purchase",
         ],
       ],
       body: filteredData.map((row) => [
@@ -197,11 +191,11 @@ export default function ShipperReport() {
         row.phone,
         row.address,
         formatDate(row.created_at),
-        row.totalDelivery,
-        `$${row.totalIncome}`,
+        row.totalOrder,
+        `$${row.totalPurchase}`,
       ]),
     });
-    doc.save("shipper_report.pdf");
+    doc.save("customer_report.pdf");
     handleClose();
   };
 
@@ -214,8 +208,8 @@ export default function ShipperReport() {
         "Phone",
         "Address",
         "Date",
-        "Total Delivery",
-        "Total Income",
+        "Total Order",
+        "Total Purchase",
       ],
       ...filteredData.map((row) => [
         row.id,
@@ -224,8 +218,8 @@ export default function ShipperReport() {
         row.phone,
         row.address,
         formatDate(row.created_at),
-        row.totalDelivery,
-        row.totalIncome,
+        row.totalOrder,
+        row.totalPurchase,
       ]),
     ]
       .map((row) => row.join(","))
@@ -234,13 +228,14 @@ export default function ShipperReport() {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "shipper_report.csv";
+    link.download = "customer_report.csv";
     link.click();
     handleClose();
   };
 
   return (
     <>
+      {/* Search and Filter */}
       <Box
         sx={{
           display: "flex",
@@ -331,6 +326,7 @@ export default function ShipperReport() {
         </Menu>
       </Box>
 
+      {/* Table */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -341,8 +337,8 @@ export default function ShipperReport() {
               <TableCell>PHONE</TableCell>
               <TableCell>ADDRESS</TableCell>
               <TableCell>DATE</TableCell>
-              <TableCell>Total Delivery</TableCell>
-              <TableCell>Total Income</TableCell>
+              <TableCell>Total Order</TableCell>
+              <TableCell>Total Purchase</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -354,14 +350,15 @@ export default function ShipperReport() {
                 <TableCell>{row.phone}</TableCell>
                 <TableCell>{row.address}</TableCell>
                 <TableCell>{formatDate(row.created_at)}</TableCell>
-                <TableCell>{row.totalDelivery}</TableCell>
-                <TableCell>${row.totalIncome}</TableCell>
+                <TableCell>{row.totalOrder}</TableCell>
+                <TableCell>${row.totalPurchase}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
+      {/* Summary */}
       <Box
         sx={{
           display: "flex",
@@ -372,15 +369,15 @@ export default function ShipperReport() {
         }}
       >
         <Typography>
-          Total Delivery:{" "}
+          Total Order:{" "}
           <strong>
-            {filteredData.reduce((sum, row) => sum + row.totalDelivery, 0)}
+            {filteredData.reduce((sum, row) => sum + row.totalOrder, 0)}
           </strong>
         </Typography>
         <Typography>
-          Total Income:{" "}
+          Total Purchase:{" "}
           <strong>
-            ${filteredData.reduce((sum, row) => sum + row.totalIncome, 0)}
+            ${filteredData.reduce((sum, row) => sum + row.totalPurchase, 0)}
           </strong>
         </Typography>
       </Box>

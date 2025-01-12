@@ -1,5 +1,11 @@
 import PropTypes from "prop-types";
-import { Typography, List, ListItem, Box, Button } from "@mui/material";
+import {
+  Typography,
+  List,
+  ListItem,
+  Box,
+  Button,
+} from "@mui/material";
 import { useState } from "react";
 
 export default function ShipperWaiting({
@@ -8,7 +14,7 @@ export default function ShipperWaiting({
   onChooseShipper,
   setOpenDialog,
 }) {
-  const [selectedShipper, setSelectedShipper] = useState(null);
+  const [selectedShipper, setSelectedShipper] = useState(null);  
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
 
@@ -85,11 +91,7 @@ export default function ShipperWaiting({
               <Box>
                 <Typography
                   variant="subtitle1"
-                  sx={{
-                    fontWeight: 500,
-                    mb: 0.5,
-                    color: "#212B36",
-                  }}
+                  sx={{ fontWeight: 500, mb: 0.5 }}
                 >
                   {shipper.name}
                 </Typography>
@@ -109,26 +111,23 @@ export default function ShipperWaiting({
               <Button
                 onClick={() => handleChoose(shipper)}
                 sx={{
-                  bgcolor:
-                    selectedShipper?.shipper_id === shipper.shipper_id
-                      ? "#376D87"
-                      : "#4AEDC4",
-                  color:
-                    selectedShipper?.shipper_id === shipper.shipper_id
-                      ? "white"
-                      : "#00B074",
+                  bgcolor: selectedShipper?.shipper_id === shipper.shipper_id 
+                    ? "#2E9567"  // Màu nền khi được chọn
+                    : "#4AEDC4", // Màu nền mặc định
+                  color: selectedShipper?.shipper_id === shipper.shipper_id 
+                    ? "white"    // Màu chữ khi được chọn
+                    : "#00B074", // Màu chữ mặc định
                   fontSize: 12,
-                  fontFamily: "Nunito Sans",
+                  fontFamily: 'Nunito Sans',
                   fontWeight: 700,
-                  wordWrap: "break-word",
+                  wordWrap: 'break-word',
                   textTransform: "none",
                   borderRadius: 1,
                   px: 3,
-                  "&:hover": {
-                    bgcolor:
-                      selectedShipper?.shipper_id === shipper.shipper_id
-                        ? "#2B5468"
-                        : "#3BC5A0",
+                  "&:hover": { 
+                    bgcolor: selectedShipper?.shipper_id === shipper.shipper_id 
+                      ? "#236F4D"
+                      : "#3BC5A0"
                   },
                 }}
               >

@@ -12,17 +12,17 @@ import {
   Paper,
   Typography,
   MenuItem,
-  Menu,
+  Menu
 } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { format, parseISO, isWithinInterval } from "date-fns";
-import ExcelJS from "exceljs";
+import * as XLSX from "xlsx";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
-export default function ShipperReport() {
+export default function CustomerReport() {
   const [search, setSearch] = useState("");
-  const [searchType, setSearchType] = useState("name");
+  const [searchType, setSearchType] = useState("name"); // name, email, phone
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -51,203 +51,97 @@ export default function ShipperReport() {
     }
   };
 
+  // Sample data
   const reportData = [
     {
-      id: "S0001",
-      name: "Nguyen Van B",
-      email: "nguyenvanb@email.com",
-      phone: "0987654321",
-      address: "123 Le Loi",
-      created_at: "2024-09-05",
-      totalDelivery: 20,
-      totalIncome: 200,
+      id: "C0001",
+      name: "Nguyen Van A",
+      email: "nguyenvana@email.com",
+      phone: "0123456789",
+      address: "334 Nguyen Trai",
+      created_at: "2024-09-04",
+      totalOrder: 31,
+      totalPurchase: 100,
     },
     // Add more data...
   ];
 
-  const filteredData = reportData.filter((row) => {
-    const matchesSearch =
-      searchType === "name"
-        ? row.name.toLowerCase().includes(search.toLowerCase())
-        : searchType === "email"
-        ? row.email.toLowerCase().includes(search.toLowerCase())
-        : row.phone.includes(search);
+  // Filter data
+  const filteredData = reportData.filter(row => {
+    const matchesSearch = searchType === "name" ? row.name.toLowerCase().includes(search.toLowerCase()) :
+                         searchType === "email" ? row.email.toLowerCase().includes(search.toLowerCase()) :
+                         row.phone.includes(search);
 
-    const withinDateRange =
-      !startDate || !endDate
-        ? true
-        : isWithinInterval(parseISO(row.created_at), {
-            start: parseISO(startDate),
-            end: parseISO(endDate),
-          });
+    const withinDateRange = (!startDate || !endDate) ? true :
+      isWithinInterval(parseISO(row.created_at), {
+        start: parseISO(startDate),
+        end: parseISO(endDate)
+      });
 
     return matchesSearch && withinDateRange;
   });
 
-  const exportToExcel = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Shipper Report");
-
-    worksheet.mergeCells("A1:H1");
-    worksheet.getCell("A1").value = "Shipper Report";
-    worksheet.getCell("A1").font = {
-      size: 16,
-      bold: true,
-      color: { argb: "000000" },
-    };
-    worksheet.getCell("A1").alignment = {
-      horizontal: "center",
-      vertical: "middle",
-    };
-
-    worksheet.addRow([
-      "ID",
-      "NAME",
-      "EMAIL",
-      "PHONE",
-      "ADDRESS",
-      "DATE",
-      "Total Delivery",
-      "Total Income",
-    ]);
-    worksheet.getRow(2).font = { bold: true };
-    worksheet.getRow(2).fill = {
-      type: "pattern",
-      pattern: "solid",
-      fgColor: { argb: "f4f6f8" },
-    };
-
-    filteredData.forEach((row) => {
-      worksheet.addRow([
-        row.id,
-        row.name,
-        row.email,
-        row.phone,
-        row.address,
-        formatDate(row.created_at),
-        row.totalDelivery,
-        row.totalIncome,
-      ]);
-    });
-
-    const lastRow = worksheet.rowCount + 1;
-    worksheet.mergeCells(`A${lastRow}:F${lastRow}`);
-    worksheet.getCell(`G${lastRow}`).value = "Total:";
-    worksheet.getCell(`G${lastRow}`).font = { bold: true };
-    worksheet.getCell(`G${lastRow + 1}`).value = filteredData.reduce(
-      (sum, row) => sum + row.totalDelivery,
-      0
-    );
-    worksheet.getCell(`H${lastRow + 1}`).value = filteredData.reduce(
-      (sum, row) => sum + row.totalIncome,
-      0
-    );
-
-    worksheet.columns.forEach((column) => {
-      column.width = 15;
-      column.alignment = { horizontal: "left", vertical: "middle" };
-    });
-
-    worksheet.getColumn("G").numFmt = "#,##0";
-    worksheet.getColumn("H").numFmt = "$#,##0.00";
-
-    worksheet.eachRow((row) => {
-      row.eachCell((cell) => {
-        cell.border = {
-          top: { style: "thin" },
-          left: { style: "thin" },
-          bottom: { style: "thin" },
-          right: { style: "thin" },
-        };
-      });
-    });
-
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], {
-      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "shipper_report.xlsx";
-    link.click();
-    window.URL.revokeObjectURL(url);
+  // Export functions
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(filteredData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Customer Report");
+    XLSX.writeFile(wb, "customer_report.xlsx");
     handleClose();
   };
 
   const exportToPDF = () => {
     const doc = new jsPDF();
     doc.autoTable({
-      head: [
-        [
-          "ID",
-          "Name",
-          "Email",
-          "Phone",
-          "Address",
-          "Date",
-          "Total Delivery",
-          "Total Income",
-        ],
-      ],
-      body: filteredData.map((row) => [
+      head: [['ID', 'Name', 'Email', 'Phone', 'Address', 'Date', 'Total Order', 'Total Purchase']],
+      body: filteredData.map(row => [
         row.id,
         row.name,
         row.email,
         row.phone,
         row.address,
         formatDate(row.created_at),
-        row.totalDelivery,
-        `$${row.totalIncome}`,
+        row.totalOrder,
+        `$${row.totalPurchase}`
       ]),
     });
-    doc.save("shipper_report.pdf");
+    doc.save('customer_report.pdf');
     handleClose();
   };
 
   const exportToCSV = () => {
     const csv = [
-      [
-        "ID",
-        "Name",
-        "Email",
-        "Phone",
-        "Address",
-        "Date",
-        "Total Delivery",
-        "Total Income",
-      ],
-      ...filteredData.map((row) => [
+      ['ID', 'Name', 'Email', 'Phone', 'Address', 'Date', 'Total Order', 'Total Purchase'],
+      ...filteredData.map(row => [
         row.id,
         row.name,
         row.email,
         row.phone,
         row.address,
         formatDate(row.created_at),
-        row.totalDelivery,
-        row.totalIncome,
-      ]),
-    ]
-      .map((row) => row.join(","))
-      .join("\n");
+        row.totalOrder,
+        row.totalPurchase
+      ])
+    ].map(row => row.join(',')).join('\n');
 
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = "shipper_report.csv";
+    link.download = 'customer_report.csv';
     link.click();
     handleClose();
   };
 
   return (
     <>
+      {/* Search and Filter */}
       <Box
         sx={{
           display: "flex",
           gap: 2,
           mb: 3,
           alignItems: "center",
-          flexWrap: "wrap",
+          flexWrap: "wrap"
         }}
       >
         <TextField
@@ -261,7 +155,7 @@ export default function ShipperReport() {
           <MenuItem value="email">Email</MenuItem>
           <MenuItem value="phone">Phone</MenuItem>
         </TextField>
-
+        
         <TextField
           placeholder={`Search by ${searchType}`}
           value={search}
@@ -297,8 +191,8 @@ export default function ShipperReport() {
             borderColor: "#00A76F",
             "&:hover": {
               borderColor: "#00A76F",
-              backgroundColor: "rgba(0, 167, 111, 0.08)",
-            },
+              backgroundColor: "rgba(0, 167, 111, 0.08)"
+            }
           }}
           variant="outlined"
         >
@@ -312,8 +206,8 @@ export default function ShipperReport() {
             bgcolor: "#00A76F",
             color: "white",
             "&:hover": {
-              bgcolor: "#00875C",
-            },
+              bgcolor: "#00875C"
+            }
           }}
           variant="contained"
         >
@@ -331,6 +225,7 @@ export default function ShipperReport() {
         </Menu>
       </Box>
 
+      {/* Table */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -341,8 +236,8 @@ export default function ShipperReport() {
               <TableCell>PHONE</TableCell>
               <TableCell>ADDRESS</TableCell>
               <TableCell>DATE</TableCell>
-              <TableCell>Total Delivery</TableCell>
-              <TableCell>Total Income</TableCell>
+              <TableCell>Total Order</TableCell>
+              <TableCell>Total Purchase</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -354,33 +249,32 @@ export default function ShipperReport() {
                 <TableCell>{row.phone}</TableCell>
                 <TableCell>{row.address}</TableCell>
                 <TableCell>{formatDate(row.created_at)}</TableCell>
-                <TableCell>{row.totalDelivery}</TableCell>
-                <TableCell>${row.totalIncome}</TableCell>
+                <TableCell>{row.totalOrder}</TableCell>
+                <TableCell>${row.totalPurchase}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
+      {/* Summary */}
       <Box
         sx={{
           display: "flex",
           justifyContent: "flex-end",
           gap: 4,
           mt: 2,
-          p: 2,
+          p: 2
         }}
       >
         <Typography>
-          Total Delivery:{" "}
-          <strong>
-            {filteredData.reduce((sum, row) => sum + row.totalDelivery, 0)}
+          Total Order: <strong>
+            {filteredData.reduce((sum, row) => sum + row.totalOrder, 0)}
           </strong>
         </Typography>
         <Typography>
-          Total Income:{" "}
-          <strong>
-            ${filteredData.reduce((sum, row) => sum + row.totalIncome, 0)}
+          Total Purchase: <strong>
+            ${filteredData.reduce((sum, row) => sum + row.totalPurchase, 0)}
           </strong>
         </Typography>
       </Box>

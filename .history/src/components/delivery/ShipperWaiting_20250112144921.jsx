@@ -85,11 +85,7 @@ export default function ShipperWaiting({
               <Box>
                 <Typography
                   variant="subtitle1"
-                  sx={{
-                    fontWeight: 500,
-                    mb: 0.5,
-                    color: "#212B36",
-                  }}
+                  sx={{ fontWeight: 500, mb: 0.5 }}
                 >
                   {shipper.name}
                 </Typography>
@@ -111,12 +107,12 @@ export default function ShipperWaiting({
                 sx={{
                   bgcolor:
                     selectedShipper?.shipper_id === shipper.shipper_id
-                      ? "#376D87"
-                      : "#4AEDC4",
+                      ? "#2E9567" // Màu nền khi được chọn
+                      : "#4AEDC4", // Màu nền mặc định
                   color:
                     selectedShipper?.shipper_id === shipper.shipper_id
-                      ? "white"
-                      : "#00B074",
+                      ? "white" // Màu chữ khi được chọn
+                      : "#00B074", // Màu chữ mặc định
                   fontSize: 12,
                   fontFamily: "Nunito Sans",
                   fontWeight: 700,
@@ -127,7 +123,7 @@ export default function ShipperWaiting({
                   "&:hover": {
                     bgcolor:
                       selectedShipper?.shipper_id === shipper.shipper_id
-                        ? "#2B5468"
+                        ? "#236F4D"
                         : "#3BC5A0",
                   },
                 }}

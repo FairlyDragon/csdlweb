@@ -217,7 +217,7 @@ export default function Delivery() {
       </Box>
 
       {/* Statistics Cards */}
-      <Grid container spacing={3} sx={{ mb: 4, maxWidth: "900px", mx: "auto" }}>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={4}>
           <Card
             sx={{
@@ -225,7 +225,6 @@ export default function Delivery() {
               borderRadius: 4,
               boxShadow: "none",
               bgcolor: "white",
-              maxWidth: "280px",
             }}
           >
             <Box
@@ -237,7 +236,7 @@ export default function Delivery() {
             >
               <FormatListBulletedIcon
                 sx={{
-                  fontSize: 45,
+                  fontSize: 45, // Tăng kích thước icon
                   color: "#1890FF",
                 }}
               />
@@ -245,6 +244,7 @@ export default function Delivery() {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
+                  alignItems: "flex-start",
                 }}
               >
                 <Typography
@@ -259,7 +259,6 @@ export default function Delivery() {
                   variant="h3"
                   sx={{
                     fontWeight: 600,
-                    textAlign: "center",
                   }}
                 >
                   {activeShippers}
@@ -276,7 +275,6 @@ export default function Delivery() {
               borderRadius: 4,
               boxShadow: "none",
               bgcolor: "white",
-              maxWidth: "280px",
             }}
           >
             <Box
@@ -288,7 +286,7 @@ export default function Delivery() {
             >
               <LocalShippingOutlinedIcon
                 sx={{
-                  fontSize: 45,
+                  fontSize: 45, // Tăng kích thước icon
                   color: "#36B37E",
                 }}
               />
@@ -296,6 +294,7 @@ export default function Delivery() {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
+                  alignItems: "flex-start",
                 }}
               >
                 <Typography
@@ -310,7 +309,6 @@ export default function Delivery() {
                   variant="h3"
                   sx={{
                     fontWeight: 600,
-                    textAlign: "center",
                   }}
                 >
                   {deliveringOrders}
@@ -327,7 +325,6 @@ export default function Delivery() {
               borderRadius: 4,
               boxShadow: "none",
               bgcolor: "white",
-              maxWidth: "280px",
             }}
           >
             <Box
@@ -339,7 +336,7 @@ export default function Delivery() {
             >
               <LayersIcon
                 sx={{
-                  fontSize: 45,
+                  fontSize: 45, // Tăng kích thước icon
                   color: "#FFAB00",
                 }}
               />
@@ -347,6 +344,7 @@ export default function Delivery() {
                 sx={{
                   display: "flex",
                   flexDirection: "column",
+                  alignItems: "flex-start",
                 }}
               >
                 <Typography
@@ -361,7 +359,6 @@ export default function Delivery() {
                   variant="h3"
                   sx={{
                     fontWeight: 600,
-                    textAlign: "center",
                   }}
                 >
                   {waitingOrders}

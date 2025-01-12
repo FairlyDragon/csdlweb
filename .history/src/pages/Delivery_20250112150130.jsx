@@ -217,51 +217,37 @@ export default function Delivery() {
       </Box>
 
       {/* Statistics Cards */}
-      <Grid container spacing={3} sx={{ mb: 4, maxWidth: "900px", mx: "auto" }}>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={4}>
-          <Card
-            sx={{
-              p: 3,
-              borderRadius: 4,
-              boxShadow: "none",
-              bgcolor: "white",
-              maxWidth: "280px",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <FormatListBulletedIcon
-                sx={{
-                  fontSize: 45,
-                  color: "#1890FF",
-                }}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography
-                  sx={{
-                    color: "#637381",
-                    mb: 0.5,
-                  }}
-                >
+          <Card sx={{ 
+            p: 3, 
+            borderRadius: 4, 
+            boxShadow: 'none', 
+            bgcolor: 'white' 
+          }}>
+            <Box sx={{ 
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2
+            }}>
+              <FormatListBulletedIcon sx={{ 
+                fontSize: 45,  // Tăng kích thước icon
+                color: "#1890FF",
+              }} />
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start'
+              }}>
+                <Typography sx={{ 
+                  color: "#637381",
+                  mb: 0.5
+                }}>
                   Total Active Shipper
                 </Typography>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontWeight: 600,
-                    textAlign: "center",
-                  }}
-                >
+                <Typography variant="h3" sx={{ 
+                  fontWeight: 600 
+                }}>
                   {activeShippers}
                 </Typography>
               </Box>
@@ -270,49 +256,35 @@ export default function Delivery() {
         </Grid>
 
         <Grid item xs={4}>
-          <Card
-            sx={{
-              p: 3,
-              borderRadius: 4,
-              boxShadow: "none",
-              bgcolor: "white",
-              maxWidth: "280px",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <LocalShippingOutlinedIcon
-                sx={{
-                  fontSize: 45,
-                  color: "#36B37E",
-                }}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography
-                  sx={{
-                    color: "#637381",
-                    mb: 0.5,
-                  }}
-                >
+          <Card sx={{ 
+            p: 3, 
+            borderRadius: 4, 
+            boxShadow: 'none', 
+            bgcolor: 'white' 
+          }}>
+            <Box sx={{ 
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2
+            }}>
+              <LocalShippingOutlinedIcon sx={{ 
+                fontSize: 45,  // Tăng kích thước icon
+                color: "#36B37E",
+              }} />
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start'
+              }}>
+                <Typography sx={{ 
+                  color: "#637381",
+                  mb: 0.5
+                }}>
                   Delivering Order
                 </Typography>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontWeight: 600,
-                    textAlign: "center",
-                  }}
-                >
+                <Typography variant="h3" sx={{ 
+                  fontWeight: 600 
+                }}>
                   {deliveringOrders}
                 </Typography>
               </Box>
@@ -321,49 +293,35 @@ export default function Delivery() {
         </Grid>
 
         <Grid item xs={4}>
-          <Card
-            sx={{
-              p: 3,
-              borderRadius: 4,
-              boxShadow: "none",
-              bgcolor: "white",
-              maxWidth: "280px",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <LayersIcon
-                sx={{
-                  fontSize: 45,
-                  color: "#FFAB00",
-                }}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography
-                  sx={{
-                    color: "#637381",
-                    mb: 0.5,
-                  }}
-                >
+          <Card sx={{ 
+            p: 3, 
+            borderRadius: 4, 
+            boxShadow: 'none', 
+            bgcolor: 'white' 
+          }}>
+            <Box sx={{ 
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2
+            }}>
+              <LayersIcon sx={{ 
+                fontSize: 45,  // Tăng kích thước icon
+                color: "#FFAB00",
+              }} />
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start'
+              }}>
+                <Typography sx={{ 
+                  color: "#637381",
+                  mb: 0.5
+                }}>
                   Waiting Order
                 </Typography>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontWeight: 600,
-                    textAlign: "center",
-                  }}
-                >
+                <Typography variant="h3" sx={{ 
+                  fontWeight: 600 
+                }}>
                   {waitingOrders}
                 </Typography>
               </Box>

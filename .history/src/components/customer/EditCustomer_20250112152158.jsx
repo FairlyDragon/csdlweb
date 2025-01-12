@@ -71,7 +71,7 @@ const EditCustomer = ({ open, customer, onClose, onSave, onDelete }) => {
         date_of_birth: customer.date_of_birth
           ? new Date(customer.date_of_birth).toISOString().split("T")[0]
           : "",
-        gender: customer.gender || "male",
+        gender: customer.gender || "ma",
         created_at: customer.created_at || "",
         avatar_url:
           customer.avatar_url || "https://example.com/default-avatar.jpg",

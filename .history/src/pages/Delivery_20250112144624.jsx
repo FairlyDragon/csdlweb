@@ -217,7 +217,7 @@ export default function Delivery() {
       </Box>
 
       {/* Statistics Cards */}
-      <Grid container spacing={3} sx={{ mb: 4, maxWidth: "900px", mx: "auto" }}>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={4}>
           <Card
             sx={{
@@ -225,50 +225,21 @@ export default function Delivery() {
               borderRadius: 4,
               boxShadow: "none",
               bgcolor: "white",
-              maxWidth: "280px",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <FormatListBulletedIcon
-                sx={{
-                  fontSize: 45,
-                  color: "#1890FF",
-                }}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography
-                  sx={{
-                    color: "#637381",
-                    mb: 0.5,
-                  }}
-                >
-                  Total Active Shipper
-                </Typography>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontWeight: 600,
-                    textAlign: "center",
-                  }}
-                >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <FormatListBulletedIcon sx={{ fontSize: 32, color: "#1890FF" }} />
+              <Box>
+                <Typography variant="h3" sx={{ mb: 0.5, fontWeight: 600 }}>
                   {activeShippers}
                 </Typography>
+                <Typography sx={{ color: "#637381" }}>
+                  Total Active Shipper
+                </Typography>
               </Box>
             </Box>
           </Card>
         </Grid>
-
         <Grid item xs={4}>
           <Card
             sx={{
@@ -276,50 +247,23 @@ export default function Delivery() {
               borderRadius: 4,
               boxShadow: "none",
               bgcolor: "white",
-              maxWidth: "280px",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               <LocalShippingOutlinedIcon
-                sx={{
-                  fontSize: 45,
-                  color: "#36B37E",
-                }}
+                sx={{ fontSize: 32, color: "#36B37E" }}
               />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography
-                  sx={{
-                    color: "#637381",
-                    mb: 0.5,
-                  }}
-                >
-                  Delivering Order
-                </Typography>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontWeight: 600,
-                    textAlign: "center",
-                  }}
-                >
+              <Box>
+                <Typography variant="h3" sx={{ mb: 0.5, fontWeight: 600 }}>
                   {deliveringOrders}
                 </Typography>
+                <Typography sx={{ color: "#637381" }}>
+                  Delivering Order
+                </Typography>
               </Box>
             </Box>
           </Card>
         </Grid>
-
         <Grid item xs={4}>
           <Card
             sx={{
@@ -327,45 +271,15 @@ export default function Delivery() {
               borderRadius: 4,
               boxShadow: "none",
               bgcolor: "white",
-              maxWidth: "280px",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 2,
-              }}
-            >
-              <LayersIcon
-                sx={{
-                  fontSize: 45,
-                  color: "#FFAB00",
-                }}
-              />
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                <Typography
-                  sx={{
-                    color: "#637381",
-                    mb: 0.5,
-                  }}
-                >
-                  Waiting Order
-                </Typography>
-                <Typography
-                  variant="h3"
-                  sx={{
-                    fontWeight: 600,
-                    textAlign: "center",
-                  }}
-                >
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <LayersIcon sx={{ fontSize: 32, color: "#FFAB00" }} />
+              <Box>
+                <Typography variant="h3" sx={{ mb: 0.5, fontWeight: 600 }}>
                   {waitingOrders}
                 </Typography>
+                <Typography sx={{ color: "#637381" }}>Waiting Order</Typography>
               </Box>
             </Box>
           </Card>

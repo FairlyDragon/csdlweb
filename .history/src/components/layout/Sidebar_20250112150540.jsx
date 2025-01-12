@@ -22,91 +22,31 @@ import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettin
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import SettingsIcon from "@mui/icons-material/Settings";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import logo from "../../assets/logo.svg";
 
 const menuItems = [
   { icon: GridViewIcon, label: "Dashboard", path: "/", iconColor: "#1890FF" },
-  {
-    icon: ListAltIcon,
-    label: "Order List",
-    path: "/orders",
-    iconColor: "#36B37E",
-  },
+  { icon: ListAltIcon, label: "Order List", path: "/orders", iconColor: "#36B37E" },
   {
     icon: PeopleIcon,
     label: "User",
     iconColor: "#FF5630",
     subItems: [
-      {
-        label: "Customer",
-        path: "/customers",
-        icon: PersonOutlineIcon,
-        iconColor: "#FF8F6B",
-      },
-      {
-        label: "Shipper",
-        path: "/shippers",
-        icon: LocalShippingOutlinedIcon,
-        iconColor: "#FF725C",
-      },
+      { label: "Customer", path: "/customers", icon: PersonOutlineIcon, iconColor: "#FF8F6B" },
+      { label: "Shipper", path: "/shippers", icon: LocalShippingOutlinedIcon, iconColor: "#FF725C" },
     ],
   },
-  {
-    icon: StarBorderIcon,
-    label: "Reviews",
-    path: "/reviews",
-    iconColor: "#FFAB00",
-  },
-  {
-    icon: RestaurantIcon,
-    label: "Foods",
-    path: "/foods",
-    iconColor: "#36B37E",
-  },
-  {
-    icon: CalendarTodayIcon,
-    label: "Calendar",
-    path: "/calendar",
-    iconColor: "#6554C0",
-  },
+  { icon: StarBorderIcon, label: "Reviews", path: "/reviews", iconColor: "#FFAB00" },
+  { icon: RestaurantIcon, label: "Foods", path: "/foods", iconColor: "#36B37E" },
+  { icon: CalendarTodayIcon, label: "Calendar", path: "/calendar", iconColor: "#6554C0" },
   { icon: EmailIcon, label: "Inbox", path: "/inbox", iconColor: "#00B8D9" },
-  {
-    icon: AccountBalanceWalletIcon,
-    label: "Wallet",
-    path: "/wallet",
-    iconColor: "#FF8F00",
-  },
-  {
-    icon: LocalOfferIcon,
-    label: "Voucher",
-    path: "/vouchers",
-    iconColor: "#7C4DFF",
-  },
-  {
-    icon: AssessmentIcon,
-    label: "Report",
-    path: "/reports",
-    iconColor: "#00C853",
-  },
-  {
-    icon: SettingsIcon,
-    label: "Settings",
-    path: "/settings",
-    iconColor: "#546E7A",
-  },
-  {
-    icon: LocalShippingIcon,
-    label: "Delivery",
-    path: "/delivery",
-    iconColor: "#2E9567",
-  },
-  {
-    icon: AdminPanelSettingsOutlinedIcon,
-    label: "Sub Admins",
-    path: "/admin",
-    iconColor: "#D81B60",
-  },
+  { icon: AccountBalanceWalletIcon, label: "Wallet", path: "/wallet", iconColor: "#FF8F00" },
+  { icon: LocalOfferIcon, label: "Voucher", path: "/vouchers", iconColor: "#7C4DFF" },
+  { icon: AssessmentIcon, label: "Report", path: "/reports", iconColor: "#00C853" },
+  { icon: SettingsIcon, label: "Settings", path: "/settings", iconColor: "#546E7A" },
+  { icon: LocalShippingIcon, label: "Delivery", path: "/delivery", iconColor: "#2E9567" },
+  { icon: AdminPanelSettingsOutlinedIcon, label: "Sub Admins", path: "/admin", iconColor: "#D81B60" },
 ];
 
 const SidebarContainer = styled(Box, {

@@ -85,10 +85,10 @@ export default function ShipperWaiting({
               <Box>
                 <Typography
                   variant="subtitle1"
-                  sx={{
-                    fontWeight: 500,
+                  sx={{ 
+                    fontWeight: 500, 
                     mb: 0.5,
-                    color: "#212B36",
+                    color: '#212B36'
                   }}
                 >
                   {shipper.name}
@@ -96,9 +96,9 @@ export default function ShipperWaiting({
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "#637381",
-                    display: "flex",
-                    gap: 1,
+                    color: '#637381',
+                    display: 'flex',
+                    gap: 1
                   }}
                 >
                   <span>{shipper.shipper_id}</span>
@@ -109,26 +109,23 @@ export default function ShipperWaiting({
               <Button
                 onClick={() => handleChoose(shipper)}
                 sx={{
-                  bgcolor:
-                    selectedShipper?.shipper_id === shipper.shipper_id
-                      ? "#376D87"
-                      : "#4AEDC4",
-                  color:
-                    selectedShipper?.shipper_id === shipper.shipper_id
-                      ? "white"
-                      : "#00B074",
+                  bgcolor: selectedShipper?.shipper_id === shipper.shipper_id 
+                    ? "#376D87"
+                    : "#4AEDC4",
+                  color: selectedShipper?.shipper_id === shipper.shipper_id 
+                    ? "white"
+                    : "#00B074",
                   fontSize: 12,
-                  fontFamily: "Nunito Sans",
+                  fontFamily: 'Nunito Sans',
                   fontWeight: 700,
-                  wordWrap: "break-word",
+                  wordWrap: 'break-word',
                   textTransform: "none",
                   borderRadius: 1,
                   px: 3,
-                  "&:hover": {
-                    bgcolor:
-                      selectedShipper?.shipper_id === shipper.shipper_id
-                        ? "#2B5468"
-                        : "#3BC5A0",
+                  "&:hover": { 
+                    bgcolor: selectedShipper?.shipper_id === shipper.shipper_id 
+                      ? "#2B5468"
+                      : "#3BC5A0"
                   },
                 }}
               >
