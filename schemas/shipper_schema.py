@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from models.user import GenderEnum, UserRole
 
 class ShipperSchema(BaseModel):
@@ -8,7 +8,7 @@ class ShipperSchema(BaseModel):
     name: str
     phone_number: str
     total_amount: float
-    email: EmailStr
+    email: str
     updated_address: Optional[str] = None
     created_at: datetime
     date_of_birth: datetime

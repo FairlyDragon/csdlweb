@@ -5,14 +5,21 @@ from db.database import DB_NAME, db, client
 from routes.admin_routes import router as admin_router
 from routes.auth_routes import router as auth_router
 from datetime import datetime, timedelta    
+import logging
 
 from models.voucher import Voucher # to test
 from models.review import Review # to test
 import logging
+
 app = FastAPI()
 
+# setup logging
+logging.basicConfig(level=logging.INFO)
+
+# setup cors
 setup_cors(app)
 
+# setup auth middleware
 # setup_auth_middleware(app)
 
 sample_reviews = [
@@ -34,7 +41,7 @@ sample_users = [
      "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
     {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed_password2", "gender": "female", "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
-    {"_id": "s1", "name": "I AM ADMIN", "email": "fastdelivery@gmail.com", "password": "hashed_password3",
+    {"_id": "a1", "name": "I AM ADMIN", "email": "fastdelivery@gmail.com", "password": "hashed_password3",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "admin", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
 ]
 
@@ -45,7 +52,7 @@ sample_vouchers = [
 sample_voucherss = [Voucher(**voucher).model_dump(by_alias=True) for voucher in sample_vouchers]
 
 sample_orders = [
-    {"_id": "o1", "user_id": "u1", "order_date": datetime.now(), "total_amount": 100.0, "status": "accepted",
+    {"_id": "o1", "user_id": "u1", "order_date": datetime.now(), "total_amount": 100.0, "status": "completed",
      "note": "Leave at the door", "voucher_id": "v1", "discount_applied": 10.0,
      "order_items": [{"menuitem_id": "m1", "quantity": 2, "subtotal": 40.0}]},
 ]

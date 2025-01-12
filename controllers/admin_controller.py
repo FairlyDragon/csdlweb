@@ -274,7 +274,13 @@ async def read_order_history_by_customer_id(customer_id: str) -> list[dict]:
     # get order history by customer id
     order_history = await get_order_history_by_customer_id(customer_id)
     
-    return order_history
+    transformed_order_history = []
+    # transform the order history to the desired format: replace _id with order_id
+    for order in order_history:
+        order.setdefault("order_id", order.pop("_id"))
+        transformed_order_history.append(order)
+    
+    return transformed_order_history
 
 
 

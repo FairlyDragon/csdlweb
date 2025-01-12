@@ -50,7 +50,7 @@ async def get_customers_made_orders_in_period_time(start_time: datetime, end_tim
     orders = await get_orders_within_period(start_time, end_time)
     customer_ids = list(set(order["user_id"] for order in orders))
     
-    cursor = db["user"].find({"user_id": {"$in": customer_ids}})
+    cursor = db["user"].find({"_id": {"$in": customer_ids}})
     return await cursor.to_list(length=None)
         
 # Get the dashboard center pie chart data in a period of time      
