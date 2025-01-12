@@ -1,8 +1,4 @@
 from fastapi import HTTPException
-from models.order import OrderItem
-from schemas.admin_schema import DeliveryHistoryResponseSchema
-from schemas.shipper_schema import ShipperSchema
-from models.shipper import Shipper
 from db.database import db
 
 # Get shippers
@@ -23,3 +19,22 @@ async def get_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]:  # 
         raise HTTPException(status_code=404, detail="No delivery history found")
     
     return delivery_history
+
+
+# Get shippers by account status: active or inactive
+async def get_shippers_by_account_status(status: str) -> list[dict]:   # list[Shipper] - fetch from db
+    if status.strip().lower() not in ["active", "inactive"]:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    
+    shippers = await db["shipper"].find({"account_status": status.strip().lower()}).to_list(length=None)
+    if not shippers:
+        raise HTTPException(status_code=404, detail="No shippers found")
+    return shippers
+
+# Get shipper ids in freetime: delivery_status = [delivered or failed]
+async def get_shipper_ids_in_freetime() -> list[str]:
+    shipper_ids_in_freetime = await db["order_delivery"].distinct("shipper_id",
+            {"delivery_status": {"$in": ["delivered", "failed"]}}
+        )
+    
+    return shipper_ids_in_freetime

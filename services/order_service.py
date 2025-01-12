@@ -3,10 +3,10 @@ from schemas.admin_schema import *
 from services.time_service import *
 
 # Get orders by status (pending, processing, rejected, completed, canceled)
-async def get_orders_by_status(status: str) -> list:
+async def get_orders_by_status(status: str) -> list[dict]:  # -> list[Order]
     order_by_status = await db["order"].find({"status": status}).to_list(length=None) 
     if not order_by_status: 
-        raise HTTPException(status_code=404, detail=f"No {status} orders found") 
+        raise HTTPException(status_code=404, detail=f"No orders found with status {status}")
 
     return order_by_status
 
@@ -39,3 +39,7 @@ async def get_completed_orders_within_period(start_time, end_time) -> list:
     delivered_orders = await get_orders_by_status(OrderStatus.completed)
     
     return [order for order in delivered_orders if start_time <= order["order_date"] <= end_time]
+
+# Get delivering orders (accurately is 'processing' status)
+async def get_delivering_orders() -> list[dict]:  # -> list[Order]
+    return await get_orders_by_status(OrderStatus.processing)

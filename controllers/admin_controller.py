@@ -1,4 +1,6 @@
 from fastapi import Depends, Path
+from schemas.shipper_schema import Admin_Delivery_Shipper_Schema
+from config import DISCOUNT_RATE_FOR_DRIVERS
 from schemas.user_schema import CustomerResponseSchema
 from services.user_service import *
 from schemas.admin_schema import *
@@ -265,13 +267,13 @@ async def read_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]:
                 order_id=order_id, 
                 order_date=order["order_date"],
                 order_items=[OrderItem(**item).model_dump() for item in order["order_items"]],
-                profit=order["total_amount"],)
+                profit=order["delivery_fee"] * (1 - DISCOUNT_RATE_FOR_DRIVERS) ,)
                     .model_dump())
             
     
     transformed_delivery_history.append({
         "total_order_quantity": len(transformed_delivery_history),
-        "total_cod": sum(delivery["profit"] for delivery in transformed_delivery_history)
+        "profit": sum(delivery["profit"] for delivery in transformed_delivery_history)
         })
 
     return transformed_delivery_history
@@ -320,6 +322,62 @@ async def read_order_history_by_customer_id(customer_id: str) -> list[dict]:
     
     return transformed_order_history
 
+
+##### DELIVERIES ######
+# Get shippers by status
+async def read_active_shippers() -> dict:   
+    # Get shippers today go to work 
+    on_site_shippers = await get_shippers_by_account_status("active")
+    
+    return {"number_of_active_shippers": f"{len(on_site_shippers)}"}
+
+# Get currently waiting shippers
+async def read_currently_waiting_shippers() -> list[Admin_Delivery_Shipper_Schema]:   
+    # Get shippers today go to work 
+    on_site_shippers = await get_shippers_by_account_status("active")
+    
+    # Get shipper ids in freetime
+    shipper_ids_in_freetime = await get_shipper_ids_in_freetime()
+    
+    active_shippers = [shipper for shipper in on_site_shippers if shipper["_id"] in shipper_ids_in_freetime]
+    
+    # transform active shippers to Admin_Delivery_Shipper_Schema
+    result = []
+    for shipper in active_shippers:
+        result.append(Admin_Delivery_Shipper_Schema(
+            shipper_id=shipper["_id"], 
+            name=shipper["name"], 
+            address=shipper["address"], 
+            phone_number=shipper["phone_number"])
+                .model_dump())
+    
+    if not result:
+        raise HTTPException(status_code=404, detail="No currently waiting shippers found")
+    return result
+
+# Get delivering orders
+async def read_delivering_orders() -> dict:   
+    # Get delivering orders. In underlying, it's 'processing' orders
+    return {"number_of_delivering_orders": len(await get_delivering_orders())}
+
+# Get waiting orders
+async def read_waiting_orders() -> list[dict]:
+    # Get waiting orders. In underlying, it's 'pending' orders
+    waiting_orders = await get_orders_by_status(OrderStatus.pending)
+
+    result = []
+    for order in waiting_orders:
+        # Get customer info according to current order_id among all waiting orders
+        customer_who_made_orders = await get_customer_infor_by_order_id(order["_id"])
+        
+        result.append(Admin_Delivery_Order_Managament_Schema(
+            order_id=order["_id"], 
+            customer_name=customer_who_made_orders["name"], 
+            address=customer_who_made_orders["address"])
+                .model_dump()
+        )
+
+    return result
 
 
 

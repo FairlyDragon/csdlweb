@@ -26,7 +26,7 @@ router.delete("/foods/menuitems/{menuitem_id}", response_description="Delete a m
 router.get("/foods/menuitems", response_description="Get menu items by fitler")(read_menuitems_by_filter)
 
 router.put("/foods/discount/{discount_percentage}", response_description="Set discount percentage")(update_discount)
-#### FOODS is on pending
+
 
 # VOUCHERS
 router.post("/vouchers", response_description="Create a new voucher")(create_voucher)
@@ -35,10 +35,12 @@ router.get("/vouchers/{status}", response_description="Get vouchers by status")(
 
 # router.put("/vouchers", response_description="Update a voucher by voucher id")(update_voucher)
 
+
 # SHIPPERS
 router.get("/shippers", response_description="Get shippers")(read_shippers)
 
 router.get("/shippers/{shipper_id}", response_description="Get delivery history by shipper id")(read_delivery_history_by_shipper_id)
+
 
 # CUSTOMERS
 router.get("/customers", response_description="Get customers")(read_customers)
@@ -46,6 +48,14 @@ router.get("/customers", response_description="Get customers")(read_customers)
 router.get("/customers/{customer_id}", response_description="Get order history by customer id")(read_order_history_by_customer_id)
 
 
+# DELIVERIES
+router.get("/deliveries/active_shippers", response_description="Get number of active shippers")(read_active_shippers)
+
+router.get("/deliveries/currently_waiting_shippers", response_description="Get currently waiting shippers")(read_currently_waiting_shippers)
+
+router.get("/deliveries/delivering_orders", response_description="Get number of delivering orders")(read_delivering_orders)
+
+router.get("/deliveries/waiting_orders", response_description="Get waiting orders")(read_waiting_orders)
 
 # ORDERS (Order List)
 # router.get("/orders", response_description="Get order list")(read_order_list)

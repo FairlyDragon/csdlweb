@@ -15,4 +15,10 @@ class ShipperSchema(BaseModel):
     gender: GenderEnum
     avatar_url: Optional[str] = None
     role: Optional[UserRole] = None
+    
+class Admin_Delivery_Shipper_Schema(BaseModel):
+    shipper_id: str
+    name: str
+    address: Optional[str] = None
+    phone_number: Optional[str] = None
 

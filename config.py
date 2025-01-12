@@ -7,6 +7,9 @@ load_dotenv()
 DATABASE_URL = os.getenv("MONGO_URI")
 DB_NAME = os.getenv("DB_NAME")
 
+# PROFIT
+DISCOUNT_RATE_FOR_DRIVERS = float(os.getenv("DISCOUNT_RATE_FOR_DRIVERS"))
+
 # JWT
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")

@@ -33,7 +33,7 @@ async def create_user(user: dict) -> dict:
     
     
 
-# Get customers
+# Get customers from 'user' in db
 async def get_customers() -> list[dict]:
     # get customers from db
     customers = await db["user"].find({"role": "customer"}).to_list(length=None)
@@ -42,3 +42,16 @@ async def get_customers() -> list[dict]:
     
     return customers
 
+
+# Get customers infor by order_id
+async def get_customer_infor_by_order_id(order_id: str) -> User:
+    order = await db["order"].find_one({"_id": order_id})
+    if not order:
+        raise HTTPException(status_code=404, detail="No order found")
+    
+    # get customers from db
+    customer = await db["user"].find_one({"_id": order["user_id"]})
+    if not customer:
+        raise HTTPException(status_code=404, detail="No customers found")
+    
+    return customer

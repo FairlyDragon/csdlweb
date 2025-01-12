@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
-from models.orderdelivery import DeliveryStatusEnum
+from models.order_delivery import DeliveryStatusEnum
 from models.payment import PaymentMethod, PaymentStatus
 from models.order import OrderItem, OrderStatus
 
@@ -149,6 +149,12 @@ class OrderHistoryResponseSchema(BaseModel):
     # Aggregated data
     # total_order_quantity: int
     # total_purchase]: float
+    
+class Admin_Delivery_Order_Managament_Schema(BaseModel):
+    order_id: str
+    customer_name: str
+    address: str
+    accepted: Optional[datetime] = None
     
     
     

@@ -41,7 +41,7 @@ sample_users = [
      "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
     {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed_password2", "gender": "female", "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
-    {"_id": "a1", "name": "I AM ADMIN", "email": "fastdelivery@gmail.com", "password": "hashed_password3",
+    {"_id": "u3", "name": "I AM ADMIN", "email": "fastdelivery@gmail.com", "password": "hashed_password3",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "admin", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
 ]
 
@@ -53,12 +53,14 @@ sample_voucherss = [Voucher(**voucher).model_dump(by_alias=True) for voucher in 
 
 sample_orders = [
     {"_id": "o1", "user_id": "u1", "order_date": datetime.now(), "total_amount": 100.0, "status": "completed",
-     "note": "Leave at the door", "voucher_id": "v1", "discount_applied": 10.0,
+     "note": "Leave at the door", "voucher_id": "v1", "discount_applied": 10.0, "delivery_fee": 1.0,
      "order_items": [{"menuitem_id": "m1", "quantity": 2, "subtotal": 40.0}]},
     
-    {"_id": "o2", "user_id": "u2", "order_date": datetime.now(), "total_amount": 50.0, "status": "completed", "note": "You are my destiny", "voucher_id": "v1", "discount_applied": 5.0, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
+    {"_id": "o2", "user_id": "u2", "order_date": datetime.now(), "total_amount": 50.0, "status": "pending", "note": "You are my destiny", "voucher_id": "v1", "discount_applied": 5.0, "delivery_fee": 2.0, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}, {"menuitem_id": "m2", "quantity": 1, "subtotal": 20.0}]},
     
-    {"_id": "o3", "user_id": "u1", "order_date": datetime.now(), "total_amount": 70.0, "status": "canceled", "note": "You are my destiny", "voucher_id": "v1", "discount_applied": 5.0, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
+    {"_id": "o3", "user_id": "u1", "order_date": datetime.now(), "total_amount": 70.0, "status": "canceled", "note": "This is a note", "voucher_id": "v1", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
+    
+    {"_id": "o4", "user_id": "u3", "order_date": datetime.now(), "total_amount": 70.0, "status": "processing", "note": "You are hehe", "voucher_id": "v1", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
 ]
 
 sample_payments = [
@@ -74,11 +76,13 @@ sample_menu_items = [
 
 sample_order_deliveries = [
     {"_id": "d1", "order_id": "o1", "shipper_id": "s1", "delivery_status": "delivered"},
-    {"_id": "d2", "order_id": "o2", "shipper_id": "s1", "delivery_status": "delivered"},
+    {"_id": "d2", "order_id": "o2", "shipper_id": "s2", "delivery_status": "delivering"},
+    {"_id": "d3", "order_id": "o3", "shipper_id": "s1", "delivery_status": "delivering"},
 ]
 
 sample_shippers = [
-    {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "email": "fastdelivery@gmail.com", "password": "hashed_password1", "address": "123 Main St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA", "role": "shipper"},
+    {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "email": "fastdelivery@gmail.com", "password": "hashed_password1", "address": "123 Main St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA", "role": "shipper", "account_status": "active"},
+    {"_id": "s2", "name": "Fast Delivery2", "phone_number": "0987654321", "total_amount": 5099.0, "email": "fastdelivery2@gmail.com", "password": "hashed_password2", "address": "456 Elm St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "female", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq", "role": "shipper","account_status": "active"},
 ]
 
 
