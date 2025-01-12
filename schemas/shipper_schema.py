@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
-from models.user import GenderEnum, UserRole
+from models.user import GenderEnum, Role
 
 class ShipperSchema(BaseModel):
     shipper_id: Optional[str] = None
@@ -14,7 +14,7 @@ class ShipperSchema(BaseModel):
     date_of_birth: datetime
     gender: GenderEnum
     avatar_url: Optional[str] = None
-    role: Optional[UserRole] = None
+    role: Optional[Role] = None
     
 class Admin_Delivery_Shipper_Schema(BaseModel):
     shipper_id: str

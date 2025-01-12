@@ -3,7 +3,8 @@ from enum import Enum
 from pydantic import BaseModel, Field
 from datetime import datetime
 from uuid import uuid4
-from models.user import UserRole, GenderEnum
+from utils.roles import Role
+from models.user import GenderEnum
 from typing import Optional
 
 class ShipperStatus(str, Enum):
@@ -22,6 +23,6 @@ class Shipper(BaseModel):
     date_of_birth: datetime		
     gender: GenderEnum		# male or female
     avatar_url: Optional[str] = None
-    role: UserRole = UserRole.shipper
+    role: Role = Role.SHIPPER
     account_status: ShipperStatus
 

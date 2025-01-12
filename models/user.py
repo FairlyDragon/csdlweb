@@ -3,11 +3,7 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 from uuid import uuid4
 from enum import Enum
-
-class UserRole(str, Enum): 
-    customer = "customer" 
-    shipper = "shipper" 
-    admin = "admin"
+from utils.roles import Role
 
 class GenderEnum(str, Enum):
     male = "male"
@@ -21,7 +17,7 @@ class User(BaseModel):
     phone_number: Optional[str] = None 
     address: Optional[str] = None 
     created_at: datetime = Field(default_factory=datetime.now)
-    role: UserRole
+    role: Role
     gender: Optional[GenderEnum] = None
     date_of_birth: Optional[datetime] = None
     avatar_url: Optional[str] = None

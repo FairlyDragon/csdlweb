@@ -1,6 +1,6 @@
 from models.shipper import Shipper
 from models.user import User
-from models.user import UserRole
+from utils.roles import Role
 from schemas.user_schema import UserSchema
 from db.database import db
 from schemas.admin_schema import *
@@ -20,10 +20,10 @@ async def find_user_by_email(email: str):
     
 # Insert all kinds of users into database
 async def create_user(user: dict) -> dict:  
-    if user["role"] == UserRole.shipper:
+    if user["role"] == Role.SHIPPER:
         user_model_to_insert_into_db = Shipper(**user)
         inserted_user = await db["shipper"].insert_one(user_model_to_insert_into_db.model_dump(by_alias=True))
-    elif user["role"] == UserRole.customer:
+    elif user["role"] == Role.CUSTOMER:
         user_model_to_insert_into_db = User(**user)
         inserted_user = await db["user"].insert_one(user_model_to_insert_into_db.model_dump(by_alias=True))
     else:

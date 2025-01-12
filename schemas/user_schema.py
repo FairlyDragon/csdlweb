@@ -1,12 +1,12 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
-from models.user import GenderEnum, UserRole
+from models.user import GenderEnum, Role
 
 class UserSchema(BaseModel):
     email: str
     password: str
-    role: UserRole
+    role: Role
     
 class CustomerResponseSchema(BaseModel):
     customer_id: Optional[str] = None
