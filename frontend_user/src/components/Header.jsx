@@ -57,24 +57,38 @@ const Header = () => {
           <IconButton onClick={() => navigate('/cart')}>
             <ShoppingCartIcon />
           </IconButton>
+          <Button
+  onClick={() => navigate('/auth/signin')}
+  sx={{
+    color: 'black',
+    backgroundColor: 'white',
+    border: '2px solid #ddd',
+    mr: 2,
+    '&:hover': {
+      backgroundColor: '#f5f5f5',
+      border: '2px solid #ddd',
+    }
+  }}
+  variant="outlined"
+>
+  Sign In
+</Button>
 
-          <Button 
-            variant="text"
-            onClick={() => navigate('/auth/signin')}
-          >
-            Sign In
-          </Button>
-          
-          <Button 
-            variant="contained"
-            onClick={() => navigate('/auth/signup')}
-            sx={{
-              backgroundColor: 'primary.main',
-              color: 'text.primary'
-            }}
-          >
-            Sign Up
-          </Button>
+<Button
+  onClick={() => navigate('/auth/signup')}
+  sx={{
+    backgroundColor: '#dd1d1d',
+    color: 'white',
+    '&:hover': {
+      backgroundColor: '#bb1818',
+    }
+  }}
+  variant="contained"
+>
+  Sign Up
+</Button>
+
+         
         </Box>
       </Toolbar>
     </AppBar>

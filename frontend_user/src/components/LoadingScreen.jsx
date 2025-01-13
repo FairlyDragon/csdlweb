@@ -8,14 +8,12 @@ const LoadingScreen = ({ onLoadingComplete }) => {
     const timer = setInterval(() => {
       setProgress((oldProgress) => {
         const newProgress = oldProgress + 1;
-        
         if (newProgress === 100) {
           clearInterval(timer);
           setTimeout(() => {
             onLoadingComplete();
           }, 500);
         }
-        
         return Math.min(newProgress, 100);
       });
     }, 20);
@@ -39,23 +37,31 @@ const LoadingScreen = ({ onLoadingComplete }) => {
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 9999,
-        overflow: 'hidden'
       }}
     >
-      {[...Array(20)].map((_, i) => (
-        <Box
-          key={i}
-          sx={{
+      {/* Nón lá xoay */}
+      <Box
+        sx={{
+          width: '100px',
+          height: '50px',
+          borderRadius: '50%',
+          border: '2px solid #CC0000',
+          transform: 'rotate(-35deg)',
+          position: 'relative',
+          mb: 4,
+          animation: 'conicalHat 3s infinite ease-in-out',
+          '&::before': {
+            content: '""',
             position: 'absolute',
-            width: '10px',
-            height: '10px',
-            backgroundColor: '#CC0000',
-            borderRadius: '50%',
-            animation: `particle${i} ${Math.random() * 3 + 2}s infinite linear`,
-            opacity: 0.3
-          }}
-        />
-      ))}
+            top: '-25px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            borderLeft: '50px solid transparent',
+            borderRight: '50px solid transparent',
+            borderBottom: '25px solid #CC0000',
+          }
+        }}
+      />
 
       <Typography
         variant="h2"
@@ -64,8 +70,7 @@ const LoadingScreen = ({ onLoadingComplete }) => {
           mb: 4,
           fontWeight: 700,
           letterSpacing: '3px',
-          animation: 'pulse 2s infinite',
-          textShadow: '0 0 10px rgba(204, 0, 0, 0.5)'
+          animation: 'pulse 2s infinite'
         }}
       >
         FAIRY DRAGON
@@ -97,31 +102,16 @@ const LoadingScreen = ({ onLoadingComplete }) => {
       </Box>
 
       <style jsx global>{`
-        @keyframes pulse {
-          0% {
-            opacity: 1;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.7;
-            transform: scale(0.98);
-          }
-          100% {
-            opacity: 1;
-            transform: scale(1);
-          }
+        @keyframes conicalHat {
+          0%, 100% { transform: rotate(-35deg) scale(1); }
+          50% { transform: rotate(-35deg) scale(1.1); }
         }
 
-        ${[...Array(20)].map((_, i) => `
-          @keyframes particle${i} {
-            0% {
-              transform: translate(${Math.random() * 100}vw, ${Math.random() * 100}vh) scale(1);
-            }
-            100% {
-              transform: translate(${Math.random() * 100}vw, ${Math.random() * 100}vh) scale(0);
-            }
-          }
-        `).join('\n')}
+        @keyframes pulse {
+          0% { opacity: 1; }
+          50% { opacity: 0.5; }
+          100% { opacity: 1; }
+        }
       `}</style>
     </Box>
   );

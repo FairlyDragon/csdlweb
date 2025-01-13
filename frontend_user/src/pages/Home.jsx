@@ -13,22 +13,26 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
+    const timer = setTimeout(() => {
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+  
+      const hiddenElements = document.querySelectorAll('.fade-in-section');
+      hiddenElements.forEach((el) => observer.observe(el));
+  
+      return () => observer.disconnect();
+    }, 100);
 
-    const hiddenElements = document.querySelectorAll('.fade-in-section');
-    hiddenElements.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
   if (isLoading) {
     return <LoadingScreen onLoadingComplete={() => setIsLoading(false)} />;
@@ -37,35 +41,6 @@ const Home = () => {
   return (
     <Box sx={{ position: 'relative', overflow: 'hidden' }}>
       <Header />
-      
-      {/* Decorative Elements */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          pointerEvents: 'none',
-          zIndex: 1
-        }}
-      >
-        {[...Array(5)].map((_, i) => (
-          <Box
-            key={i}
-            sx={{
-              position: 'absolute',
-              width: '200px',
-              height: '200px',
-              border: '2px solid rgba(204, 0, 0, 0.1)',
-              borderRadius: '50%',
-              animation: `float${i} ${10 + i * 2}s infinite ease-in-out`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-            }}
-          />
-        ))}
-      </Box>
 
       {/* Hero Section */}
       <Box
@@ -75,19 +50,18 @@ const Home = () => {
           overflow: 'hidden'
         }}
       >
-        {/* Background with parallax effect */}
+        {/* Background */}
         <Box
           sx={{
             position: 'absolute',
-            top: '-20%',
-            left: '-10%',
-            right: '-10%',
-            bottom: '-20%',
-            backgroundImage: `url('https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?q=80&w=2067&auto=format&fit=crop')`,
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage: `url('https://images.unsplash.com/photo-1547573854-74d2a71d0826?q=80&w=2070&auto=format&fit=crop')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             animation: 'bgZoom 20s ease-out forwards',
-            transform: 'scale(1.2)',
             '&::before': {
               content: '""',
               position: 'absolute',
@@ -101,43 +75,81 @@ const Home = () => {
           }}
         />
 
-        {/* Add subtle moving shapes */}
+        {/* Decorative Rice Plants */}
         <Box
           sx={{
             position: 'absolute',
-            top: 0,
+            bottom: 0,
             left: 0,
             right: 0,
-            bottom: 0,
-            overflow: 'hidden',
-            zIndex: 1
+            height: '150px',
+            display: 'flex',
+            justifyContent: 'space-around',
+            padding: '0 20px',
+            zIndex: 1,
+            pointerEvents: 'none'
           }}
         >
-          {[...Array(3)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <Box
               key={i}
               sx={{
-                position: 'absolute',
-                width: '40vw',
-                height: '40vw',
-                border: '1px solid rgba(255,255,255,0.1)',
-                borderRadius: '50%',
-                animation: `rotate ${20 + i * 5}s infinite linear`,
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
+                width: '2px',
+                height: '100%',
+                backgroundColor: 'rgba(255,255,255,0.3)',
+                position: 'relative',
+                animation: `riceWave ${2 + i * 0.2}s infinite ease-in-out`,
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: '10px',
+                  left: '-10px',
+                  width: '20px',
+                  height: '20px',
+                  borderLeft: '2px solid rgba(255,255,255,0.3)',
+                  borderBottom: '2px solid rgba(255,255,255,0.3)',
+                  transform: 'rotate(-45deg)'
+                }
               }}
             />
           ))}
         </Box>
 
-        {/* Hero Content */}
+        {/* Floating Conical Hats */}
+        {[...Array(3)].map((_, i) => (
+          <Box
+            key={i}
+            sx={{
+              position: 'absolute',
+              width: '40px',
+              height: '20px',
+              borderRadius: '50%',
+              border: '1px solid rgba(255,255,255,0.2)',
+              transform: 'rotate(-35deg)',
+              top: `${20 + i * 30}%`,
+              left: `${20 + i * 30}%`,
+              animation: `floatingHat ${3 + i}s infinite ease-in-out`,
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: '-10px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                borderLeft: '20px solid transparent',
+                borderRight: '20px solid transparent',
+                borderBottom: '10px solid rgba(255,255,255,0.2)',
+              }
+            }}
+          />
+        ))}
+
+        {/* Content */}
         <Container sx={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', alignItems: 'center' }}>
           <Box>
             <Typography 
               variant="h1" 
-              color="white"
               sx={{ 
+                color: 'white',
                 fontWeight: 800,
                 mb: 3,
                 fontSize: { xs: '2.5rem', md: '4.5rem' },
@@ -153,8 +165,8 @@ const Home = () => {
             
             <Typography 
               variant="h5"
-              color="white"
               sx={{ 
+                color: 'white',
                 mb: 4,
                 maxWidth: '600px',
                 lineHeight: 1.8,
@@ -190,28 +202,7 @@ const Home = () => {
       </Box>
 
       {/* About Section */}
-      <Box 
-        sx={{ 
-          py: 15,
-          backgroundColor: '#fff',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
-        {/* Decorative circle */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            right: 0,
-            width: '300px',
-            height: '300px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(204,0,0,0.05) 0%, rgba(204,0,0,0) 70%)',
-            animation: 'pulse 4s infinite ease-in-out'
-          }}
-        />
-        
+      <Box sx={{ py: 15, backgroundColor: '#fff' }}>
         <Container>
           <Grid container spacing={8} alignItems="center">
             <Grid item xs={12} md={6} className="fade-in-section">
@@ -272,28 +263,7 @@ const Home = () => {
       </Box>
 
       {/* Contact Section */}
-      <Box 
-        sx={{ 
-          py: 8, 
-          bgcolor: '#f8f8f8',
-          position: 'relative',
-          overflow: 'hidden'
-        }}
-      >
-        {/* Background pattern */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            opacity: 0.03,
-            backgroundImage: 'radial-gradient(#CC0000 1px, transparent 1px)',
-            backgroundSize: '20px 20px'
-          }}
-        />
-        
+      <Box sx={{ py: 8, bgcolor: '#f8f8f8' }}>
         <Container>
           <Grid container spacing={4} justifyContent="center" className="fade-in-section">
             <Grid item xs={12} textAlign="center">
@@ -322,15 +292,14 @@ const Home = () => {
       </Box>
 
       <style jsx global>{`
-        @keyframes float0 { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(20px, 20px) rotate(5deg); } }
-        @keyframes float1 { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-20px, 10px) rotate(-5deg); } }
-        @keyframes float2 { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(15px, -15px) rotate(3deg); } }
-        @keyframes float3 { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-15px, -10px) rotate(-3deg); } }
-        @keyframes float4 { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(10px, 15px) rotate(5deg); } }
+        @keyframes riceWave {
+          0%, 100% { transform: rotate(0deg); }
+          50% { transform: rotate(5deg); }
+        }
 
-        @keyframes rotate {
-          from { transform: translate(-50%, -50%) rotate(0deg); }
-          to { transform: translate(-50%, -50%) rotate(360deg); }
+        @keyframes floatingHat {
+          0%, 100% { transform: rotate(-35deg) translate(0, 0); }
+          50% { transform: rotate(-35deg) translate(0, -20px); }
         }
 
         @keyframes bgZoom {

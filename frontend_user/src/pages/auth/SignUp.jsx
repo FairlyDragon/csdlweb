@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 // Import MUI Icons
 import EmailIcon from '@mui/icons-material/Email';
-import LockIcon from '@mui/icons-material/Lock';
 import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock'; // hoặc
+import PasswordIcon from '@mui/icons-material/Password';
 
 const SignUp = () => {
   const navigate = useNavigate();
