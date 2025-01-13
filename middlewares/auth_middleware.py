@@ -17,6 +17,10 @@ class AuthMiddleware(BaseHTTPMiddleware):
         if request.url.path in ["/docs", "/openapi.json", "/redoc"]:
             return await call_next(request)
         
+        # Skip authentication for login, signup, and password reset routes
+        if request.url.path in ["/auth/login", "/auth/signup", "/auth/password_reset"]:
+            return await call_next(request)
+        
         auth = HTTPBearer()
         try:
             credentials: HTTPAuthorizationCredentials = await auth(request)
