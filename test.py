@@ -76,16 +76,13 @@ sample_reviews = [
 sample_reviews = [Review(**review).model_dump(by_alias=True) for review in sample_reviews]
 
 sample_users = [
-    {"_id": "u1", "name": "John Doe", "email": "john@example.com", "password": "hashed1", "gender": GenderEnum.MALE, "date_of_birth": "1990-01-01",
+    {"_id": "u1", "name": "John Doe", "email": "john@example.com", "password": hash_password("password1"), "gender": GenderEnum.MALE, "date_of_birth": "1990-01-01",
      "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
-    {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed2", "gender": GenderEnum.FEMALE, "date_of_birth": "1999-06-01",
+    {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": hash_password("password2"), "gender": GenderEnum.FEMALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
-    {"_id": "u3", "name": "I AM ADMIN", "email": "admin@admin.com", "password": "admin", "gender": GenderEnum.MALE, "date_of_birth": "1999-06-01",
+    {"_id": "u3", "name": "I AM ADMIN", "email": "admin@admin.com", "password": hash_password("admin"), "gender": GenderEnum.MALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "admin", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
 ]
-sample_users = [User(
-    user_id=user["_id"], name=user["name"], email=user["email"], password=hash_password(user["password"]), phone_number=user["phone_number"], address=user["address"], created_at=user["created_at"], role=user["role"], gender=user["gender"], date_of_birth=user["date_of_birth"], avatar_url=user["avatar_url"]
-    ).model_dump(by_alias=True) for user in sample_users]
 
 sample_vouchers = [
     {"code": "DISCOUNT10", "discount_percentage": 10.0, "start_date": datetime.now(),

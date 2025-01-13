@@ -4,7 +4,7 @@ import random
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from config import SENDER_EMAIL, SENDER_PASSWORD, EMAIL_SERVER, EMAIL_PORT, EMAIL_TIMEOUT
-import logging
+from logging_config import logger
 
 def generate_random_password(length=8):
     characters = string.ascii_letters + string.digits
@@ -30,5 +30,5 @@ def send_reset_email(user_email: str, new_password: str):
         server.quit()
         return True
     except Exception as e:
-        logging.error(f"Failed to send email: {str(e)}")
+        logger.error(f"Failed to send email: {str(e)}")
         return False

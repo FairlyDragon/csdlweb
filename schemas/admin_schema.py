@@ -153,7 +153,6 @@ class Admin_Delivery_Order_Managament_Schema(BaseModel):
     order_id: str
     customer_name: str
     address: str
-    accepted: Optional[datetime] = None
     
     
     

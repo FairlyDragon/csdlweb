@@ -80,7 +80,7 @@ async def read_dashboard_center_piechart() -> PieChartResponseSchema:
 
 # Dashboard center: in general. All charts (except pie chart) are handled in this function
 # Dashboard center: total orders
-async def read_dashboard_center_total_orders(periodicity: str = "daily") -> list:
+async def read_dashboard_center_total_orders(periodicity: str) -> list:
     # Normalize the input
     figures_type = "order"
     periodicity = periodicity.strip().lower()
@@ -89,7 +89,7 @@ async def read_dashboard_center_total_orders(periodicity: str = "daily") -> list
     return list_result
 
 # Dashboard center: total revenue
-async def read_dashboard_center_total_revenue(periodicity: str = "daily") -> list:
+async def read_dashboard_center_total_revenue(periodicity: str) -> list:
     # Normalize the input
     figures_type = "revenue"
     periodicity = periodicity.strip().lower()
@@ -98,7 +98,7 @@ async def read_dashboard_center_total_revenue(periodicity: str = "daily") -> lis
     return list_result
 
 # Dashboard center: total customers
-async def read_dashboard_center_customers_map(periodicity: str = "daily") -> list:    
+async def read_dashboard_center_customers_map(periodicity: str) -> list:    
     # Normalize the input
     figures_type = "customer"
     periodicity = periodicity.strip().lower()
