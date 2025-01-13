@@ -80,7 +80,7 @@ sample_users = [
      "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
     {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed2", "gender": GenderEnum.FEMALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
-    {"_id": "u3", "name": "I AM ADMIN", "email": "mm@gmail.com", "password": "hash", "gender": GenderEnum.MALE, "date_of_birth": "1999-06-01",
+    {"_id": "u3", "name": "I AM ADMIN", "email": "admin@admin.com", "password": "admin", "gender": GenderEnum.MALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "admin", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
 ]
 sample_users = [User(
