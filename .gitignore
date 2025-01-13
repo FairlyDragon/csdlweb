@@ -1,5 +1,4 @@
 .env
 .venv
 trivial_test.py
-logging_config.py
 __pycache__
