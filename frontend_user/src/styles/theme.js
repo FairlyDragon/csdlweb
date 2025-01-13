@@ -18,16 +18,21 @@ const theme = createTheme({
     }
   },
   typography: {
-    fontFamily: '"Montserrat", sans-serif',
+    fontFamily: 'Montserrat, sans-serif',
     h1: {
-      fontFamily: '"Playfair Display", serif',
-      fontWeight: 700,
+      fontFamily: 'Dancing Script, cursive',
     },
     h2: {
-      fontFamily: '"Playfair Display", serif',
-      fontWeight: 600,
+      fontFamily: 'Dancing Script, cursive',
     },
-    // ... other typography settings
+    h3: {
+      fontFamily: 'Dancing Script, cursive',
+    },
+  },
+  palette: {
+    primary: {
+      main: '#dd1d1d',
+    },
   },
 });
 
