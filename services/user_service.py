@@ -8,13 +8,13 @@ from services.time_service import *
 
 
 # Find user/shipper by email
-async def find_user_by_email(email: str):
+async def find_user_by_email(email: str) -> Optional[UserSchema]:
     user = await db["user"].find_one({"email": email})
     shipper = await db["shipper"].find_one({"email": email})
     if user:
-        return UserSchema(email=email, role=user["role"], password=user["password"]).model_dump()
+        return UserSchema(email=email, role=user["role"], password=user["password"])
     elif shipper:
-        return UserSchema(email=email, role=shipper["role"], password=shipper["password"]).model_dump()
+        return UserSchema(email=email, role=shipper["role"], password=shipper["password"])
     else:
         return None
     

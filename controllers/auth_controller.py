@@ -28,7 +28,7 @@ async def password_reset(email: str):
         raise HTTPException(status_code=400, detail="User not found")
     
     # Take role of user
-    role = user["role"]
+    role = user.role
     
     # Generate random password
     random_password = generate_random_password()
@@ -38,7 +38,7 @@ async def password_reset(email: str):
         # Update password in database
         updated_data = await update_password_in_db(email, random_password, role)
         if updated_data:
-            return {"message": "Password reset email sent successfully"}
+            raise HTTPException(status_code=200, detail="Password reset email sent successfully")
         else:
             raise HTTPException(status_code=400, detail="Failed to update password. Please try again or contact us via hotline 0909090909")
     else:
