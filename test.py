@@ -9,6 +9,11 @@ import logging
 
 from models.voucher import Voucher # to test
 from models.review import Review # to test
+from models.user import GenderEnum, User # to test
+from services.auth_service import hash_password # to test
+from utils.rbac import oauth2_scheme # to test
+from fastapi.openapi.utils import get_openapi
+
 import logging
 
 app = FastAPI()
@@ -21,6 +26,40 @@ setup_cors(app)
 
 # setup auth middleware
 setup_auth_middleware(app)
+
+router = APIRouter()
+router.include_router(admin_router, prefix="/admin", tags=["admin"])
+router.include_router(auth_router, prefix="/auth", tags=["auth"])
+
+app.include_router(router)
+
+#### Config Swagger UI to render "Authorization" button
+# def custom_openapi():
+#     if app.openapi_schema:
+#         return app.openapi_schema
+#     openapi_schema = get_openapi(
+#         title="Your API",
+#         version="1.0.0",
+#         description="This is a very custom OpenAPI schema",
+#         routes=app.routes,
+#     )
+#     openapi_schema["components"]["securitySchemes"] = {
+#         "OAuth2PasswordBearer": {
+#             "type": "oauth2",
+#             "flows": {
+#                 "password": {
+#                     "tokenUrl": "auth/login",
+#                     "scopes": {}
+#                 }
+#             }
+#         }
+#     }
+#     openapi_schema["security"] = [{"OAuth2PasswordBearer": []}]
+#     app.openapi_schema = openapi_schema
+#     return app.openapi_schema
+
+# app.openapi = custom_openapi
+#####
 
 sample_reviews = [
     {"user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},
@@ -37,13 +76,16 @@ sample_reviews = [
 sample_reviews = [Review(**review).model_dump(by_alias=True) for review in sample_reviews]
 
 sample_users = [
-    {"_id": "u1", "name": "John Doe", "email": "john@example.com", "password": "hashed_password1", "gender": "male", "date_of_birth": "1990-01-01",
+    {"_id": "u1", "name": "John Doe", "email": "john@example.com", "password": "hashed_password1", "gender": GenderEnum.MALE, "date_of_birth": "1990-01-01",
      "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
-    {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed_password2", "gender": "female", "date_of_birth": "1999-06-01",
+    {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed_password2", "gender": GenderEnum.FEMALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
-    {"_id": "u3", "name": "I AM ADMIN", "email": "fastdelivery@gmail.com", "password": "hashed_password3",
+    {"_id": "u3", "name": "I AM ADMIN", "email": "fastdelivery@gmail.com", "password": "hashed_password3", "gender": GenderEnum.MALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "admin", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
 ]
+sample_users = [User(
+    user_id=user["_id"], name=user["name"], email=user["email"], password=hash_password(user["password"]), phone_number=user["phone_number"], address=user["address"], created_at=user["created_at"], role=user["role"], gender=user["gender"], date_of_birth=user["date_of_birth"], avatar_url=user["avatar_url"]
+    ).model_dump(by_alias=True) for user in sample_users]
 
 sample_vouchers = [
     {"code": "DISCOUNT10", "discount_percentage": 10.0, "start_date": datetime.now(),
@@ -87,10 +129,6 @@ sample_shippers = [
 
 
 
-router = APIRouter()
-router.include_router(admin_router, prefix="/admin", tags=["admin"])
-router.include_router(auth_router, prefix="/auth", tags=["auth"])
-
 @app.on_event("startup")
 async def startup_event():
     # Create collections and insert sample data
@@ -111,4 +149,3 @@ async def shutdown_event():
     await client.drop_database(DB_NAME)
     logging.info("Database dropped")
 
-app.include_router(router)
