@@ -39,4 +39,4 @@ class AuthMiddleware(BaseHTTPMiddleware):
         return response
 
 def setup_auth_middleware(app):
-    app.add_middleware(AuthMiddleware, allowed_roles=["admin", "shipper", "customer"])
+    app.add_middleware(AuthMiddleware, allowed_roles=["superadmin", "admin", "customer", "shipper"])

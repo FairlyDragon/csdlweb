@@ -9,9 +9,9 @@ class PaymentMethod(str, Enum):
     cash_on_delivery = "cash_on_delivery"
     
 class PaymentStatus(str, Enum):
-    pending = "pending"
-    success = "success"
-    failed = "failed"
+    PENDING = "pending"
+    SUCCESS = "success"
+    FAILED = "failed"
     
 class Payment(BaseModel): 
     payment_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 

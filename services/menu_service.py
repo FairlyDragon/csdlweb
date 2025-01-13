@@ -58,9 +58,18 @@ async def insert_menuitem_to_db(menuitem: MenuItem) -> dict:
     
     return await collection.find_one({"_id": result.inserted_id})
 
+# Update a menu item by ID
 async def update_menuitem_by_id(menuitem_id: str, update_data: dict) -> dict:
     collection = db["menuitem"]
     result = await collection.update_one({"_id": menuitem_id}, {"$set": update_data})
     
     return result
+
+# Find menu item and delete it
+async def find_and_delete_menuitem_by_id(menuitem_id: str) -> dict:
+    deleted_menuitem = await db["menuitem"].find_one_and_delete({"_id": menuitem_id}) 
+    if not deleted_menuitem: 
+        raise HTTPException(status_code=404, detail="Menu item not found") 
+    
+    return deleted_menuitem
 

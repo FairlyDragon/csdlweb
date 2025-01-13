@@ -10,3 +10,4 @@ class Review(BaseModel):
     rating: Optional[int] = Field(default=0, ge=1, le=5) 
     comment: Optional[str] = None 
     review_date: datetime = Field(default_factory=datetime.now)
+    

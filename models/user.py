@@ -6,8 +6,8 @@ from enum import Enum
 from utils.roles import Role
 
 class GenderEnum(str, Enum):
-    male = "male"
-    female = "female"
+    MALE = "male"
+    FEMALE = "female"
      
 class User(BaseModel): 
     user_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 

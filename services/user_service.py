@@ -12,9 +12,9 @@ async def find_user_by_email(email: str):
     user = await db["user"].find_one({"email": email})
     shipper = await db["shipper"].find_one({"email": email})
     if user:
-        return user
+        return UserSchema(email=email, role=user["role"], password=user["password"]).model_dump()
     elif shipper:
-        return shipper
+        return UserSchema(email=email, role=shipper["role"], password=shipper["password"]).model_dump()
     else:
         return None
     

@@ -1,16 +1,20 @@
 import bcrypt
-from jose import jwt
+from jose import jwt, JWTError
 from datetime import datetime, timedelta
+from schemas.user_schema import UserSchema
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from services.user_service import find_user_by_email, create_user
 from db.database import db
 
+# Hash password
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
+# Verify password
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
+# Create access token
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -18,6 +22,7 @@ def create_access_token(data: dict) -> str:
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# Signup user
 async def signup_user(user_data: dict) -> dict:
     if await find_user_by_email(user_data["email"]):
         return {"error": "Email already registered"}
@@ -29,6 +34,7 @@ async def signup_user(user_data: dict) -> dict:
     else:
         return {"error": "Failed to create user"}
 
+# Authenticate user
 async def authenticate_user(email: str, password: str) -> str:
     user = await find_user_by_email(email)
     if not user or not verify_password(password, user["password"]):
@@ -47,4 +53,16 @@ async def update_password_in_db(email: str, new_password: str, role: str):
         raise ValueError(f"Invalid role: {role}")
 
     return updated_data.modified_count
+
+# Get user from token
+async def get_user_from_token(token: str) -> UserSchema:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_email = payload.get("sub")
+        if user_email is None:
+            raise JWTError
+        user = await find_user_by_email(user_email)
+        return user
+    except JWTError:
+        return None
 

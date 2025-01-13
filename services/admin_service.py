@@ -38,10 +38,10 @@ async def get_dashboard_header_data(start_time: datetime, end_time: datetime) ->
     total_orders = len(orders)
     total_delivered = len(await get_completed_orders_within_period(start_time=start_time, end_time=end_time))
     
-    total_canceled = len([o for o in orders if o["status"] == OrderStatus.canceled])
+    total_canceled = len([o for o in orders if o["status"] == OrderStatus.CANCELED])
     
     payments = await get_payments_within_period(start_time=start_time, end_time=end_time)
-    total_revenue = sum(p["amount"] for p in payments if p["status"] == PaymentStatus.success)
+    total_revenue = sum(p["amount"] for p in payments if p["status"] == PaymentStatus.SUCCESS)
 
     return total_orders, total_delivered, total_canceled, total_revenue
 
@@ -62,7 +62,7 @@ async def get_dashboard_center_piechart_in_period_time(start_time: datetime, end
     total_customer = len(customers)
     
     payments = await get_payments_within_period(start_time, end_time)
-    total_revenue = sum(p["amount"] for p in payments if p["status"] == PaymentStatus.success)
+    total_revenue = sum(p["amount"] for p in payments if p["status"] == PaymentStatus.SUCCESS)
     
     return total_order, total_customer, total_revenue
 
@@ -73,7 +73,7 @@ async def get_total_orders_list_in_dashboard_center(timeline: list) -> list:
 
 # Get total_revenue figures list in dashboard center
 async def get_total_revenue_list_in_dashboard_center(timeline: list) -> list:
-    total_revenue_list = [sum(p["amount"] for p in await get_payments_within_period(time_pair[0], time_pair[1]) if p["status"] == PaymentStatus.success) for time_pair in timeline]
+    total_revenue_list = [sum(p["amount"] for p in await get_payments_within_period(time_pair[0], time_pair[1]) if p["status"] == PaymentStatus.SUCCESS) for time_pair in timeline]
     return total_revenue_list
 
 # Get customers_map figures list in dashboard center

@@ -151,10 +151,7 @@ async def update_menuitem(menuitem: UpdateMenuItemSchema) -> dict: # in essence,
 
 # Delete a menu item by ID
 async def delete_menuitem(menuitem_id: str) -> dict:  # in essence, this returns MenuItem instance but replace _id with menuitem_id
-    deleted_menuitem = await db["menuitem"].find_one_and_delete({"_id": menuitem_id}) 
-    if not deleted_menuitem: 
-        raise HTTPException(status_code=404, detail="Menu item not found") 
-    
+    deleted_menuitem = await find_and_delete_menuitem_by_id(menuitem_id)
     # REPLACE _id with the menuitem_id 
     deleted_menuitem.setdefault("menuitem_id", deleted_menuitem.pop("_id"))
     
@@ -211,7 +208,7 @@ async def create_voucher(voucher: CreateVoucherSchema) -> dict: # in essence, th
     return inserted_voucher
 
 # Get vouchers by status
-async def read_vouchers_by_status(status: str = Path(..., example="available")) -> list[dict]: # in essence, this returns list of Voucher instances but replace _id with voucher_id
+async def read_vouchers_by_status(status: str) -> list[dict]: # in essence, this returns list of Voucher instances but replace _id with voucher_id
     for voucher in (list_vouchers:=await get_vouchers_by_status(status.strip().lower())):
         voucher.setdefault("voucher_id", voucher.pop("_id"))
     
@@ -259,10 +256,10 @@ async def read_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]:
     for delivery in delivery_history:
         order_id = delivery["order_id"]
         # Get order with _id = order_id
-        order = await db["order"].find_one({"_id": order_id})
+        order = await get_order_by_id(order_id)
         
         # Only show "completed" orders because there's a "profit" column
-        if order["status"] == OrderStatus.completed:
+        if order["status"] == OrderStatus.COMPLETED:
             transformed_delivery_history.append(DeliveryHistoryResponseSchema(
                 order_id=order_id, 
                 order_date=order["order_date"],
@@ -306,7 +303,7 @@ async def read_order_history_by_customer_id(customer_id: str) -> list[dict]:
     for order in order_history:
         
         # Only add the order_id field if the order is "completed"
-        if order["status"] == OrderStatus.completed:
+        if order["status"] == OrderStatus.COMPLETED:
             transformed_order_history.append(OrderHistoryResponseSchema(
                 order_id=order["_id"], 
                 order_date=order["order_date"], 
@@ -363,7 +360,7 @@ async def read_delivering_orders() -> dict:
 # Get waiting orders
 async def read_waiting_orders() -> list[dict]:
     # Get waiting orders. In underlying, it's 'pending' orders
-    waiting_orders = await get_orders_by_status(OrderStatus.pending)
+    waiting_orders = await get_orders_by_status(OrderStatus.PENDING)
 
     result = []
     for order in waiting_orders:

@@ -20,7 +20,7 @@ logging.basicConfig(level=logging.INFO)
 setup_cors(app)
 
 # setup auth middleware
-# setup_auth_middleware(app)
+setup_auth_middleware(app)
 
 sample_reviews = [
     {"user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},

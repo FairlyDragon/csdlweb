@@ -4,9 +4,9 @@ from uuid import uuid4
 from enum import Enum
 
 class DeliveryStatusEnum(str, Enum):
-    delivering = "delivering"
-    delivered = "delivered"
-    failed = "failed"
+    DELIVERING = "delivering"
+    DELIVERED = "delivered"
+    FAILED = "failed"
     
 
 class OrderDelivery(BaseModel): 

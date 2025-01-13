@@ -36,10 +36,17 @@ async def get_order_history_by_customer_id(customer_id: str) -> list[dict]:
 
 # Get completed orders within a period of time
 async def get_completed_orders_within_period(start_time, end_time) -> list:
-    delivered_orders = await get_orders_by_status(OrderStatus.completed)
+    delivered_orders = await get_orders_by_status(OrderStatus.COMPLETED)
     
     return [order for order in delivered_orders if start_time <= order["order_date"] <= end_time]
 
 # Get delivering orders (accurately is 'processing' status)
 async def get_delivering_orders() -> list[dict]:  # -> list[Order]
-    return await get_orders_by_status(OrderStatus.processing)
+    return await get_orders_by_status(OrderStatus.PROCESSING)
+
+# Get order by id
+async def get_order_by_id(order_id: str) -> dict:
+    order = await db["order"].find_one({"_id": order_id})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return order

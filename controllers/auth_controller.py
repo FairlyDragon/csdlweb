@@ -19,10 +19,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         raise HTTPException(status_code=400, detail="Invalid credentials")
     return {"access_token": token, "token_type": "bearer"}
 
-##################### Logout #####################
-# async def logout(token: str):
-#     await invalidate_token(token)
-#     return {"message": "Logged out successfully"}
 
 # Reset password
 async def password_reset(email: str):
