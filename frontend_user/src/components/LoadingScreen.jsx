@@ -63,18 +63,20 @@ const LoadingScreen = ({ onLoadingComplete }) => {
         }}
       />
 
-      <Typography
-        variant="h2"
-        sx={{
-          color: '#fff',
-          mb: 4,
-          fontWeight: 700,
-          letterSpacing: '3px',
-          animation: 'pulse 2s infinite'
-        }}
-      >
-        FAIRY DRAGON
-      </Typography>
+<Typography
+  variant="h2"
+  sx={{
+    color: '#fff',
+    mb: 4,
+    fontFamily: 'Chakra Petch, sans-serif', // Thay đổi font ở đây
+    fontWeight: 700,
+    letterSpacing: '3px',
+    animation: 'pulse 2s infinite',
+    fontSize: '3rem'  // Điều chỉnh kích thước nếu cần
+  }}
+>
+  FAIRY DRAGON
+</Typography>
       
       <Box sx={{ width: '300px', position: 'relative' }}>
         <LinearProgress 

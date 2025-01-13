@@ -75,80 +75,13 @@ const Home = () => {
           }}
         />
 
-        {/* Decorative Rice Plants */}
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: '150px',
-            display: 'flex',
-            justifyContent: 'space-around',
-            padding: '0 20px',
-            zIndex: 1,
-            pointerEvents: 'none'
-          }}
-        >
-          {[...Array(8)].map((_, i) => (
-            <Box
-              key={i}
-              sx={{
-                width: '2px',
-                height: '100%',
-                backgroundColor: 'rgba(255,255,255,0.3)',
-                position: 'relative',
-                animation: `riceWave ${2 + i * 0.2}s infinite ease-in-out`,
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: '10px',
-                  left: '-10px',
-                  width: '20px',
-                  height: '20px',
-                  borderLeft: '2px solid rgba(255,255,255,0.3)',
-                  borderBottom: '2px solid rgba(255,255,255,0.3)',
-                  transform: 'rotate(-45deg)'
-                }
-              }}
-            />
-          ))}
-        </Box>
-
-        {/* Floating Conical Hats */}
-        {[...Array(3)].map((_, i) => (
-          <Box
-            key={i}
-            sx={{
-              position: 'absolute',
-              width: '40px',
-              height: '20px',
-              borderRadius: '50%',
-              border: '1px solid rgba(255,255,255,0.2)',
-              transform: 'rotate(-35deg)',
-              top: `${20 + i * 30}%`,
-              left: `${20 + i * 30}%`,
-              animation: `floatingHat ${3 + i}s infinite ease-in-out`,
-              '&::before': {
-                content: '""',
-                position: 'absolute',
-                top: '-10px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                borderLeft: '20px solid transparent',
-                borderRight: '20px solid transparent',
-                borderBottom: '10px solid rgba(255,255,255,0.2)',
-              }
-            }}
-          />
-        ))}
-
         {/* Content */}
         <Container sx={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', alignItems: 'center' }}>
           <Box>
             <Typography 
               variant="h1" 
               sx={{ 
+                fontFamily: 'Montserrat, sans-serif',
                 color: 'white',
                 fontWeight: 800,
                 mb: 3,
@@ -166,13 +99,15 @@ const Home = () => {
             <Typography 
               variant="h5"
               sx={{ 
+                fontFamily: 'Montserrat, sans-serif',
                 color: 'white',
                 mb: 4,
                 maxWidth: '600px',
                 lineHeight: 1.8,
                 animation: 'fadeIn 2s ease-out 1s backwards',
-                fontWeight: 300,
-                letterSpacing: '1px'
+                fontWeight: 500,
+                letterSpacing: '1px',
+                fontSize: { xs: '1.5rem', md: '2rem' }
               }}
             >
               Where traditional flavors meet modern elegance in a luxurious dining experience
@@ -221,10 +156,12 @@ const Home = () => {
               <Typography 
                 variant="h6" 
                 sx={{ 
+                  fontFamily: 'Montserrat, sans-serif',
                   color: '#CC0000',
                   mb: 2,
                   letterSpacing: '3px',
-                  fontWeight: 500
+                  fontWeight: 600,
+                  fontSize: '2rem'
                 }}
               >
                 ABOUT US
@@ -232,9 +169,11 @@ const Home = () => {
               <Typography 
                 variant="h3" 
                 sx={{ 
+                  fontFamily: 'Montserrat, sans-serif',
                   mb: 4,
                   fontWeight: 700,
-                  lineHeight: 1.3
+                  lineHeight: 1.3,
+                  fontSize: { xs: '2.5rem', md: '3.5rem' }
                 }}
               >
                 Traditional Flavors
@@ -267,7 +206,18 @@ const Home = () => {
         <Container>
           <Grid container spacing={4} justifyContent="center" className="fade-in-section">
             <Grid item xs={12} textAlign="center">
-              <Typography variant="h4" sx={{ mb: 4, color: '#CC0000' }}>Contact Us</Typography>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontFamily: 'Montserrat, sans-serif',
+                  mb: 4, 
+                  color: '#CC0000',
+                  fontSize: '3rem',
+                  fontWeight: 600
+                }}
+              >
+                Contact Us
+              </Typography>
               <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4, mb: 4 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <PhoneIcon sx={{ color: '#CC0000' }} />
@@ -291,7 +241,7 @@ const Home = () => {
         </Container>
       </Box>
 
-      <style jsx global>{`
+      <style>{`
         @keyframes riceWave {
           0%, 100% { transform: rotate(0deg); }
           50% { transform: rotate(5deg); }
