@@ -58,7 +58,7 @@ async def update_password_in_db(email: str, new_password: str, role: str):
     return updated_data.modified_count
 
 # Get user from token
-async def get_user_from_token(token: str) -> Optional[UserSchema]:
+async def get_user_from_token(token: str) -> UserSchema:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_email = payload.get("sub")

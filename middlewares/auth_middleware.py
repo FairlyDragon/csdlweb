@@ -4,7 +4,7 @@ from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from starlette.middleware.base import BaseHTTPMiddleware
-import logging
+from logging_config import logger
 
 class AuthMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, allowed_roles=None):
@@ -25,18 +25,18 @@ class AuthMiddleware(BaseHTTPMiddleware):
         try:
             credentials: HTTPAuthorizationCredentials = await auth(request)
             token = credentials.credentials
-            logging.info(f"Token received: {token}")
+            logger.info(f"Token received: {token}")
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             role = payload.get("role")
-            logging.info(f"Role from token: {role}")
+            logger.info(f"Role from token: {role}")
             if role not in self.allowed_roles:
                 raise HTTPException(status_code=403, detail="Role not allowed")
             request.state.user = payload
         except JWTError as e:
-            logging.error(f"JWT Error: {e}")
+            logger.error(f"JWT Error: {e}")
             raise HTTPException(status_code=403, detail="Invalid token")
         except Exception as e:
-            logging.error(f"Authorization Error: {e}")
+            logger.error(f"Authorization Error: {e}")
             raise HTTPException(status_code=403, detail="Authorization required")
 
         response = await call_next(request)

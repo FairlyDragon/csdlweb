@@ -5,7 +5,6 @@ from db.database import DB_NAME, db, client
 from routes.admin_routes import router as admin_router
 from routes.auth_routes import router as auth_router
 from datetime import datetime, timedelta    
-import logging
 
 from models.voucher import Voucher # to test
 from models.review import Review # to test
@@ -15,12 +14,10 @@ from utils.rbac import oauth2_scheme # to test
 from middlewares.error_middleware import custom_error_handler
 from fastapi.openapi.utils import get_openapi
 
-import logging
+from logging_config import logger  # to test
 
 app = FastAPI()
 
-# setup logging
-logging.basicConfig(level=logging.INFO)
 
 # setup cors
 setup_cors(app)
@@ -29,7 +26,7 @@ setup_cors(app)
 setup_auth_middleware(app)
 
 # setup error handling middleware
-# app.middleware("http")(custom_error_handler)
+app.middleware("http")(custom_error_handler)
 
 router = APIRouter()
 router.include_router(admin_router, prefix="/admin", tags=["admin"])
@@ -63,6 +60,7 @@ def custom_openapi():
 app.openapi = custom_openapi
 #####
 
+
 sample_reviews = [
     {"user_id": "u1", "menuitem_id": "m1", "rating": 5, "comment": "Delicious pizza!", "review_date": datetime.now()},
     {"user_id": "u2", "menuitem_id": "m1", "rating": 4, "comment": "Great service!", "review_date": datetime.now()},
@@ -82,7 +80,7 @@ sample_users = [
      "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
     {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": "hashed2", "gender": GenderEnum.FEMALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
-    {"_id": "u3", "name": "I AM ADMIN", "email": "fastdeliveryu1@gmail.com", "password": "hashed3", "gender": GenderEnum.MALE, "date_of_birth": "1999-06-01",
+    {"_id": "u3", "name": "I AM ADMIN", "email": "mm@gmail.com", "password": "hash", "gender": GenderEnum.MALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "admin", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
 ]
 sample_users = [User(
@@ -146,8 +144,8 @@ async def startup_event():
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    logging.info("Shutdown event triggered")
+    logger.info("Shutdown event triggered")
     # Drop the database on server shutdown
     await client.drop_database(DB_NAME)
-    logging.info("Database dropped")
+    logger.info("Database dropped")
 

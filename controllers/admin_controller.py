@@ -12,7 +12,7 @@ from models.voucher import *
 from services.shipper_service import *
 
 ### Dashboard Header
-async def read_dashboard_header(time_period: TimePeriod = Depends(get_time_period)) -> DashBoardHeaderResponseSchema:
+async def read_dashboard_header(time_period: TimePeriod) -> DashBoardHeaderResponseSchema:
     time_differ = get_time_difference(time_period.start_date, time_period.end_date) # periodicity length
     days = time_differ.days
     
@@ -107,7 +107,7 @@ async def read_dashboard_center_customers_map(periodicity: str = "daily") -> lis
     return list_result
 
 # Dashboard footer: get the latest 'limit' customer reviews
-async def read_dashboard_footer_customer_reviews(skip: int = 0, limit: int = 5) -> list[ReviewDashBoardResponseSchema]:
+async def read_dashboard_footer_customer_reviews(skip: int, limit: int) -> list[ReviewDashBoardResponseSchema]:
     # get all customer reviews
     reviews = await fetch_reviews()
     if skip > len(reviews) or not reviews:

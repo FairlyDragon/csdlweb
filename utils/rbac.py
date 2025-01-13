@@ -6,6 +6,7 @@ from schemas.user_schema import UserSchema
 from services.auth_service import get_user_from_token
 from .roles import Role
 
+from logging_config import logger
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
