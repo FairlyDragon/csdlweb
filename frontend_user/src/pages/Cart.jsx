@@ -1,100 +1,180 @@
-import { Box, Typography, Button, TextField } from '@mui/material';
-import { useCart } from '../contexts/CartContext';
-import { CartItem } from '../components/cart/CartItem';
+import { useState } from 'react';
+import {
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  IconButton,
+  TextField,
+  Button,
+  Paper
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import Header from '../components/Header';
 
-export function Cart() {
-  const { cartItems, deliveryFee, getSubtotal } = useCart();
-  const subtotal = getSubtotal();
+const Cart = () => {
+  const [cartItems, setCartItems] = useState([
+    {
+      id: 1,
+      image: '/path/to/egg-salad.jpg',
+      title: 'Egg Salad',
+      price: 5,
+      quantity: 2,
+      total: 10
+    },
+    {
+      id: 2,
+      image: '/path/to/fried-rice.jpg', 
+      title: 'Fried Rice',
+      price: 5,
+      quantity: 3,
+      total: 15
+    }
+  ]);
+
+  const [voucherCode, setVoucherCode] = useState('');
+
+  const subtotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+  const deliveryFee = 3;
   const total = subtotal + deliveryFee;
 
+  const handleRemoveItem = (itemId) => {
+    setCartItems(cartItems.filter(item => item.id !== itemId));
+  };
+
   return (
-    <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
-      <Typography variant="h4" gutterBottom>Your Cart</Typography>
+    <Box>
+      <Header />
+      
+      <Box sx={{ p: 4, maxWidth: 1200, mx: 'auto' }}>
+        <Typography variant="h5" sx={{ mb: 4 }}>
+          Your Cart
+        </Typography>
 
-      {/* Header */}
-      <Box sx={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'auto 1fr auto auto auto',
-        gap: 2,
-        py: 2,
-        borderBottom: '2px solid #eee'
-      }}>
-        <Typography>Items</Typography>
-        <Typography>Title</Typography>
-        <Typography>Price</Typography>
-        <Typography>Quantity</Typography>
-        <Typography>Total</Typography>
-        <Typography>Remove</Typography>
-      </Box>
+        {/* Cart Table */}
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Items</TableCell>
+              <TableCell>Title</TableCell>
+              <TableCell>Price</TableCell>
+              <TableCell>Quantity</TableCell>
+              <TableCell>Total</TableCell>
+              <TableCell>Remove</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {cartItems.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>
+                  <Box
+                    component="img"
+                    src={item.image}
+                    alt={item.title}
+                    sx={{ width: 80, height: 60, objectFit: 'cover' }}
+                  />
+                </TableCell>
+                <TableCell>{item.title}</TableCell>
+                <TableCell>${item.price}</TableCell>
+                <TableCell>{item.quantity}</TableCell>
+                <TableCell>${item.total}</TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleRemoveItem(item.id)}>
+                    <CloseIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
-      {/* Cart Items */}
-      {cartItems.length === 0 ? (
-        <Typography sx={{ py: 4 }}>Your cart is empty</Typography>
-      ) : (
-        cartItems.map(item => (
-          <CartItem key={item.id} item={item} />
-        ))
-      )}
-
-      {/* Cart Totals */}
-      <Box sx={{ 
-        maxWidth: 400, 
-        ml: 'auto', 
-        mt: 4 
-      }}>
-        <Typography variant="h6">Cart Totals</Typography>
-        
+        {/* Cart Totals and Voucher */}
         <Box sx={{ 
           display: 'flex', 
           justifyContent: 'space-between',
-          mt: 2 
+          mt: 4,
+          gap: 4
         }}>
-          <Typography>Subtotal</Typography>
-          <Typography>${subtotal}</Typography>
-        </Box>
+          {/* Cart Totals */}
+          <Box sx={{ flex: 1 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Cart Totals
+            </Typography>
+            <Paper sx={{ p: 2 }}>
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-between',
+                mb: 1
+              }}>
+                <Typography color="text.secondary">Subtotal</Typography>
+                <Typography>${subtotal}</Typography>
+              </Box>
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-between',
+                mb: 1,
+                pb: 1,
+                borderBottom: '1px solid #eee'
+              }}>
+                <Typography color="text.secondary">Delivery Fee</Typography>
+                <Typography>${deliveryFee}</Typography>
+              </Box>
+              <Box sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-between'
+              }}>
+                <Typography>Total</Typography>
+                <Typography>${total}</Typography>
+              </Box>
+            </Paper>
+            <Button
+              variant="contained"
+              fullWidth
+              sx={{ 
+                mt: 2,
+                bgcolor: '#d32f2f',
+                '&:hover': {
+                  bgcolor: '#b71c1c'
+                }
+              }}
+            >
+              PROCESS TO CHECKOUT
+            </Button>
+          </Box>
 
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between',
-          mt: 1 
-        }}>
-          <Typography>Delivery Fee</Typography>
-          <Typography>${deliveryFee}</Typography>
+          {/* Voucher Code */}
+          <Box sx={{ flex: 1 }}>
+            <Typography sx={{ mb: 2 }}>
+              If you have a voucher code, enter it here
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <TextField
+                placeholder="code"
+                value={voucherCode}
+                onChange={(e) => setVoucherCode(e.target.value)}
+                size="small"
+                sx={{ flex: 1, bgcolor: '#f5f5f5' }}
+              />
+              <Button
+                variant="contained"
+                sx={{ 
+                  bgcolor: 'black',
+                  '&:hover': {
+                    bgcolor: '#333'
+                  }
+                }}
+              >
+                Submit
+              </Button>
+            </Box>
+          </Box>
         </Box>
-
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between',
-          mt: 2,
-          pt: 2,
-          borderTop: '2px solid #eee'
-        }}>
-          <Typography variant="h6">Total</Typography>
-          <Typography variant="h6">${total}</Typography>
-        </Box>
-
-        {/* Voucher Input */}
-        <Box sx={{ mt: 3, display: 'flex', gap: 1 }}>
-          <TextField 
-            size="small"
-            placeholder="If you have a voucher code, enter it here"
-            fullWidth
-          />
-          <Button variant="contained">Submit</Button>
-        </Box>
-
-        {/* Checkout Button */}
-        <Button 
-          variant="contained" 
-          color="primary"
-          fullWidth
-          sx={{ mt: 3 }}
-        >
-          PROCESS TO CHECKOUT
-        </Button>
       </Box>
     </Box>
   );
-}
+};
 
 export default Cart;

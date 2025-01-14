@@ -1,52 +1,42 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useState, useContext } from 'react';
 
 const CartContext = createContext();
 
-export function CartProvider({ children }) {
+export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = (food) => {
+  const addToCart = (item) => {
     setCartItems(prev => {
-      const existingItem = prev.find(item => item.id === food.id);
+      const existingItem = prev.find(i => i.id === item.id);
       if (existingItem) {
-        return prev.map(item =>
-          item.id === food.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+        return prev.map(i => 
+          i.id === item.id 
+            ? {...i, quantity: i.quantity + 1, total: (i.quantity + 1) * i.price}
+            : i
         );
       }
-      return [...prev, { ...food, quantity: 1 }];
+      return [...prev, { ...item, quantity: 1, total: item.price }];
     });
   };
 
-  const removeFromCart = (foodId) => {
-    setCartItems(prev => prev.filter(item => item.id !== foodId));
+  const removeFromCart = (itemId) => {
+    setCartItems(prev => prev.filter(item => item.id !== itemId));
   };
 
-  const updateQuantity = (foodId, newQuantity) => {
-    if (newQuantity < 1) {
-      removeFromCart(foodId);
-      return;
-    }
-    setCartItems(prev =>
-      prev.map(item =>
-        item.id === foodId
-          ? { ...item, quantity: newQuantity }
-          : item
-      )
-    );
-  };
+  const cartTotal = cartItems.reduce((sum, item) => sum + item.total, 0);
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <CartContext.Provider value={{
-      cartItems,
-      addToCart,
-      removeFromCart,
-      updateQuantity
+    <CartContext.Provider value={{ 
+      cartItems, 
+      addToCart, 
+      removeFromCart, 
+      cartTotal,
+      cartCount 
     }}>
       {children}
     </CartContext.Provider>
   );
-}
+};
 
 export const useCart = () => useContext(CartContext);
