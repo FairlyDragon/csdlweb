@@ -7,14 +7,9 @@ import authService from '../../services/authService';
 const SignUp = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    phone_number: '',
-    address: '',
-    gender: 'male',
-    date_of_birth: ''
+    confirmPassword: ''
   });
 
   const [snackbar, setSnackbar] = useState({
@@ -23,7 +18,6 @@ const SignUp = () => {
     severity: 'success'
   });
 
-  // Thêm hàm handleChange
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
@@ -35,9 +29,6 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Log dữ liệu trước khi gửi
-    console.log("Form Data:", formData);
-
     if (formData.password !== formData.confirmPassword) {
       setSnackbar({
         open: true,
@@ -46,30 +37,38 @@ const SignUp = () => {
       });
       return;
     }
-
+  
     try {
-      // Log request
-      console.log("Sending signup request...");
+      // Chỉ gửi email và password
+      const signupData = {
+        email: formData.email,
+        password: formData.password
+      };
       
-      await authService.signup(formData);
+      console.log("Sending signup request with data:", signupData);
       
-      // Log success
-      console.log("Signup successful!");
+      const response = await authService.signup(signupData);
+      console.log("Signup response:", response);
       
       setSnackbar({
         open: true,
         message: 'Registration successful! Please sign in.',
         severity: 'success'
       });
+      
       setTimeout(() => navigate('/auth/signin'), 1500);
     } catch (error) {
-      // Log error
       console.error("Signup error:", error);
       
-      const errorMessage = typeof error === 'string' ? error : 
-                         error.message || 
-                         error.response?.data?.detail || 
-                         'Registration failed';
+      // Xử lý message lỗi từ API
+      let errorMessage = 'Registration failed';
+      if (error.detail) {
+        if (Array.isArray(error.detail)) {
+          errorMessage = error.detail[0]?.msg || errorMessage;
+        } else {
+          errorMessage = error.detail;
+        }
+      }
       
       setSnackbar({
         open: true,
@@ -77,7 +76,7 @@ const SignUp = () => {
         severity: 'error'
       });
     }
-};
+  };
 
   const handleCloseSnackbar = () => {
     setSnackbar(prev => ({ ...prev, open: false }));
@@ -101,16 +100,6 @@ const SignUp = () => {
           </Typography>
 
           <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
-            <TextField
-              fullWidth
-              name="name"
-              label="Full Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              sx={{ mb: 3 }}
-            />
-
             <TextField
               fullWidth
               name="email"
@@ -142,57 +131,6 @@ const SignUp = () => {
               onChange={handleChange}
               required
               sx={{ mb: 3 }}
-            />
-
-            <TextField
-              fullWidth
-              name="phone_number"
-              label="Phone Number"
-              value={formData.phone_number}
-              onChange={handleChange}
-              required
-              sx={{ mb: 3 }}
-            />
-
-            <TextField
-              fullWidth
-              name="address"
-              label="Address"
-              value={formData.address}
-              onChange={handleChange}
-              required
-              sx={{ mb: 3 }}
-            />
-
-            <TextField
-              fullWidth
-              name="gender"
-              select
-              label="Gender"
-              value={formData.gender}
-              onChange={handleChange}
-              required
-              sx={{ mb: 3 }}
-              SelectProps={{
-                native: true,
-              }}
-            >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </TextField>
-
-            <TextField
-              fullWidth
-              name="date_of_birth"
-              type="date"
-              label="Date of Birth"
-              value={formData.date_of_birth}
-              onChange={handleChange}
-              required
-              InputLabelProps={{
-                shrink: true,
-              }}
-              sx={{ mb: 4 }}
             />
 
             <Button

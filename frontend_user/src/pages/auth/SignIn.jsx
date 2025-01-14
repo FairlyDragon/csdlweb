@@ -4,7 +4,7 @@ import {
   TextField, 
   Button, 
   Typography, 
-  Link, 
+  Link,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -41,18 +41,31 @@ const SignIn = () => {
   const handleSignIn = async (e) => {
     e.preventDefault();
     try {
-      const response = await authService.login({
+      const loginData = {
         username: formData.email,
         password: formData.password
-      });
+      };
+      
+      const response = await authService.login(loginData);
       
       if (response.access_token) {
+        // Lưu thông tin user vào localStorage
+        const userData = {
+          email: formData.email,
+          name: 'User1', // Thêm name để hiển thị
+          token: response.access_token
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('access_token', response.access_token);
+        
         setSnackbar({
           open: true,
           message: 'Login successful!',
           severity: 'success'
         });
-        setTimeout(() => navigate('/'), 1500);
+        
+        // Chuyển hướng đến trang menu
+        setTimeout(() => navigate('/menu'), 1500);
       }
     } catch (error) {
       setSnackbar({
@@ -72,14 +85,15 @@ const SignIn = () => {
       });
       return;
     }
+
     try {
       await authService.resetPassword(resetEmail);
       setResetSent(true);
-      setTimeout(() => {
-        setOpenResetDialog(false);
-        setResetSent(false);
-        setResetEmail('');
-      }, 3000);
+      setSnackbar({
+        open: true,
+        message: 'Password reset email sent!',
+        severity: 'success'
+      });
     } catch (error) {
       setSnackbar({
         open: true,
@@ -95,121 +109,101 @@ const SignIn = () => {
 
   return (
     <Box
+      component="form"
+      onSubmit={handleSignIn}
       sx={{
-        height: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bgcolor: '#f5f5f5'
+        maxWidth: 400,
+        mx: 'auto',
+        mt: 8,
+        p: 3,
+        boxShadow: 1,
+        borderRadius: 1
       }}
     >
-      <Box
-        sx={{
-          p: 4,
-          width: '100%',
-          maxWidth: 400,
-          bgcolor: 'white',
-          borderRadius: 2,
-          boxShadow: 1
-        }}
+      <Typography variant="h5" component="h1" sx={{ mb: 3, textAlign: 'center' }}>
+        Sign In
+      </Typography>
+
+      <TextField
+        fullWidth
+        label="Email"
+        name="email"
+        type="email"
+        value={formData.email}
+        onChange={handleChange}
+        margin="normal"
+        required
+      />
+
+      <TextField
+        fullWidth
+        label="Password"
+        name="password"
+        type="password"
+        value={formData.password}
+        onChange={handleChange}
+        margin="normal"
+        required
+      />
+
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3, mb: 2 }}
       >
-        <Typography variant="h4" component="h1" gutterBottom align="center">
-          Sign In
-        </Typography>
+        Sign In
+      </Button>
 
-        <form onSubmit={handleSignIn}>
-          <TextField
-            fullWidth
-            name="email"
-            label="Email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            margin="normal"
-            required
-          />
-
-          <TextField
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            margin="normal"
-            required
-          />
-
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign In
-          </Button>
-        </form>
-
-        <Box sx={{ mt: 2, textAlign: 'center' }}>
+      <Box sx={{ textAlign: 'center' }}>
+        <Link
+          component="button"
+          variant="body2"
+          onClick={() => setOpenResetDialog(true)}
+          sx={{ mb: 1, display: 'block' }}
+        >
+          Forgot password?
+        </Link>
+        <Typography variant="body2">
+          Don't have an account?{' '}
           <Link
             component="button"
-            variant="body2"
-            onClick={() => setOpenResetDialog(true)}
-            sx={{ textDecoration: 'none' }}
+            onClick={() => navigate('/auth/signup')}
           >
-            Forgot password?
+            Sign Up
           </Link>
-        </Box>
-
-        <Box sx={{ mt: 3, textAlign: 'center' }}>
-          <Typography variant="body2">
-            Don't have an account?{' '}
-            <Link
-              component="button"
-              variant="body2"
-              onClick={() => navigate('/auth/signup')}
-              sx={{ textDecoration: 'none' }}
-            >
-              Sign Up
-            </Link>
-          </Typography>
-        </Box>
+        </Typography>
       </Box>
 
+      {/* Reset Password Dialog */}
       <Dialog open={openResetDialog} onClose={() => setOpenResetDialog(false)}>
         <DialogTitle>Reset Password</DialogTitle>
         <DialogContent>
-          {resetSent ? (
-            <Alert severity="success" sx={{ mt: 2 }}>
-              Password reset link has been sent to your email!
-            </Alert>
+          {!resetSent ? (
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Email Address"
+              type="email"
+              fullWidth
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+            />
           ) : (
-            <>
-              <Typography variant="body2" sx={{ mb: 2, mt: 1 }}>
-                Enter your email address and we'll send you a link to reset your password.
-              </Typography>
-              <TextField
-                fullWidth
-                label="Email"
-                variant="outlined"
-                value={resetEmail}
-                onChange={(e) => setResetEmail(e.target.value)}
-              />
-            </>
+            <Typography>
+              Password reset instructions have been sent to your email.
+            </Typography>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenResetDialog(false)}>
-            Cancel
-          </Button>
+          <Button onClick={() => setOpenResetDialog(false)}>Cancel</Button>
           {!resetSent && (
-            <Button onClick={handleResetPassword} variant="contained">
-              Send Reset Link
-            </Button>
+            <Button onClick={handleResetPassword}>Send Reset Link</Button>
           )}
         </DialogActions>
       </Dialog>
 
+      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

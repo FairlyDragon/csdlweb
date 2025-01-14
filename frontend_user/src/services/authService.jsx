@@ -1,39 +1,31 @@
-import axios from "axios";
+import axios from 'axios';
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = 'http://127.0.0.1:8000';
 
 const authService = {
   signup: async (userData) => {
     try {
-      // Log data để debug
-      console.log("Data being sent:", {
-        username: userData.email,
+      // Đảm bảo gửi đúng format theo API yêu cầu
+      const signupData = {
         email: userData.email,
         password: userData.password,
-        name: userData.name,
-        phone_number: userData.phone_number || '',
-      });
+        role: "customer"  // Thêm role là customer
+      };
 
-      const response = await axios.post(`${API_URL}/auth/signup`, {
-        username: userData.email,
-        email: userData.email,
-        password: userData.password,
-        name: userData.name,
-        phone_number: userData.phone_number || '',
-      });
+      console.log('Sending signup data:', signupData); // Log để debug
 
-      console.log("Signup response:", response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Signup Error Details:', {
-        data: error.response?.data,
-        status: error.response?.status,
-        message: error.message
+      const response = await axios.post(`${API_URL}/auth/signup`, signupData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
       });
       
-      // Throw error message cụ thể
-      const errorMessage = error.response?.data?.detail || 'Đăng ký thất bại';
-      throw new Error(errorMessage);
+      console.log('Signup response:', response.data); // Log response
+      return response.data;
+    } catch (error) {
+      console.error('Signup error details:', error.response?.data); // Log chi tiết lỗi
+      throw error.response?.data || { message: 'Registration failed' };
     }
   },
 
@@ -42,42 +34,61 @@ const authService = {
       const formData = new URLSearchParams();
       formData.append('username', credentials.username);
       formData.append('password', credentials.password);
+      formData.append('grant_type', 'password');
+      formData.append('scope', '');
+      formData.append('client_id', 'string');
+      formData.append('client_secret', 'string');
 
-      const response = await axios.post(`${API_URL}/auth/login`, formData.toString(), {
+      const response = await axios.post(`${API_URL}/auth/login`, formData, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'accept': 'application/json'
         }
       });
-      
+
       if (response.data.access_token) {
         localStorage.setItem('user', JSON.stringify(response.data));
       }
       return response.data;
     } catch (error) {
-      console.error('Login Error:', error.response?.data);
-      throw new Error(error.response?.data?.detail || 'Login failed');
+      console.error('Login error:', error.response?.data || error.message);
+      throw error.response?.data || error;
     }
   },
 
   resetPassword: async (email) => {
     try {
-      const formData = new URLSearchParams();
-      formData.append('email', email);
-
-      const response = await axios.post(`${API_URL}/auth/password_reset`, formData.toString(), {
+      console.log('Sending reset password request for email:', email);
+      
+      // Gửi request với body thay vì query params
+      const response = await axios({
+        method: 'POST',
+        url: `${API_URL}/auth/reset-password`,
+        data: { email }, // Gửi email trong body
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         }
       });
+      
+      console.log('Reset password response:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Reset Password Error:', error.response?.data);
-      throw new Error(error.response?.data?.detail || 'Failed to reset password');
+      console.error('Reset password error details:', error.response?.data);
+      throw error.response?.data || { detail: 'Failed to send password reset email' };
     }
   },
 
   logout: () => {
     localStorage.removeItem('user');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('token_type');
+  },
+
+  getCurrentUser: () => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) return JSON.parse(userStr);
+    return null;
   }
 };
 
