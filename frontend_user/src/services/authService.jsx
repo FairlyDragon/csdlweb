@@ -1,46 +1,83 @@
 import axios from "axios";
 
-// Sửa lại API_URL
-const API_URL = "http://127.0.0.1:8000"; // Thêm /api vào URL
+const API_URL = "http://127.0.0.1:8000";
 
 const authService = {
   signup: async (userData) => {
     try {
-      // Log dữ liệu gửi đi
-      console.log('Signup Request Data:', userData);
-
-      const response = await axios.post(`${API_URL}/auth/signup`, userData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
+      // Log data để debug
+      console.log("Data being sent:", {
+        username: userData.email,
+        email: userData.email,
+        password: userData.password,
+        name: userData.name,
+        phone_number: userData.phone_number || '',
       });
 
-      console.log('Signup Response:', response.data);
+      const response = await axios.post(`${API_URL}/auth/signup`, {
+        username: userData.email,
+        email: userData.email,
+        password: userData.password,
+        name: userData.name,
+        phone_number: userData.phone_number || '',
+      });
+
+      console.log("Signup response:", response.data);
       return response.data;
     } catch (error) {
-      // Log chi tiết lỗi
-      console.error('Signup Error Details:', error.response?.data);
-      throw error;
+      console.error('Signup Error Details:', {
+        data: error.response?.data,
+        status: error.response?.status,
+        message: error.message
+      });
+      
+      // Throw error message cụ thể
+      const errorMessage = error.response?.data?.detail || 'Đăng ký thất bại';
+      throw new Error(errorMessage);
     }
   },
 
   login: async (credentials) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, credentials, {
+      const formData = new URLSearchParams();
+      formData.append('username', credentials.username);
+      formData.append('password', credentials.password);
+
+      const response = await axios.post(`${API_URL}/auth/login`, formData.toString(), {
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       });
       
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
+      if (response.data.access_token) {
+        localStorage.setItem('user', JSON.stringify(response.data));
       }
       return response.data;
     } catch (error) {
-      throw error;
+      console.error('Login Error:', error.response?.data);
+      throw new Error(error.response?.data?.detail || 'Login failed');
     }
+  },
+
+  resetPassword: async (email) => {
+    try {
+      const formData = new URLSearchParams();
+      formData.append('email', email);
+
+      const response = await axios.post(`${API_URL}/auth/password_reset`, formData.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Reset Password Error:', error.response?.data);
+      throw new Error(error.response?.data?.detail || 'Failed to reset password');
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem('user');
   }
 };
 

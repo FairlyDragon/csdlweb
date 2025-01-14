@@ -1,6 +1,7 @@
 import { Box, Card, CardMedia, Typography, Rating, IconButton } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import { useCart } from '../contexts/CartContext';
 
 const FoodCard = ({ food }) => {
   const { name, price, description, image, rating } = food;

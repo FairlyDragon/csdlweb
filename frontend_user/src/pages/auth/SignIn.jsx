@@ -9,36 +9,88 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Alert
+  Alert,
+  Snackbar
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import authService from '../../services/authService';
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
   const [openResetDialog, setOpenResetDialog] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetSent, setResetSent] = useState(false);
-  const [error, setError] = useState('');
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
 
-  const handleSignIn = (e) => {
-    e.preventDefault();
-    // Xử lý đăng nhập
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
-  const handleResetPassword = () => {
+  const handleSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await authService.login({
+        username: formData.email,
+        password: formData.password
+      });
+      
+      if (response.access_token) {
+        setSnackbar({
+          open: true,
+          message: 'Login successful!',
+          severity: 'success'
+        });
+        setTimeout(() => navigate('/'), 1500);
+      }
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: error.message || 'Login failed',
+        severity: 'error'
+      });
+    }
+  };
+
+  const handleResetPassword = async () => {
     if (!resetEmail) {
-      setError('Please enter your email');
+      setSnackbar({
+        open: true,
+        message: 'Please enter your email',
+        severity: 'error'
+      });
       return;
     }
-    // Gửi email reset password
-    setResetSent(true);
-    setTimeout(() => {
-      setOpenResetDialog(false);
-      setResetSent(false);
-      setResetEmail('');
-    }, 3000);
+    try {
+      await authService.resetPassword(resetEmail);
+      setResetSent(true);
+      setTimeout(() => {
+        setOpenResetDialog(false);
+        setResetSent(false);
+        setResetEmail('');
+      }, 3000);
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: error.message || 'Failed to send reset email',
+        severity: 'error'
+      });
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
   };
 
   return (
@@ -61,52 +113,53 @@ const SignIn = () => {
           boxShadow: 1
         }}
       >
-        <Typography variant="h5" align="center" mb={3} fontWeight="bold">
+        <Typography variant="h4" component="h1" gutterBottom align="center">
           Sign In
         </Typography>
 
         <form onSubmit={handleSignIn}>
           <TextField
             fullWidth
+            name="email"
             label="Email"
-            variant="outlined"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
             margin="normal"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            required
           />
-          
+
           <TextField
             fullWidth
+            name="password"
             label="Password"
             type="password"
-            variant="outlined"
+            value={formData.password}
+            onChange={handleChange}
             margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            required
           />
 
-          <Box sx={{ mt: 2, textAlign: 'right' }}>
-            <Link
-              component="button"
-              variant="body2"
-              onClick={() => setOpenResetDialog(true)}
-              sx={{ textDecoration: 'none' }}
-            >
-              Forgot password?
-            </Link>
-          </Box>
-
           <Button
+            type="submit"
             fullWidth
             variant="contained"
-            color="primary"
-            size="large"
-            type="submit"
-            sx={{ mt: 3 }}
+            sx={{ mt: 3, mb: 2 }}
           >
             Sign In
           </Button>
         </form>
+
+        <Box sx={{ mt: 2, textAlign: 'center' }}>
+          <Link
+            component="button"
+            variant="body2"
+            onClick={() => setOpenResetDialog(true)}
+            sx={{ textDecoration: 'none' }}
+          >
+            Forgot password?
+          </Link>
+        </Box>
 
         <Box sx={{ mt: 3, textAlign: 'center' }}>
           <Typography variant="body2">
@@ -123,7 +176,6 @@ const SignIn = () => {
         </Box>
       </Box>
 
-      {/* Reset Password Dialog */}
       <Dialog open={openResetDialog} onClose={() => setOpenResetDialog(false)}>
         <DialogTitle>Reset Password</DialogTitle>
         <DialogContent>
@@ -142,8 +194,6 @@ const SignIn = () => {
                 variant="outlined"
                 value={resetEmail}
                 onChange={(e) => setResetEmail(e.target.value)}
-                error={!!error}
-                helperText={error}
               />
             </>
           )}
@@ -159,6 +209,20 @@ const SignIn = () => {
           )}
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert 
+          onClose={handleCloseSnackbar} 
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

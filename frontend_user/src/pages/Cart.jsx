@@ -1,146 +1,100 @@
-import { Box, Container, Grid, Typography, Button, Divider, IconButton } from '@mui/material';
-import Header from '../components/Header';
+import { Box, Typography, Button, TextField } from '@mui/material';
+import { useCart } from '../contexts/CartContext';
+import { CartItem } from '../components/cart/CartItem';
 
-// Temporary cart data (sẽ thay bằng state management sau)
-const cartItems = [
-  {
-    id: 1,
-    name: 'Classic Burger',
-    price: 12.99,
-    quantity: 2,
-    image: '/src/assets/images/burger.jpg'
-  },
-  // Thêm các món khác...
-];
-
-const Cart = () => {
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const deliveryFee = 2.99;
+export function Cart() {
+  const { cartItems, deliveryFee, getSubtotal } = useCart();
+  const subtotal = getSubtotal();
   const total = subtotal + deliveryFee;
 
   return (
-    <Box>
-      <Header />
-      
-      <Container sx={{ py: 4 }}>
-        <Typography variant="h4" component="h1" sx={{ mb: 4 }}>
-          Your Cart
-        </Typography>
+    <Box sx={{ maxWidth: 1200, mx: 'auto', p: 3 }}>
+      <Typography variant="h4" gutterBottom>Your Cart</Typography>
 
-        <Grid container spacing={4}>
-          {/* Cart Items */}
-          <Grid item xs={12} md={8}>
-            {cartItems.map((item) => (
-              <Box key={item.id}>
-                <Grid container spacing={2} alignItems="center">
-                  {/* Item Image */}
-                  <Grid item xs={3}>
-                    <Box
-                      component="img"
-                      src={item.image}
-                      alt={item.name}
-                      sx={{
-                        width: '100%',
-                        height: 100,
-                        objectFit: 'cover',
-                        borderRadius: 2
-                      }}
-                    />
-                  </Grid>
+      {/* Header */}
+      <Box sx={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'auto 1fr auto auto auto',
+        gap: 2,
+        py: 2,
+        borderBottom: '2px solid #eee'
+      }}>
+        <Typography>Items</Typography>
+        <Typography>Title</Typography>
+        <Typography>Price</Typography>
+        <Typography>Quantity</Typography>
+        <Typography>Total</Typography>
+        <Typography>Remove</Typography>
+      </Box>
 
-                  {/* Item Details */}
-                  <Grid item xs={5}>
-                    <Typography variant="h6" gutterBottom>
-                      {item.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      ${item.price.toFixed(2)} x {item.quantity}
-                    </Typography>
-                  </Grid>
+      {/* Cart Items */}
+      {cartItems.length === 0 ? (
+        <Typography sx={{ py: 4 }}>Your cart is empty</Typography>
+      ) : (
+        cartItems.map(item => (
+          <CartItem key={item.id} item={item} />
+        ))
+      )}
 
-                  {/* Quantity Controls */}
-                  <Grid item xs={2}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <IconButton 
-                        size="small"
-                        sx={{ border: 1, borderColor: 'grey.300' }}
-                      >
-                        -
-                      </IconButton>
-                      <Typography>{item.quantity}</Typography>
-                      <IconButton 
-                        size="small"
-                        sx={{ border: 1, borderColor: 'grey.300' }}
-                      >
-                        +
-                      </IconButton>
-                    </Box>
-                  </Grid>
+      {/* Cart Totals */}
+      <Box sx={{ 
+        maxWidth: 400, 
+        ml: 'auto', 
+        mt: 4 
+      }}>
+        <Typography variant="h6">Cart Totals</Typography>
+        
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between',
+          mt: 2 
+        }}>
+          <Typography>Subtotal</Typography>
+          <Typography>${subtotal}</Typography>
+        </Box>
 
-                  {/* Item Total */}
-                  <Grid item xs={2}>
-                    <Typography variant="h6" align="right">
-                      ${(item.price * item.quantity).toFixed(2)}
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Divider sx={{ my: 3 }} />
-              </Box>
-            ))}
-          </Grid>
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between',
+          mt: 1 
+        }}>
+          <Typography>Delivery Fee</Typography>
+          <Typography>${deliveryFee}</Typography>
+        </Box>
 
-          {/* Order Summary */}
-          <Grid item xs={12} md={4}>
-            <Box
-              sx={{
-                backgroundColor: 'grey.50',
-                borderRadius: 2,
-                p: 3
-              }}
-            >
-              <Typography variant="h6" gutterBottom>
-                Order Summary
-              </Typography>
-              
-              <Box sx={{ mt: 3 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography color="text.secondary">Subtotal</Typography>
-                  <Typography>${subtotal.toFixed(2)}</Typography>
-                </Box>
-                
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                  <Typography color="text.secondary">Delivery Fee</Typography>
-                  <Typography>${deliveryFee.toFixed(2)}</Typography>
-                </Box>
-                
-                <Divider sx={{ my: 2 }} />
-                
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-                  <Typography variant="h6">Total</Typography>
-                  <Typography variant="h6">${total.toFixed(2)}</Typography>
-                </Box>
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between',
+          mt: 2,
+          pt: 2,
+          borderTop: '2px solid #eee'
+        }}>
+          <Typography variant="h6">Total</Typography>
+          <Typography variant="h6">${total}</Typography>
+        </Box>
 
-                <Button
-                  variant="contained"
-                  fullWidth
-                  size="large"
-                  sx={{
-                    backgroundColor: 'primary.main',
-                    color: 'text.primary',
-                    '&:hover': {
-                      backgroundColor: 'primary.dark'
-                    }
-                  }}
-                >
-                  Proceed to Checkout
-                </Button>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Container>
+        {/* Voucher Input */}
+        <Box sx={{ mt: 3, display: 'flex', gap: 1 }}>
+          <TextField 
+            size="small"
+            placeholder="If you have a voucher code, enter it here"
+            fullWidth
+          />
+          <Button variant="contained">Submit</Button>
+        </Box>
+
+        {/* Checkout Button */}
+        <Button 
+          variant="contained" 
+          color="primary"
+          fullWidth
+          sx={{ mt: 3 }}
+        >
+          PROCESS TO CHECKOUT
+        </Button>
+      </Box>
     </Box>
   );
-};
+}
 
 export default Cart;
