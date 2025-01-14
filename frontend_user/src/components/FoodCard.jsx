@@ -1,94 +1,55 @@
-import { Box, Typography, IconButton } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import AddIcon from '@mui/icons-material/Add';
-import StarIcon from '@mui/icons-material/Star';
-
-const CardContainer = styled(Box)({
-  border: '1px solid #eee',
-  borderRadius: '16px',
-  overflow: 'hidden',
-  backgroundColor: '#fff',
-  transition: 'all 0.2s ease',
-  '&:hover': {
-    boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-  }
-});
-
-const ImageContainer = styled(Box)({
-  position: 'relative',
-  height: '200px',
-  overflow: 'hidden'
-});
-
-const AddButton = styled(IconButton)({
-  position: 'absolute',
-  right: '8px',
-  bottom: '-20px',
-  backgroundColor: '#fff',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  '&:hover': {
-    backgroundColor: '#fff'
-  }
-});
-
-const RatingContainer = styled(Box)({
-  display: 'flex',
-  gap: '2px',
-  '& .MuiSvgIcon-root': {
-    color: '#ffd700',
-    fontSize: '16px'
-  }
-});
+import { Box, Card, CardMedia, Typography, Rating, IconButton } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 const FoodCard = ({ food }) => {
-  const { name, description, price, image, rating } = food;
-  
-  return (
-    <CardContainer>
-      <ImageContainer>
-        <Box
-          component="img"
-          src={image}
-          sx={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover'
-          }}
-        />
-        <AddButton>
-          <AddIcon />
-        </AddButton>
-      </ImageContainer>
+  const { name, price, description, image, rating } = food;
 
+  return (
+    <Card sx={{ position: 'relative' }}>
+      <CardMedia
+        component="img"
+        height="200"
+        image={image}
+        alt={name}
+      />
+      
       <Box sx={{ p: 2 }}>
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          mb: 1 
-        }}>
-          <Typography variant="h6">{name}</Typography>
-          <RatingContainer>
-            {[...Array(rating)].map((_, i) => (
-              <StarIcon key={i} />
-            ))}
-          </RatingContainer>
-        </Box>
-        <Typography 
-          variant="body2" 
-          color="text.secondary" 
-          sx={{ mb: 2 }}
-        >
+        <Typography variant="h6" gutterBottom>
+          {name}
+        </Typography>
+        
+        <Typography variant="body2" color="text.secondary" gutterBottom>
           {description}
         </Typography>
-        <Typography 
-          color="primary" 
-          fontWeight="bold"
-        >
-          $ {price}
-        </Typography>
+
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mt: 2
+        }}>
+          <Rating value={rating} readOnly size="small" />
+          <Typography variant="h6" color="primary">
+            ${price}
+          </Typography>
+        </Box>
       </Box>
-    </CardContainer>
+
+      <IconButton
+        sx={{
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          bgcolor: 'white',
+          '&:hover': {
+            bgcolor: 'white',
+          }
+        }}
+      >
+        <AddCircleOutlineIcon />
+      </IconButton>
+    </Card>
   );
 };
 
