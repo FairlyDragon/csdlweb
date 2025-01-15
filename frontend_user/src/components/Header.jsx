@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { 
   AppBar, 
@@ -26,6 +27,9 @@ const Header = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
+
+  const location = useLocation();
+  const isCartActive = location.pathname === '/cart' || location.pathname === '/checkout';
 
   useEffect(() => {
     const userStr = localStorage.getItem('user');
@@ -124,9 +128,17 @@ const Header = () => {
             <SearchIcon />
           </IconButton>
           
-          <IconButton onClick={handleCartClick}>
-            <ShoppingCartIcon />
-          </IconButton>
+          <IconButton 
+  onClick={handleCartClick}
+  sx={{
+    color: isCartActive ? '#dd1d1d' : 'inherit',
+    borderBottom: isCartActive ? '2px solid #dd1d1d' : 'none',
+    borderRadius: isCartActive ? '0' : '50%',
+    pb: isCartActive ? '4px' : '0'
+  }}
+>
+  <ShoppingCartIcon />
+</IconButton>
 
           {user ? (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

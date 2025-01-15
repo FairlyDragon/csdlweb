@@ -9,6 +9,7 @@ import Cart from './pages/Cart';
 import Profile from './pages/Profile';
 import SignIn from './pages/auth/SignIn';
 import SignUp from './pages/auth/SignUp';
+import Checkout from './pages/Checkout'; 
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
                 <Profile />
               </PrivateRoute>
             } />
+            <Route path="/checkout" element={<Checkout />} />
           </Routes>
         </Router>
       </CartProvider>
