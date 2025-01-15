@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
-import Header from '../components/Header';
-import CategoryCard from '../components/CategoryCard';
-import FoodCard from '../components/FoodCard';
-import SortIcon from '@mui/icons-material/Sort';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import RamenDiningIcon from '@mui/icons-material/RamenDining';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
@@ -12,6 +10,10 @@ import BrunchDiningIcon from '@mui/icons-material/BrunchDining';
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import TapasIcon from '@mui/icons-material/Tapas';
+import Header from '../components/Header';
+import CategoryCard from '../components/CategoryCard';
+import FoodCard from '../components/FoodCard';
+import { useCart } from '../contexts/CartContext';
 
 const categories = [
   { id: 1, name: 'Rice Dishes', icon: RestaurantIcon },
@@ -309,71 +311,126 @@ const menuItems = [
 
 const Menu = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [isAvailableOnly, setIsAvailableOnly] = useState(false);
+  const { cartItems, addToCart, updateQuantity } = useCart();
 
-  // Lọc món ăn theo category và available
   const filteredItems = menuItems.filter(item => {
-    const categoryMatch = selectedCategory === 'all' || item.category === selectedCategory;
-    const availableMatch = !isAvailableOnly || item.available;
-    return categoryMatch && availableMatch;
+    return selectedCategory === 'all' || item.category === selectedCategory;
   });
 
+  const getItemQuantity = (itemId) => {
+    const item = cartItems.find(item => item.id === itemId);
+    return item ? item.quantity : 0;
+  };
+
+  const handleAddItem = (item) => {
+    addToCart({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      description: item.description
+    });
+  };
   return (
     <Box>
       <Header />
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>Category</Typography>
-      
-      <Box sx={{ 
-        display: 'flex', 
-        gap: 2,
-        flexWrap: 'wrap',
-        mb: 4 
-      }}>
-        {/* Thêm nút All để reset category */}
-        <CategoryCard 
-          key="all"
-          category={{ id: 'all', name: 'All', icon: RestaurantIcon }}
-          selected={selectedCategory === 'all'}
-          onClick={() => setSelectedCategory('all')}
-        />
-        {categories.map((category) => (
+      <Box sx={{ p: 3 }}>
+        <Typography variant="h6" sx={{ mb: 2 }}>Category</Typography>
+        
+        <Box sx={{ 
+          display: 'flex', 
+          gap: 2,
+          flexWrap: 'wrap',
+          mb: 4 
+        }}>
           <CategoryCard 
-            key={category.id}
-            category={category}
-            selected={selectedCategory === category.name}
-            onClick={() => setSelectedCategory(category.name)}
+            key="all"
+            category={{ id: 'all', name: 'All', icon: RestaurantIcon }}
+            selected={selectedCategory === 'all'}
+            onClick={() => setSelectedCategory('all')}
           />
-        ))}
-      </Box>
-
-      <Box sx={{ mb: 4 }}>
-        <Box sx={{ 
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mb: 2
-        }}>
-          <Typography variant="h6">
-            {selectedCategory === 'all' ? 'Menu Items' : selectedCategory}
-            <Typography component="span" color="text.secondary" sx={{ ml: 1 }}>
-              ({filteredItems.length} items)
-            </Typography>
-          </Typography>
-          {/* ... rest of the code ... */}
-        </Box>
-
-        <Box sx={{ 
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-          gap: 2
-        }}>
-          {filteredItems.map((item) => (
-            <FoodCard key={item.id} food={item} />
+          {categories.map((category) => (
+            <CategoryCard 
+              key={category.id}
+              category={category}
+              selected={selectedCategory === category.name}
+              onClick={() => setSelectedCategory(category.name)}
+            />
           ))}
         </Box>
+
+            
+        <Box sx={{ mb: 4 }}>
+          <Box sx={{ 
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: 3
+          }}>
+            {filteredItems.map((item) => (
+              <Box key={item.id} sx={{ position: 'relative' }}>
+                <FoodCard food={item} />
+                <Box sx={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  bgcolor: 'background.paper',
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  p: 0.5
+                }}>
+                  {getItemQuantity(item.id) > 0 ? (
+                    <>
+                      <IconButton 
+                        size="small"
+                        onClick={() => updateQuantity(item.id, getItemQuantity(item.id) - 1)}
+                        sx={{
+                          color: 'primary.main',
+                          '&:hover': { bgcolor: 'primary.light' }
+                        }}
+                      >
+                        <RemoveIcon fontSize="small" />
+                      </IconButton>
+                      <Typography 
+                        sx={{ 
+                          minWidth: 20, 
+                          textAlign: 'center',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {getItemQuantity(item.id)}
+                      </Typography>
+                      <IconButton 
+                        size="small"
+                        onClick={() => handleAddItem(item)}
+                        sx={{
+                          color: 'primary.main',
+                          '&:hover': { bgcolor: 'primary.light' }
+                        }}
+                      >
+                        <AddIcon fontSize="small" />
+                      </IconButton>
+                    </>
+                  ) : (
+                    <IconButton
+                      size="small"
+                      onClick={() => handleAddItem(item)}
+                      sx={{
+                        color: 'primary.main',
+                        '&:hover': { bgcolor: 'primary.light' }
+                      }}
+                    >
+                      <AddIcon fontSize="small" />
+                    </IconButton>
+                  )}
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        </Box>
       </Box>
-    </Box>
     </Box>
   );
 };
