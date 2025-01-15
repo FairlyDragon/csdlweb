@@ -13,7 +13,7 @@ from models.review import Review # to test
 from models.user import GenderEnum, User # to test
 from services.auth_service import hash_password # to test
 from utils.rbac import oauth2_scheme # to test
-# from middlewares.error_middleware import error_handler
+from middlewares.error_middleware import error_handler
 from fastapi.openapi.utils import get_openapi
 
 from logging_config import logger  # to test
