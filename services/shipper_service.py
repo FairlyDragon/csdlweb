@@ -21,8 +21,8 @@ async def get_shipper_by_id(shipper_id: str) -> dict:  # return Shipper
 # Update shipper by id
 async def update_shipper_by_id(shipper_id: str, shipper_info_dict: dict) -> int:
     # Hash password before inserting into db
-    if shipper_info_dict["password"]:
-        shipper_info_dict["password"] = hash_password(shipper_info_dict["password"])
+    if shipper_info_dict.get("password"):
+        shipper_info_dict.update({"password": hash_password(shipper_info_dict["password"])})
         
     updated_shipper = await db["shipper"].update_one({"_id": shipper_id}, {"$set": shipper_info_dict})
     

@@ -80,7 +80,7 @@ async def find_user_by_id(user_id: str) -> User:
 async def update_user_in_db_by_id(user_id: str, user: dict) -> dict:   # user: User
     # Hash password before inserting into db
     if user["password"]:
-        user["password"] = hash_password_local(user["password"])
+        user.update({"password": hash_password_local(user["password"])})
         
     updated_user = await db["user"].update_one({"_id": user_id}, {"$set": user})
     if not updated_user:

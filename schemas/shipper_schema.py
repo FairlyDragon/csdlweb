@@ -6,15 +6,15 @@ from models.user import GenderEnum, Role
 
 class ShipperSchema(BaseModel):
     shipper_id: Optional[str] = None
-    name: str
-    phone_number: str
-    total_amount: float
-    email: str
+    name: Optional[str] = None
+    phone_number: Optional[str] = None
+    total_amount: Optional[float] = None
+    email: Optional[str] = None
     password: Optional[str] = None
     address: Optional[str] = None
-    created_at: datetime
-    date_of_birth: datetime
-    gender: GenderEnum
+    created_at: Optional[datetime] = None
+    date_of_birth: Optional[datetime] = None
+    gender: Optional[GenderEnum] = None
     avatar_url: Optional[str] = None
     role: Optional[Role] = Role.SHIPPER
     account_status: Optional[ShipperStatus] = None

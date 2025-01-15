@@ -220,8 +220,8 @@ async def read_vouchers_by_status(status: str) -> list[dict]: # in essence, this
 
 # Update a voucher by voucher id
 async def update_voucher(voucher: UpdateVoucherSchema) -> dict: # in essence, this returns Voucher instance but replace _id with voucher_id
-    # convert the Voucher instance to a dictionary. NOOOAnd only keep the non-None values to ensure data integrity
-    update_data = {k: v for k, v in voucher.model_dump().items()}
+    # convert the Voucher instance to a dictionary. And only keep the non-None values to ensure data integrity
+    update_data = {k: v for k, v in voucher.model_dump().items() if v is not None}
     
     # update the voucher in the database
     updated_voucher = await update_voucher_by_id(voucher.voucher_id, update_data)
@@ -267,10 +267,10 @@ async def read_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]:
                 order_id=order_id, 
                 order_date=order["order_date"],
                 order_items=[OrderItem(**item).model_dump() for item in order["order_items"]],
-                profit=order["delivery_fee"] * (1 - DISCOUNT_RATE_FOR_SHIPPERS) ,)
+                profit=order["delivery_fee"] * (1 - DISCOUNT_RATE_FOR_SHIPPERS))
                     .model_dump())
       
-    
+      
     # Add aggregated data dict
     transformed_delivery_history.append({
         "total_order_quantity": len(transformed_delivery_history),
@@ -278,6 +278,40 @@ async def read_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]:
         })
 
     return transformed_delivery_history
+
+# Get shipper infor by shipper id
+async def read_shipper_infor_by_shipper_id(shipper_id: str) -> dict:
+    # get shipper infor by shipper id
+    shipper_infor = await get_shipper_by_id(shipper_id)
+        
+    # Replace _id with shipper_id
+    shipper_infor.setdefault("shipper_id", shipper_infor.pop("_id"))
+    
+    return shipper_infor
+
+# Update shipper infor by shipper id
+async def update_shipper_info(shipper: ShipperSchema) -> dict:
+    shipper_info_dict = shipper.model_dump()
+    if shipper.shipper_id is None:
+        raise HTTPException(status_code=400, detail="Shipper id is required")
+    
+    modified_count = await update_shipper_by_id(shipper.shipper_id, shipper_info_dict)
+    
+    if modified_count == 0:
+        raise HTTPException(status_code=404, detail="Shipper not found")
+    
+    return {"message": f"Shipper with id {shipper.shipper_id} updated successfully"}
+
+# Delete shipper by shipper id
+async def delete_shipper_by_shipper_id(shipper_id: str) -> dict:
+    deleted_count = await delete_shipper_by_id(shipper_id)
+    
+    if deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Shipper not found")
+    
+    return {"message": f"Shipper with id {shipper_id} deleted successfully"}
+
+
 
 # Get shipper infor by shipper id
 async def read_shipper_infor_by_shipper_id(shipper_id: str) -> dict:
@@ -415,8 +449,8 @@ async def read_currently_waiting_shippers() -> list[Admin_Delivery_Shipper_Schem
         result.append(Admin_Delivery_Shipper_Schema(
             shipper_id=shipper["_id"], 
             name=shipper["name"], 
-            address=shipper["address"], 
-            phone_number=shipper["phone_number"])
+            address=shipper.get("address"),
+            phone_number=shipper.get("phone_number"))
                 .model_dump())
     
     if not result:
@@ -440,9 +474,9 @@ async def read_waiting_orders() -> list[dict]:
         
         result.append(Admin_Delivery_Order_Managament_Schema(
             order_id=order["_id"], 
-            customer_name=customer_who_made_order["name"], 
-            address=customer_who_made_order["address"],
-            phone_number=customer_who_made_order["phone_number"])
+            customer_name=customer_who_made_order.get("name"),
+            address=customer_who_made_order.get("address"),
+            phone_number=customer_who_made_order.get("phone_number"))
                 .model_dump()
         )
 
@@ -549,12 +583,12 @@ async def read_passed_pending_orders_details() -> list[dict]:  # list[AdminOrder
         voucher = await get_voucher_by_id(order["voucher_id"])
         
         result.append(AdminOrderListDetailsResponseSchema(
-            order_id=order["_id"], 
-            user_id=order["user_id"], 
-            name=customer_who_made_order["name"], 
-            email=customer_who_made_order["email"], 
-            phone_number=customer_who_made_order["phone_number"], 
-            address=customer_who_made_order["address"], 
+            order_id=order.get("_id"), 
+            user_id=order.get("user_id"), 
+            name=customer_who_made_order.get("name"), 
+            email=customer_who_made_order.get("email"), 
+            phone_number=customer_who_made_order.get("phone_number"), 
+            address=customer_who_made_order.get("address"),
                 payment_method=payment_by_order_id["payment_method"],
                     order_date=order["order_date"], 
                     order_items=[OrderItem(**item).model_dump() for item in order["order_items"]], 
