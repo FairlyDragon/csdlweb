@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Box, Container, Typography, Button, Grid, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
 import LoadingScreen from '../components/LoadingScreen';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -40,8 +39,6 @@ const Home = () => {
 
   return (
     <Box sx={{ position: 'relative', overflow: 'hidden' }}>
-      <Header />
-
       {/* Hero Section */}
       <Box
         sx={{

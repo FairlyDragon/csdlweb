@@ -12,7 +12,7 @@ import {
   Snackbar,
   Alert
 } from '@mui/material';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000';

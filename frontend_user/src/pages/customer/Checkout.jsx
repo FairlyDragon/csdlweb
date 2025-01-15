@@ -1,5 +1,5 @@
 
-import { useOrders } from '../contexts/OrderContext';
+import { useOrders } from '../../contexts/OrderContext';
 import { useState } from 'react';
 import {
   Box,
@@ -13,8 +13,8 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../contexts/CartContext';
-import Header from '../components/Header';
+import { useCart } from '../../contexts/CartContext';
+import Header from '../../components/Header';
 
 const Checkout = () => {
   const navigate = useNavigate();

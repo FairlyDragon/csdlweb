@@ -7,9 +7,9 @@ import {
   Chip,
 } from '@mui/material';
 import { LocalShipping } from '@mui/icons-material';
-import Header from '../components/Header';
+import Header from '../../components/Header';
 import { format } from 'date-fns';
-import { useOrders } from '../contexts/OrderContext';
+import { useOrders } from '../../contexts/OrderContext';
 
 const Orders = () => {
   const { orders } = useOrders();

@@ -49,12 +49,16 @@ const SignIn = () => {
   
       console.log('Login response:', response);
   
-      // Lưu thông tin user vào localStorage
+      // Lưu thông tin user và role vào localStorage
       if (response.access_token) {
         localStorage.setItem('user', JSON.stringify({
           email: formData.email,
-          token: response.access_token
+          token: response.access_token,
+          role: response.role // Thêm role vào thông tin user
         }));
+        
+        localStorage.setItem('token', response.access_token);
+        localStorage.setItem('userRole', response.role);
         
         setSnackbar({
           open: true,
@@ -62,8 +66,14 @@ const SignIn = () => {
           severity: 'success'
         });
   
-        // Chuyển về trang chủ sau khi đăng nhập thành công
-        setTimeout(() => navigate('/'), 1500);
+        // Redirect dựa trên role
+        setTimeout(() => {
+          if (response.role === 'shipper') {
+            navigate('/shipper');
+          } else {
+            navigate('/');
+          }
+        }, 1500);
       }
         
     } catch (error) {
@@ -119,10 +129,11 @@ const SignIn = () => {
         mt: 8,
         p: 3,
         boxShadow: 1,
-        borderRadius: 1
+        borderRadius: 1,
+        bgcolor: 'white' // Thêm background màu trắng
       }}
     >
-      <Typography variant="h5" component="h1" sx={{ mb: 3, textAlign: 'center' }}>
+      <Typography variant="h5" component="h1" sx={{ mb: 3, textAlign: 'center', fontWeight: 600 }}>
         Sign In
       </Typography>
 
@@ -152,7 +163,14 @@ const SignIn = () => {
         type="submit"
         fullWidth
         variant="contained"
-        sx={{ mt: 3, mb: 2 }}
+        sx={{ 
+          mt: 3, 
+          mb: 2,
+          bgcolor: '#dd1d1d',
+          '&:hover': {
+            bgcolor: '#bb0f0f'
+          }
+        }}
       >
         Sign In
       </Button>

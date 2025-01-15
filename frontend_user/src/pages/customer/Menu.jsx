@@ -10,10 +10,10 @@ import BrunchDiningIcon from '@mui/icons-material/BrunchDining';
 import LunchDiningIcon from '@mui/icons-material/LunchDining';
 import DinnerDiningIcon from '@mui/icons-material/DinnerDining';
 import TapasIcon from '@mui/icons-material/Tapas';
-import Header from '../components/Header';
-import CategoryCard from '../components/CategoryCard';
-import FoodCard from '../components/FoodCard';
-import { useCart } from '../contexts/CartContext';
+import Header from '../../components/Header';
+import CategoryCard from '../../components/CategoryCard';
+import FoodCard from '../../components/FoodCard';
+import { useCart } from '../../contexts/CartContext';
 
 const categories = [
   { id: 1, name: 'Rice Dishes', icon: RestaurantIcon },
