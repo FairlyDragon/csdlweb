@@ -1,3 +1,5 @@
+
+import { useOrders } from '../contexts/OrderContext';
 import { useState } from 'react';
 import {
   Box,
@@ -16,9 +18,10 @@ import Header from '../components/Header';
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { cartItems, getCartTotal } = useCart();
+  const { cartItems, getCartTotal, clearCart } = useCart();
   const [note, setNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('direct');
+  const { addOrder } = useOrders();
 
   // Giả sử thông tin user được lấy từ context hoặc redux
   const user = {
@@ -35,7 +38,16 @@ const Checkout = () => {
 
   const handleSubmitOrder = () => {
     // Xử lý đặt hàng
-    console.log('Order submitted');
+    const total = subtotal + deliveryFee - (voucher || 0);
+    
+    // Thêm đơn hàng mới
+    addOrder(cartItems, total, voucher);
+    
+    // Xóa giỏ hàng
+    clearCart();
+    
+    // Chuyển đến trang Orders
+    navigate('/orders');
   };
 
   return (
