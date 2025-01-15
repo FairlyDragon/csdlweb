@@ -28,7 +28,7 @@ setup_cors(app)
 setup_auth_middleware(app)
 
 # setup error handling middleware
-# app.middleware("http")(error_handler)
+app.middleware("http")(error_handler)
 
 router = APIRouter()
 router.include_router(admin_router, prefix="/admin", tags=["admin"])
