@@ -1,3 +1,4 @@
+
 from db.database import db
 from schemas.admin_schema import *
 from services.time_service import *
@@ -10,6 +11,13 @@ async def get_orders_by_status(status: str) -> list[dict]:  # -> list[Order]
 
     return order_by_status
 
+# Get orders by status excluding a certain status (pending, processing, rejected, completed, canceled)
+async def get_orders_by_status_excluding(status: str) -> list[dict]:  # -> list[Order]
+    order_by_status = await db["order"].find({"status": {"$ne": status}}).to_list(length=None) 
+    if not order_by_status: 
+        raise HTTPException(status_code=404, detail=f"No orders found excluding status {status}")
+
+    return order_by_status
 
 # Get order within a time period (from 'order' collection)
 async def get_orders_within_period(start_time, end_time) -> list: 
@@ -20,7 +28,7 @@ async def get_orders_within_period(start_time, end_time) -> list:
 
 # Get all orders of all customers
 async def get_orders_of_all_customers() -> list:
-    orders = await db["order"].find().to_list(100)
+    orders = await db["order"].find().to_list(length=None)
     if not orders:
         raise HTTPException(status_code=404, detail="No orders found")
     

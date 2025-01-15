@@ -85,8 +85,10 @@ sample_users = [
 ]
 
 sample_vouchers = [
-    {"code": "DISCOUNT10", "discount_percentage": 10.0, "start_date": datetime.now(),
+    {"_id": "v1", "code": "DISCOUNT10", "discount_percentage": 10.0, "start_date": datetime.now(),
      "end_date": datetime.now() + timedelta(days=30), "minimum_order_amount": 50.0, "total_usage_limit": 100, "used": 0},
+    {"_id": "v2", "code": "SUMMER10", "discount_percentage": 8.0, "start_date": datetime.now(),
+     "end_date": datetime.now() + timedelta(days=30), "minimum_order_amount": 45.0, "total_usage_limit": 60, "used": 0},
 ]
 sample_voucherss = [Voucher(**voucher).model_dump(by_alias=True) for voucher in sample_vouchers]
 
@@ -99,11 +101,17 @@ sample_orders = [
     
     {"_id": "o3", "user_id": "u1", "order_date": datetime.now(), "total_amount": 70.0, "status": "canceled", "note": "This is a note", "voucher_id": "v1", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
     
-    {"_id": "o4", "user_id": "u3", "order_date": datetime.now(), "total_amount": 70.0, "status": "processing", "note": "You are hehe", "voucher_id": "v1", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
+    {"_id": "o4", "user_id": "u3", "order_date": datetime.now(), "total_amount": 70.0, "status": "processing", "note": "You are hehe", "voucher_id": "v2", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
 ]
 
 sample_payments = [
-    {"_id": "p1", "order_id": "o1", "payment_method": "credit_card", "amount": 90.0,
+    {"_id": "p1", "order_id": "o1", "payment_method": "cod", "amount": 90.0,
+     "created_at": datetime.now(), "status": "success"},
+    {"_id": "p2", "order_id": "o2", "payment_method": "stripe", "amount": 100.0,
+     "created_at": datetime.now(), "status": "success"},
+    {"_id": "p3", "order_id": "o3", "payment_method": "cod", "amount": 100.0,
+     "created_at": datetime.now(), "status": "success"},
+    {"_id": "p4", "order_id": "o4", "payment_method": "cod", "amount": 100.0,
      "created_at": datetime.now(), "status": "success"},
 ]
 
@@ -120,8 +128,8 @@ sample_order_deliveries = [
 ]
 
 sample_shippers = [
-    {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "email": "fastdeliverys1@gmail.com", "password": "hashed_password1", "address": "123 Main St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA", "role": "shipper", "account_status": "active"},
-    {"_id": "s2", "name": "Fast Delivery2", "phone_number": "0987654321", "total_amount": 5099.0, "email": "fastdeliverys2@gmail.com", "password": "hashed_password2", "address": "456 Elm St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "female", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq", "role": "shipper","account_status": "active"},
+    {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "email": "fastdeliverys1@gmail.com", "password": "hashed_password1", "address": "123 Main St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "Male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA", "role": "shipper", "account_status": "active"},
+    {"_id": "s2", "name": "Fast Delivery2", "phone_number": "0987654321", "total_amount": 5099.0, "email": "fastdeliverys2@gmail.com", "password": "hashed_password2", "address": "456 Elm St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "Female", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq", "role": "shipper","account_status": "active"},
 ]
 
 

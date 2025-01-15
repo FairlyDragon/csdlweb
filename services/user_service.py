@@ -1,3 +1,4 @@
+import bcrypt
 from models.shipper import Shipper
 from models.user import User
 from utils.roles import Role
@@ -12,9 +13,9 @@ async def find_user_by_email(email: str) -> Optional[UserSchema]:
     user = await db["user"].find_one({"email": email})
     shipper = await db["shipper"].find_one({"email": email})
     if user:
-        return UserSchema(email=email, role=user["role"], password=user["password"])
+        return UserSchema(email=email, role=user["role"], password=user["password"], id=user["_id"])
     elif shipper:
-        return UserSchema(email=email, role=shipper["role"], password=shipper["password"])
+        return UserSchema(email=email, role=shipper["role"], password=shipper["password"], id=shipper["_id"])
     else:
         return None
     
@@ -55,3 +56,35 @@ async def get_customer_infor_by_order_id(order_id: str) -> User:
         raise HTTPException(status_code=404, detail="No customers found")
     
     return customer
+
+# Get customers infor by order_id
+async def find_user_by_id(customer_id: str) -> User:
+    # get customers from db
+    customer = await db["user"].find_one({"_id": customer_id})
+    if not customer or customer["role"] != Role.CUSTOMER:
+        raise HTTPException(status_code=404, detail="No customers found")
+    
+    return customer
+
+# Update user in db
+async def update_user_in_db_by_id(user_id: str, user: dict) -> dict:   # user: User
+    # Hash password before inserting into db
+    if user["password"]:
+        user["password"] = hash_password_local(user["password"])
+        
+    updated_user = await db["user"].update_one({"_id": user_id}, {"$set": user})
+    if not updated_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return updated_user.modified_count
+
+# Delete user in db
+async def delete_user_in_db_by_id(user_id: str) -> int:
+    result = await db["user"].delete_one({"_id": user_id})
+    if not result:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return result.deleted_count
+
+def hash_password_local(password: str) -> str:
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')

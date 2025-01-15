@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from services.auth_service import hash_password
 from db.database import db
 
 # Get shippers
@@ -9,6 +10,36 @@ async def get_shippers() -> list[dict]:   # list[Shipper] - fetch from db
     
     return shippers
 
+# Get shipper by id
+async def get_shipper_by_id(shipper_id: str) -> dict:  # return Shipper
+    shipper = await db["shipper"].find_one({"_id": shipper_id})
+    if not shipper:
+        raise HTTPException(status_code=404, detail="Shipper not found")
+    
+    return shipper
+
+# Update shipper by id
+async def update_shipper_by_id(shipper_id: str, shipper_info_dict: dict) -> int:
+    # Hash password before inserting into db
+    if shipper_info_dict["password"]:
+        shipper_info_dict["password"] = hash_password(shipper_info_dict["password"])
+        
+    updated_shipper = await db["shipper"].update_one({"_id": shipper_id}, {"$set": shipper_info_dict})
+    
+    if not updated_shipper:
+        raise HTTPException(status_code=404, detail="Shipper not found")
+    
+    return updated_shipper.modified_count
+
+
+# Delete shipper by id
+async def delete_shipper_by_id(shipper_id: str) -> int:
+    result = await db["shipper"].delete_one({"_id": shipper_id})
+    
+    if not result:
+        raise HTTPException(status_code=404, detail="Shipper not found")
+    
+    return result.deleted_count
 
 
 # Get delivery history by shipper id

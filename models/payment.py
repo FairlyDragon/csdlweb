@@ -5,8 +5,8 @@ from uuid import uuid4
 from enum import Enum   
 
 class PaymentMethod(str, Enum):
-    stripe = "stripe"
-    cash_on_delivery = "cash_on_delivery"
+    STRIPE = "stripe"
+    COD = "cod"
     
 class PaymentStatus(str, Enum):
     PENDING = "pending"

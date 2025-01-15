@@ -2,3 +2,4 @@
 .venv
 trivial_test.py
 __pycache__
+*.pyc

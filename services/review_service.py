@@ -5,7 +5,10 @@ from schemas.review_schema import ReviewDashBoardResponseSchema
 # Get all customer reviews and sort from lastest to oldest
 async def fetch_reviews() -> list[ReviewDashBoardResponseSchema]: 
     reviews = [] 
+    
+    # Get all reviews from db
     cursor = db["review"].find().sort("review_date", -1) 
+    
     async for document in cursor:
         menu_item = await db["menuitem"].find_one({"_id": document["menuitem_id"]}) 
         user = await db["user"].find_one({"_id": document["user_id"]})

@@ -43,7 +43,7 @@ async def authenticate_user(email: str, password: str) -> str:
     if not user or not verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    return create_access_token(data={"sub": user.email, "role": user.role})
+    return create_access_token(data={"sub": user.email, "role": user.role, "id": user.id})
 
 # Update password in database
 async def update_password_in_db(email: str, new_password: str, role: str):

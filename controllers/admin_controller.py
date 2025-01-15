@@ -1,6 +1,9 @@
 from fastapi import Depends, Path
-from schemas.shipper_schema import Admin_Delivery_Shipper_Schema
-from config import DISCOUNT_RATE_FOR_DRIVERS
+from utils.roles import LimitedRole
+from services.voucher_service import get_voucher_by_id
+from services.payment_service import get_payment_by_order_id
+from schemas.shipper_schema import Admin_Delivery_Shipper_Schema, ShipperSchema
+from config import DISCOUNT_RATE_FOR_SHIPPERS
 from schemas.user_schema import CustomerResponseSchema
 from services.user_service import *
 from schemas.admin_schema import *
@@ -158,9 +161,9 @@ async def delete_menuitem(menuitem_id: str) -> dict:  # in essence, this returns
     return deleted_menuitem
 
 # Read menu items by filter
-async def read_menuitems_by_filter(category: Optional[str] = Query(None, example="dishes"), 
-                            sort_by_price: Optional[str] = Query(None, example="high_to_low"), 
-                            stock_status: Optional[str] = Query(None, example="in_stock")
+async def read_menuitems_by_filter(category: Optional[str] = None, 
+                            sort_by_price: Optional[str] = None, 
+                            stock_status: Optional[str] = None
                         ) -> list[dict]:   # in essence, this returns list of MenuItem instances but replace _id with menuitem_id
     
     for item in (list_items:=await get_menu_items_by_filter(
@@ -241,17 +244,16 @@ async def read_shippers() -> list[dict]:    # in essence, this returns list of S
         # replace _id with shipper_id
         shipper.setdefault("shipper_id", shipper.pop("_id"))
         # Ensure to hide the password
-        shipper.pop("password")
+        shipper["password"] = ""
     
     return shippers_from_db
 
 # Get delivery history by shipper id
-async def read_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]:
+async def read_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]: 
     # get delivery history by shipper id
     delivery_history = await get_delivery_history_by_shipper_id(shipper_id)
     
     transformed_delivery_history = []
-    
     # transform the delivery history to the desired format: replace _id with order_id
     for delivery in delivery_history:
         order_id = delivery["order_id"]
@@ -264,16 +266,51 @@ async def read_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]:
                 order_id=order_id, 
                 order_date=order["order_date"],
                 order_items=[OrderItem(**item).model_dump() for item in order["order_items"]],
-                profit=order["delivery_fee"] * (1 - DISCOUNT_RATE_FOR_DRIVERS) ,)
+                profit=order["delivery_fee"] * (1 - DISCOUNT_RATE_FOR_SHIPPERS) ,)
                     .model_dump())
-            
+      
     
+    # Add aggregated data dict
     transformed_delivery_history.append({
         "total_order_quantity": len(transformed_delivery_history),
-        "profit": sum(delivery["profit"] for delivery in transformed_delivery_history)
+        "total_profit": sum(delivery["profit"] for delivery in transformed_delivery_history)
         })
 
     return transformed_delivery_history
+
+# Get shipper infor by shipper id
+async def read_shipper_infor_by_shipper_id(shipper_id: str) -> dict:
+    # get shipper infor by shipper id
+    shipper_infor = await get_shipper_by_id(shipper_id)
+        
+    # Replace _id with shipper_id
+    shipper_infor.setdefault("shipper_id", shipper_infor.pop("_id"))
+    
+    return shipper_infor
+
+# Update shipper infor by shipper id
+async def update_shipper_info(shipper: ShipperSchema) -> dict:
+    shipper_info_dict = shipper.model_dump()
+    if shipper.shipper_id is None:
+        raise HTTPException(status_code=400, detail="Shipper id is required")
+    
+    modified_count = await update_shipper_by_id(shipper.shipper_id, shipper_info_dict)
+    
+    if modified_count == 0:
+        raise HTTPException(status_code=404, detail="Shipper not found")
+    
+    return {"message": f"Shipper with id {shipper.shipper_id} updated successfully"}
+
+# Delete shipper by shipper id
+async def delete_shipper_by_shipper_id(shipper_id: str) -> dict:
+    deleted_count = await delete_shipper_by_id(shipper_id)
+    
+    if deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Shipper not found")
+    
+    return {"message": f"Shipper with id {shipper_id} deleted successfully"}
+
+
 
 ###### CUSTOMERS ######
 # Get customers
@@ -305,6 +342,7 @@ async def read_order_history_by_customer_id(customer_id: str) -> list[dict]:
         # Only add the order_id field if the order is "completed"
         if order["status"] == OrderStatus.COMPLETED:
             transformed_order_history.append(OrderHistoryResponseSchema(
+                customer_id=customer_id,
                 order_id=order["_id"], 
                 order_date=order["order_date"], 
                 order_items=[OrderItem(**item).model_dump() for item in order["order_items"]], 
@@ -318,6 +356,38 @@ async def read_order_history_by_customer_id(customer_id: str) -> list[dict]:
         })
     
     return transformed_order_history
+
+# Get customer infor by customer id
+async def read_customer_infor_by_customer_id(customer_id: str) -> dict:
+    # Get customer infor by id
+    customer_infor = await find_user_by_id(customer_id)
+    
+    # Replace _id with customer_id
+    customer_infor.setdefault("customer_id", customer_infor.pop("_id"))
+    
+    return customer_infor
+
+# Update customer info
+async def update_customer_info(customer: CustomerResponseSchema) -> dict:
+    customer_info_dict = customer.model_dump()
+    if customer.customer_id is None:
+        raise HTTPException(status_code=400, detail="Customer id is required")
+    
+    modified_count = await update_user_in_db_by_id(customer.customer_id, customer_info_dict)
+    
+    if modified_count == 0:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    return {"message": f"Customer with id {customer.customer_id} updated successfully"}
+    
+# Delete customer by customer id
+async def delete_customer_by_customer_id(customer_id: str) -> dict:
+    deleted_count = await delete_user_in_db_by_id(customer_id)
+    
+    if deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    return {"message": f"Customer with id {customer_id} deleted successfully"}
 
 
 ##### DELIVERIES ######
@@ -360,22 +430,162 @@ async def read_delivering_orders() -> dict:
 # Get waiting orders
 async def read_waiting_orders() -> list[dict]:
     # Get waiting orders. In underlying, it's 'pending' orders
-    waiting_orders = await get_orders_by_status(OrderStatus.PENDING)
+    waiting_orders = await get_orders_by_status(OrderStatus.PROCESSING)
 
     result = []
     for order in waiting_orders:
         # Get customer info according to current order_id among all waiting orders
-        customer_who_made_orders = await get_customer_infor_by_order_id(order["_id"])
+        customer_who_made_order = await get_customer_infor_by_order_id(order["_id"])
         
         result.append(Admin_Delivery_Order_Managament_Schema(
             order_id=order["_id"], 
-            customer_name=customer_who_made_orders["name"], 
-            address=customer_who_made_orders["address"])
+            customer_name=customer_who_made_order["name"], 
+            address=customer_who_made_order["address"],
+            phone_number=customer_who_made_order["phone_number"])
                 .model_dump()
         )
 
     return result
 
+# Get number of waiting orders
+async def read_num_of_waiting_orders() -> dict:
+    return {"number_of_waiting_orders": len(await get_orders_by_status(OrderStatus.PROCESSING))}
+
+# Get pending orders in details
+async def read_pending_orders_detais() -> list[dict]:  # list[AdminOrderListDetailsResponseSchema]
+    # Get all pending orders
+    pending_orders = await get_orders_by_status(OrderStatus.PENDING)
+    
+    result = []
+    for order in pending_orders:
+        # Get customer info according to current order_id among all pending orders
+        customer_who_made_order = await get_customer_infor_by_order_id(order["_id"])
+        
+        # Get payment info according to current order_id among all pending orders
+        # 1 - 1 relationship
+        payment_by_order_id = await get_payment_by_order_id(order["_id"])
+        voucher = await get_voucher_by_id(order["voucher_id"])
+        
+        result.append(AdminOrderListDetailsResponseSchema(
+            order_id=order["_id"], 
+            user_id=order["user_id"], 
+            name=customer_who_made_order["name"], 
+            email=customer_who_made_order["email"], 
+            phone_number=customer_who_made_order["phone_number"], 
+            address=customer_who_made_order["address"], 
+                payment_method=payment_by_order_id["payment_method"],
+                    order_date=order["order_date"], 
+                    order_items=[OrderItem(**item).model_dump() for item in order["order_items"]], 
+                    total_amount=order["total_amount"], 
+                    num_of_items=len(order["order_items"]), 
+                    note=order["note"], 
+                    status=order["status"], 
+                        voucher_code=voucher["code"],
+                        discount_applied=order["discount_applied"], 
+                        delivery_fee=order["delivery_fee"]
+                    ).model_dump()
+        )
+        
+    return result
+
+# Get pending orders in preview
+async def read_pending_orders_preview() -> list[dict]:  # list[AdminOrderListPreviewResponseSchema]
+    # Get all pending orders
+    pending_orders = await get_orders_by_status(OrderStatus.PENDING)   
+    
+    result = []
+    for order in pending_orders:
+        # Get customer info according to current order_id among all pending orders
+        customer_who_made_order = await get_customer_infor_by_order_id(order["_id"])
+        
+        result.append(AdminOrderListPreviewResponseSchema(
+            order_id=order["_id"], 
+            name=customer_who_made_order["name"], 
+            phone_number=customer_who_made_order["phone_number"], 
+            order_date=order["order_date"], 
+            num_of_items=len(order["order_items"]), 
+            status=order["status"]
+        ).model_dump()
+        )
+        
+    return result
+
+# Get passed-pending orders in preview
+async def read_passed_pending_orders_preview() -> list[dict]:  # list[AdminOrderListPreviewResponseSchema]
+    # Get all passed-pending orders (except pending orders)
+    passed_pending_orders = await get_orders_by_status_excluding(OrderStatus.PENDING)
+    
+    result = []
+    for order in passed_pending_orders:
+        # Get customer info according to current order_id among all pending orders
+        customer_who_made_order = await get_customer_infor_by_order_id(order["_id"])
+        
+        result.append(AdminOrderListPreviewResponseSchema(
+            order_id=order["_id"], 
+            name=customer_who_made_order["name"], 
+            phone_number=customer_who_made_order["phone_number"], 
+            order_date=order["order_date"], 
+            num_of_items=len(order["order_items"]), 
+            status=order["status"]
+        ).model_dump()
+        )
+        
+    return result
+
+# Get passed-pending orders in details
+async def read_passed_pending_orders_details() -> list[dict]:  # list[AdminOrderListDetailsResponseSchema]
+    # Get all passed-pending orders (except pending orders)
+    passed_pending_orders = await get_orders_by_status_excluding(OrderStatus.PENDING)
+    
+    result = []
+    for order in passed_pending_orders:
+        # Get customer info according to current order_id among all pending orders
+        customer_who_made_order = await get_customer_infor_by_order_id(order["_id"])
+        
+        # Get payment info according to current order_id among all pending orders
+        # 1 - 1 relationship
+        payment_by_order_id = await get_payment_by_order_id(order["_id"])
+        voucher = await get_voucher_by_id(order["voucher_id"])
+        
+        result.append(AdminOrderListDetailsResponseSchema(
+            order_id=order["_id"], 
+            user_id=order["user_id"], 
+            name=customer_who_made_order["name"], 
+            email=customer_who_made_order["email"], 
+            phone_number=customer_who_made_order["phone_number"], 
+            address=customer_who_made_order["address"], 
+                payment_method=payment_by_order_id["payment_method"],
+                    order_date=order["order_date"], 
+                    order_items=[OrderItem(**item).model_dump() for item in order["order_items"]], 
+                    total_amount=order["total_amount"], 
+                    num_of_items=len(order["order_items"]), 
+                    note=order["note"], 
+                    status=order["status"], 
+                        voucher_code=voucher["code"],
+                        discount_applied=order["discount_applied"], 
+                        delivery_fee=order["delivery_fee"]
+                    ).model_dump()
+        )
+        
+    return result
+
+# Update role of user
+async def update_role_of_user(id: str, role: LimitedRole) -> dict:
+    user = await find_user_by_id(id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.role == role:
+        raise HTTPException(status_code=400, detail="Role is already same")
+    
+    modified_count = await update_user_in_db_by_id(id, {"role": role})
+    if modified_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": f"Role of user with id {id} updated successfully"}
+    
+    
+    
 
 
     

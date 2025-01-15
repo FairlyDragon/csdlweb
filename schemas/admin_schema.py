@@ -109,25 +109,36 @@ class UpdateVoucherSchema(BaseModel):
             }
         }
         
-class AdminOrderListResponseSchema(BaseModel):
+class AdminOrderListDetailsResponseSchema(BaseModel):
     order_id: str
     user_id: str
     name: str
     email: str
-    phone: str
+    phone_number: str
     address: str
     
     payment_method: PaymentMethod
-    payment_status: PaymentStatus
     
     order_date: datetime
     order_items: List[OrderItem]
+    total_amount: Optional[float]
     num_of_items: int 
     note: Optional[str] = None
     status: OrderStatus
     
     voucher_code: Optional[str] = None
-    discount_applied: float
+    discount_applied: Optional[float] = 0.0
+    delivery_fee: Optional[float] = 0.0
+    
+class AdminOrderListPreviewResponseSchema(BaseModel):
+    order_id: str
+    name: str
+    phone_number: str
+    order_date: datetime
+    num_of_items: int
+    status: OrderStatus
+    
+    
     
 class DeliveryHistoryResponseSchema(BaseModel):
     order_id: str
@@ -140,6 +151,7 @@ class DeliveryHistoryResponseSchema(BaseModel):
     # total_order_quantity: int
     # total_cod: float
 class OrderHistoryResponseSchema(BaseModel):
+    customer_id: str
     order_id: str
     order_date: datetime
     order_items: List[OrderItem]
@@ -153,6 +165,7 @@ class Admin_Delivery_Order_Managament_Schema(BaseModel):
     order_id: str
     customer_name: str
     address: str
+    phone_number: str
     
     
     

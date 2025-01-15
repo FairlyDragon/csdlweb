@@ -21,7 +21,7 @@ class Shipper(BaseModel):
     address: str		
     created_at: datetime		
     date_of_birth: datetime		
-    gender: GenderEnum		# male or female
+    gender: GenderEnum		# Male or Female
     avatar_url: Optional[str] = None
     role: Role = Role.SHIPPER
     account_status: ShipperStatus

@@ -1,13 +1,15 @@
 from fastapi import APIRouter
 from controllers.admin_controller import *
 from utils.rbac import get_current_user, role_required
-from utils.roles import Role
+from utils.roles import LimitedRole, Role
 
 router = APIRouter()
 # prefix = "/admin"
 
 any_admin_roles = [Role.SUPERADMIN, Role.ADMIN]
 only_superadmin_role = [Role.SUPERADMIN]
+shipper_and_any_admin_roles = [Role.SUPERADMIN, Role.ADMIN, Role.SHIPPER]
+customer_and_any_admin_roles = [Role.SUPERADMIN, Role.ADMIN, Role.CUSTOMER]
 
 # DASHBOARD
 @router.get("/dashboard/header", response_description="Get dashboard header data")
@@ -96,18 +98,36 @@ async def read_vouchers_by_status_route(status: str = Path(..., example="availab
 # router.put("/vouchers", response_description="Update a voucher by voucher id")(update_voucher)
 
 
+
 # SHIPPERS
-@router.get("/shippers", response_description="Get shippers")
+@router.get("/shippers", response_description="Get all shippers")
 @role_required(any_admin_roles)
 async def read_shippers_route(current_user: UserSchema = Depends(get_current_user)):
     return await read_shippers()
 
 
-##### Consider 
-@router.get("/shippers/{shipper_id}", response_description="Get delivery history by shipper id")
+@router.get("/shippers/history/{shipper_id}", response_description="Get delivery history by shipper id")
 @role_required(any_admin_roles)
 async def read_delivery_history_by_shipper_id_route(shipper_id: str, current_user: UserSchema = Depends(get_current_user)):
     return await read_delivery_history_by_shipper_id(shipper_id)
+
+
+@router.get("/shippers/{shipper_id}", response_description="Get shipper infor by shipper id")
+@role_required(any_admin_roles)
+async def read_shipper_infor_by_shipper_id_route(shipper_id: str, current_user: UserSchema = Depends(get_current_user)):
+    return await read_shipper_infor_by_shipper_id(shipper_id)
+
+@router.put("/shippers", response_description="Update shipper infor by shipper id")
+@role_required(any_admin_roles) 
+async def update_shipper_infor_by_shipper_id_route(shipper: ShipperSchema, current_user: UserSchema = Depends(get_current_user)):
+    return await update_shipper_info(shipper)
+
+
+@router.delete("/shippers/{shipper_id}", response_description="Delete shipper by shipper id")
+@role_required(any_admin_roles)
+async def delete_shipper_by_shipper_id_route(shipper_id: str, current_user: UserSchema = Depends(get_current_user)):
+    return await delete_shipper_by_shipper_id(shipper_id)
+
 
 
 # CUSTOMERS
@@ -116,10 +136,30 @@ async def read_delivery_history_by_shipper_id_route(shipper_id: str, current_use
 async def read_customers_route(current_user: UserSchema = Depends(get_current_user)):
     return await read_customers()
 
-@router.get("/customers/{customer_id}", response_description="Get order history by customer id")
+
+@router.get("/customers/history/{customer_id}", response_description="Get order history by customer id")
 @role_required(any_admin_roles)
 async def read_order_history_by_customer_id_route(customer_id: str, current_user: UserSchema = Depends(get_current_user)):
     return await read_order_history_by_customer_id(customer_id)
+
+
+@router.get("/customers/{customer_id}", response_description="Get customer infor by customer id")
+@role_required(any_admin_roles)
+async def read_customer_infor_by_customer_id_route(customer_id: str, current_user: UserSchema = Depends(get_current_user)):
+    return await read_customer_infor_by_customer_id(customer_id)
+
+
+@router.put("/customers", response_description="Update customer infor by customer id")
+@role_required(any_admin_roles)
+async def update_customer_infor_by_customer_id_route(customer: CustomerResponseSchema, current_user: UserSchema = Depends(get_current_user)):
+    return await update_customer_info(customer)
+
+
+@router.delete("/customers/{customer_id}", response_description="Delete customer by customer id")
+@role_required(any_admin_roles)
+async def delete_customer_by_customer_id_route(customer_id: str, current_user: UserSchema = Depends(get_current_user)):
+    return await delete_customer_by_customer_id(customer_id)
+
 
 
 # DELIVERIES
@@ -146,6 +186,44 @@ async def read_delivering_orders_route(current_user: UserSchema = Depends(get_cu
 async def read_waiting_orders_route(current_user: UserSchema = Depends(get_current_user)):
     return await read_waiting_orders()
 
+
+@router.get("/deliveries/num_of_waiting_orders", response_description="Get number of waiting orders")
+@role_required(any_admin_roles)
+async def read_num_of_waiting_orders_route(current_user: UserSchema = Depends(get_current_user)):
+    return await read_num_of_waiting_orders()
+
+
+
 # ORDERS (Order List)
-# router.get("/orders", response_description="Get order list")(read_order_list)
+@router.get("/orders/pending/preview", response_description="Get all the pending orders in preview")
+@role_required(any_admin_roles)
+async def read_pending_orders_preview_route(current_user: UserSchema = Depends(get_current_user)):
+    return await read_pending_orders_preview()
+
+
+@router.get("/orders/pending/details", response_description="Get all the pending orders in details")
+@role_required(any_admin_roles)
+async def read_pending_orders_detais_route(current_user: UserSchema = Depends(get_current_user)):
+    return await read_pending_orders_detais()
+
+
+@router.get("/orders/passed/preview", response_description="Get all the passed-pending orders in preview")
+@role_required(any_admin_roles)
+async def read_passed_pending_orders_preview_route(current_user: UserSchema = Depends(get_current_user)):
+    return await read_passed_pending_orders_preview()
+
+
+@router.get("/orders/passed/details", response_description="Get all the passed-pending orders in details")
+@role_required(any_admin_roles)
+async def read_passed_pending_orders_details_route(current_user: UserSchema = Depends(get_current_user)):
+    return await read_passed_pending_orders_details()
+
+
+
+# SUBADMINS
+# only for superadmin
+@router.put("/subadmins/{id}", response_description="Empower/revoke admin for customer")
+@role_required(only_superadmin_role)
+async def update_role_of_user_route(id: str, role: LimitedRole = Query(..., example="admin"), current_user: UserSchema = Depends(get_current_user)):
+    return await update_role_of_user(id, role)
 

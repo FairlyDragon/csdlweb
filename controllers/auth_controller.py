@@ -40,8 +40,7 @@ async def password_reset(email: str):
         if updated_data:
             raise HTTPException(status_code=200, detail="Password reset email sent successfully")
         else:
-            raise HTTPException(status_code=400, detail="Failed to update password. Please try again or contact us via hotline 0909090909")
+            raise HTTPException(status_code=400, detail="Failed to update password. Please try again or contact us via hotline at 028.1234.5678")
     else:
-        raise HTTPException(status_code=400, detail="Failed to send password reset email")
-    
+        raise HTTPException(status_code=400, detail="Failed to send password reset email. Please try again or contact us via hotline at 028.1234.5678")
 

@@ -5,3 +5,8 @@ class Role(str, Enum):
     SUPERADMIN = "superadmin"
     CUSTOMER = "customer"
     SHIPPER = "shipper"
+    
+class LimitedRole(str, Enum): 
+    CUSTOMER = "customer" 
+    SHIPPER = "shipper"  
+    ADMIN = "admin"

@@ -6,14 +6,14 @@ from enum import Enum
 from utils.roles import Role
 
 class GenderEnum(str, Enum):
-    MALE = "male"
-    FEMALE = "female"
+    MALE = "Male"
+    FEMALE = "Female"
      
 class User(BaseModel): 
-    user_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 
+    user_id: Optional[str] = Field(default_factory=lambda: str(uuid4()), alias="_id") 
     name: Optional[str] = None
     email: Optional[str] = None
-    password: str 
+    password: str  
     phone_number: Optional[str] = None 
     address: Optional[str] = None 
     created_at: datetime = Field(default_factory=datetime.now)
