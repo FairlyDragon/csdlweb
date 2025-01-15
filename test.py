@@ -106,6 +106,8 @@ sample_orders = [
     {"_id": "o3", "user_id": "u1", "order_date": datetime.now(), "total_amount": 70.0, "status": "canceled", "note": "This is a note", "voucher_id": "v1", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
     
     {"_id": "o4", "user_id": "u1", "order_date": datetime.now(), "total_amount": 70.0, "status": "processing", "note": "You are hehe", "voucher_id": "v2", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
+    
+    {"_id": "o5", "user_id": "u1", "order_date": datetime.now(), "total_amount": 70.0, "status": "rejected", "note": "You are hehe", "voucher_id": "v2", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
 ]
 
 sample_payments = [
@@ -129,6 +131,8 @@ sample_order_deliveries = [
     {"_id": "d1", "order_id": "o1", "shipper_id": "s1", "delivery_status": "delivered"},
     {"_id": "d2", "order_id": "o2", "shipper_id": "s2", "delivery_status": "delivering"},
     {"_id": "d3", "order_id": "o3", "shipper_id": "s1", "delivery_status": "delivering"},
+    {"_id": "d4", "order_id": "o4", "shipper_id": "s1", "delivery_status": "delivered"},
+    {"_id": "d5", "order_id": "o5", "shipper_id": "s1", "delivery_status": "failed"},
 ]
 
 sample_shippers = [

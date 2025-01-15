@@ -1,4 +1,5 @@
 from fastapi import Depends, Path
+from models.order_delivery import DeliveryStatusEnum
 from models.shipper import ShipperStatus
 from utils.roles import LimitedRole
 from services.voucher_service import get_voucher_by_id
@@ -221,7 +222,7 @@ async def read_vouchers_by_status(status: str) -> list[dict]: # in essence, this
 # Update a voucher by voucher id
 async def update_voucher(voucher: UpdateVoucherSchema) -> dict: # in essence, this returns Voucher instance but replace _id with voucher_id
     # convert the Voucher instance to a dictionary. NOOOAnd only keep the non-None values to ensure data integrity
-    update_data = {k: v for k, v in voucher.model_dump().items()}
+    update_data = {k: v for k, v in voucher.model_dump().items() if v is not None}
     
     # update the voucher in the database
     updated_voucher = await update_voucher_by_id(voucher.voucher_id, update_data)
@@ -262,12 +263,13 @@ async def read_delivery_history_by_shipper_id(shipper_id: str) -> list[dict]:
         order = await get_order_by_id(order_id)
         
         # Only show "completed" orders because there's a "profit" column
-        if order["status"] == OrderStatus.COMPLETED:
+        if delivery.get("delivery_status") in [DeliveryStatusEnum.DELIVERED, DeliveryStatusEnum.FAILED]:
             transformed_delivery_history.append(DeliveryHistoryResponseSchema(
                 order_id=order_id, 
                 order_date=order["order_date"],
                 order_items=[OrderItem(**item).model_dump() for item in order["order_items"]],
-                profit=order["delivery_fee"] * (1 - DISCOUNT_RATE_FOR_SHIPPERS) ,)
+                delivery_status=delivery.get("delivery_status"),
+                profit=order["delivery_fee"] * (1 - DISCOUNT_RATE_FOR_SHIPPERS) if delivery["delivery_status"] == DeliveryStatusEnum.DELIVERED else 0)
                     .model_dump())
       
     
@@ -291,7 +293,7 @@ async def read_shipper_infor_by_shipper_id(shipper_id: str) -> dict:
 
 # Update shipper infor by shipper id
 async def update_shipper_info(shipper: ShipperSchema) -> dict:
-    shipper_info_dict = {k  : v for k, v in shipper.model_dump().items() if v is not None}
+    shipper_info_dict = {k: v for k, v in shipper.model_dump().items() if v is not None}
     if shipper.shipper_id is None:
         raise HTTPException(status_code=400, detail="Shipper id is required")
     
@@ -341,12 +343,13 @@ async def read_order_history_by_customer_id(customer_id: str) -> list[dict]:
     for order in order_history:
         
         # Only add the order_id field if the order is "completed"
-        if order["status"] == OrderStatus.COMPLETED:
+        if order.get("status") in [OrderStatus.COMPLETED, OrderStatus.CANCELED, OrderStatus.REJECTED]:
             transformed_order_history.append(OrderHistoryResponseSchema(
                 customer_id=customer_id,
                 order_id=order["_id"], 
                 order_date=order["order_date"], 
-                order_items=[OrderItem(**item).model_dump() for item in order["order_items"]], 
+                order_items=[OrderItem(**item).model_dump() for item in order["order_items"]],
+                order_status=order["status"], 
                 payment_amount=order["total_amount"])
             .model_dump())
     
@@ -370,7 +373,7 @@ async def read_customer_infor_by_customer_id(customer_id: str) -> dict:
 
 # Update customer info
 async def update_customer_info(customer: CustomerResponseSchema) -> dict:
-    customer_info_dict = {k: v for k, v in customer.model_dump().items() if v is not None}
+    customer_info_dict = {k:v for k, v in customer.model_dump().items() if v is not None}
     if customer.customer_id is None:
         raise HTTPException(status_code=400, detail="Customer id is required")
     
