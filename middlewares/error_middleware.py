@@ -3,7 +3,7 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import HTTPException as FastAPIHTTPException
 
-async def custom_error_handler(request: Request, call_next):
+async def error_handler(request: Request, call_next):
     try:
         response = await call_next(request)
         return response

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from controllers.admin_controller import *
-from utils.rbac import get_current_user, role_required
+from utils.rbac import get_current_user, role_required, oauth2_scheme
 from utils.roles import LimitedRole, Role
 
 router = APIRouter()
@@ -8,8 +8,6 @@ router = APIRouter()
 
 any_admin_roles = [Role.SUPERADMIN, Role.ADMIN]
 only_superadmin_role = [Role.SUPERADMIN]
-shipper_and_any_admin_roles = [Role.SUPERADMIN, Role.ADMIN, Role.SHIPPER]
-customer_and_any_admin_roles = [Role.SUPERADMIN, Role.ADMIN, Role.CUSTOMER]
 
 # DASHBOARD
 @router.get("/dashboard/header", response_description="Get dashboard header data")

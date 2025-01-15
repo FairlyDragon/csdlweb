@@ -8,8 +8,8 @@ from models.user import GenderEnum
 from typing import Optional
 
 class ShipperStatus(str, Enum):
-    active = "active"
-    inactive = "inactive"       
+    ACTIVE = "active"
+    INACTIVE = "inactive"
     
 class Shipper(BaseModel): 
     shipper_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 

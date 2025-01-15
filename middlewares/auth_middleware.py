@@ -29,6 +29,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
             role = payload.get("role")
             logger.info(f"Role from token: {role}")
+            logger.info(f"id from token: {payload.get("id")}")
             if role not in self.allowed_roles:
                 raise HTTPException(status_code=403, detail="Role not allowed")
             request.state.user = payload

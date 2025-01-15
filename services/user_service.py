@@ -7,6 +7,7 @@ from db.database import db
 from schemas.admin_schema import *
 from services.time_service import *
 
+from logging_config import logger
 
 # Find user/shipper by email
 async def find_user_by_email(email: str) -> Optional[UserSchema]:
@@ -57,14 +58,23 @@ async def get_customer_infor_by_order_id(order_id: str) -> User:
     
     return customer
 
-# Get customers infor by order_id
-async def find_user_by_id(customer_id: str) -> User:
-    # get customers from db
+# Get customers infor by id
+async def find_customer_by_id(customer_id: str) -> User:
+    # get customer from db
     customer = await db["user"].find_one({"_id": customer_id})
     if not customer or customer["role"] != Role.CUSTOMER:
         raise HTTPException(status_code=404, detail="No customers found")
     
     return customer
+
+# Get user infor by id
+async def find_user_by_id(user_id: str) -> User:
+    # get user from db
+    user = await db["user"].find_one({"_id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="No user found")
+    
+    return user
 
 # Update user in db
 async def update_user_in_db_by_id(user_id: str, user: dict) -> dict:   # user: User
@@ -88,3 +98,17 @@ async def delete_user_in_db_by_id(user_id: str) -> int:
 
 def hash_password_local(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+
+# Check if this is not 'me'
+def is_me(passed_id: str, current_user: UserSchema) -> str:
+    # Id of the current user is really 'me'
+    if passed_id.lower() == "me":
+        passed_id = current_user.id
+        
+    # Check if the customer_id is the same as the current user. 
+    # This handles the case when the customer trying to access another customer's profile by passing the customer_id in the url instead of "me"
+    if passed_id != current_user.id:
+        raise HTTPException(status_code=403, detail="You do not have access to this resource")
+    
+    return True

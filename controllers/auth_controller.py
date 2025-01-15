@@ -1,5 +1,8 @@
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
+from models.shipper import ShipperStatus
+from services.shipper_service import update_shipper_by_id
+from utils.roles import Role
 from services.user_service import find_user_by_email
 from services.email_service import generate_random_password, send_reset_email
 from schemas.user_schema import UserSchema
@@ -17,6 +20,12 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     token = await authenticate_user(form_data.username, form_data.password)
     if not token:
         raise HTTPException(status_code=400, detail="Invalid credentials")
+    
+    # Set shipper account status to active
+    shipper = await find_user_by_email(form_data.username)
+    if shipper and shipper.role == Role.SHIPPER:
+        await update_shipper_by_id(shipper.id, {"account_status": ShipperStatus.ACTIVE})
+        
     return {"access_token": token, "token_type": "bearer"}
 
 

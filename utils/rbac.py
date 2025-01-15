@@ -22,6 +22,7 @@ def role_required(allowed_roles: List[Role]):
         async def wrapper(current_user: UserSchema = Depends(get_current_user), *args, **kwargs):
             if current_user.role not in allowed_roles:
                 raise HTTPException(status_code=403, detail="You do not have access to this resource")
-            return await func(*args, **kwargs)
+            return await func(current_user=current_user, *args, **kwargs)   # pass the current_user object to the decorated function
+                                                                         # Pass current_user to the endpoint function
         return wrapper
     return decorator

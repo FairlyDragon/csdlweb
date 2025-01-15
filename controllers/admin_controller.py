@@ -1,4 +1,5 @@
 from fastapi import Depends, Path
+from models.shipper import ShipperStatus
 from utils.roles import LimitedRole
 from services.voucher_service import get_voucher_by_id
 from services.payment_service import get_payment_by_order_id
@@ -360,7 +361,7 @@ async def read_order_history_by_customer_id(customer_id: str) -> list[dict]:
 # Get customer infor by customer id
 async def read_customer_infor_by_customer_id(customer_id: str) -> dict:
     # Get customer infor by id
-    customer_infor = await find_user_by_id(customer_id)
+    customer_infor = await find_customer_by_id(customer_id)
     
     # Replace _id with customer_id
     customer_infor.setdefault("customer_id", customer_infor.pop("_id"))
@@ -394,14 +395,14 @@ async def delete_customer_by_customer_id(customer_id: str) -> dict:
 # Get shippers by status
 async def read_active_shippers() -> dict:   
     # Get shippers today go to work 
-    on_site_shippers = await get_shippers_by_account_status("active")
+    on_site_shippers = await get_shippers_by_account_status(ShipperStatus.ACTIVE)
     
     return {"number_of_active_shippers": f"{len(on_site_shippers)}"}
 
 # Get currently waiting shippers
 async def read_currently_waiting_shippers() -> list[Admin_Delivery_Shipper_Schema]:   
     # Get shippers today go to work 
-    on_site_shippers = await get_shippers_by_account_status("active")
+    on_site_shippers = await get_shippers_by_account_status(ShipperStatus.ACTIVE)
     
     # Get shipper ids in freetime
     shipper_ids_in_freetime = await get_shipper_ids_in_freetime()

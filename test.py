@@ -4,6 +4,8 @@ from fastapi import APIRouter, FastAPI
 from db.database import DB_NAME, db, client
 from routes.admin_routes import router as admin_router
 from routes.auth_routes import router as auth_router
+from routes.shipper_routes import router as shipper_router
+from routes.user_routes import router as customer_router
 from datetime import datetime, timedelta    
 
 from models.voucher import Voucher # to test
@@ -11,7 +13,7 @@ from models.review import Review # to test
 from models.user import GenderEnum, User # to test
 from services.auth_service import hash_password # to test
 from utils.rbac import oauth2_scheme # to test
-from middlewares.error_middleware import custom_error_handler
+# from middlewares.error_middleware import error_handler
 from fastapi.openapi.utils import get_openapi
 
 from logging_config import logger  # to test
@@ -26,11 +28,13 @@ setup_cors(app)
 setup_auth_middleware(app)
 
 # setup error handling middleware
-app.middleware("http")(custom_error_handler)
+# app.middleware("http")(error_handler)
 
 router = APIRouter()
 router.include_router(admin_router, prefix="/admin", tags=["admin"])
 router.include_router(auth_router, prefix="/auth", tags=["auth"])
+router.include_router(shipper_router, prefix="/shipper", tags=["shipper"])
+router.include_router(customer_router, prefix="/customer", tags=["customer"])
 
 app.include_router(router)
 
@@ -76,9 +80,9 @@ sample_reviews = [
 sample_reviews = [Review(**review).model_dump(by_alias=True) for review in sample_reviews]
 
 sample_users = [
-    {"_id": "u1", "name": "John Doe", "email": "john@example.com", "password": hash_password("password1"), "gender": GenderEnum.MALE, "date_of_birth": "1990-01-01",
+    {"_id": "u1", "name": "John Doe", "email": "cus1@gmail.com", "password": hash_password("cus1"), "gender": GenderEnum.MALE, "date_of_birth": "1990-01-01",
      "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
-    {"_id": "u2", "name": "Jane Smith", "email": "jane@example.com", "password": hash_password("password2"), "gender": GenderEnum.FEMALE, "date_of_birth": "1999-06-01",
+    {"_id": "u2", "name": "Jane Smith", "email": "cus2@gmail.com", "password": hash_password("cus2"), "gender": GenderEnum.FEMALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
     {"_id": "u3", "name": "I AM ADMIN", "email": "admin@admin.com", "password": hash_password("admin"), "gender": GenderEnum.MALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "admin", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
