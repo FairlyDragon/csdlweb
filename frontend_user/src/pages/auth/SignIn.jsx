@@ -39,42 +39,42 @@ const SignIn = () => {
   };
 
   const handleSignIn = async (e) => {
-    e.preventDefault();
-    try {
-      const loginData = {
-        username: formData.email,
-        password: formData.password
+  e.preventDefault();
+  try {
+    const loginData = {
+      username: formData.email,
+      password: formData.password
+    };
+    
+    const response = await authService.login(loginData);
+    
+    if (response.access_token) {
+      // Lưu thông tin user vào localStorage
+      const userData = {
+        email: formData.email,
+        name: 'User1', // Thêm name để hiển thị
+        token: response.access_token
       };
+      localStorage.setItem('user', JSON.stringify(userData));
+      localStorage.setItem('access_token', response.access_token);
       
-      const response = await authService.login(loginData);
-      
-      if (response.access_token) {
-        // Lưu thông tin user vào localStorage
-        const userData = {
-          email: formData.email,
-          name: 'User1', // Thêm name để hiển thị
-          token: response.access_token
-        };
-        localStorage.setItem('user', JSON.stringify(userData));
-        localStorage.setItem('access_token', response.access_token);
-        
-        setSnackbar({
-          open: true,
-          message: 'Login successful!',
-          severity: 'success'
-        });
-        
-        // Chuyển hướng đến trang menu
-        setTimeout(() => navigate('/menu'), 1500);
-      }
-    } catch (error) {
       setSnackbar({
         open: true,
-        message: error.message || 'Login failed',
-        severity: 'error'
+        message: 'Login successful!',
+        severity: 'success'
       });
+      
+      // Chuyển hướng đến trang menu
+      setTimeout(() => navigate('/menu'), 1500);
     }
-  };
+  } catch (error) {
+    setSnackbar({
+      open: true,
+      message: error.message || 'Login failed',
+      severity: 'error'
+    });
+  }
+};
 
   const handleResetPassword = async () => {
     if (!resetEmail) {
