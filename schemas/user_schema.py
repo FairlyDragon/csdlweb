@@ -9,6 +9,15 @@ class UserSchema(BaseModel):
     role: Role
     id: Optional[str] = None
     
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "email": "cuscus@gmail.com",
+                "password": "cus1",
+                "role": "customer"
+            }
+        }
+    
 class CustomerResponseSchema(BaseModel):
     customer_id: Optional[str] = None
     name: Optional[str] = None

@@ -137,7 +137,7 @@ async def create_menuitem(menuitem: CreateMenuItemSchema) -> dict:  # in essence
 # Update a menu item by ID
 async def update_menuitem(menuitem: UpdateMenuItemSchema) -> dict: # in essence, this returns MenuItem instance but replace _id with menuitem_id
     # convert the MenuItem instance to a dictionary 
-    update_data = {k: v for k, v in menuitem.model_dump().items()}
+    update_data = {k: v for k, v in menuitem.model_dump().items() if v is not None}
     
     # update the menu item in the database
     if update_data: 
@@ -291,7 +291,7 @@ async def read_shipper_infor_by_shipper_id(shipper_id: str) -> dict:
 
 # Update shipper infor by shipper id
 async def update_shipper_info(shipper: ShipperSchema) -> dict:
-    shipper_info_dict = shipper.model_dump()
+    shipper_info_dict = {k  : v for k, v in shipper.model_dump().items() if v is not None}
     if shipper.shipper_id is None:
         raise HTTPException(status_code=400, detail="Shipper id is required")
     
@@ -370,7 +370,7 @@ async def read_customer_infor_by_customer_id(customer_id: str) -> dict:
 
 # Update customer info
 async def update_customer_info(customer: CustomerResponseSchema) -> dict:
-    customer_info_dict = customer.model_dump()
+    customer_info_dict = {k: v for k, v in customer.model_dump().items() if v is not None}
     if customer.customer_id is None:
         raise HTTPException(status_code=400, detail="Customer id is required")
     
@@ -576,7 +576,7 @@ async def update_role_of_user(id: str, role: LimitedRole) -> dict:
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    if user.role == role:
+    if user["role"] == role:
         raise HTTPException(status_code=400, detail="Role is already same")
     
     modified_count = await update_user_in_db_by_id(id, {"role": role})

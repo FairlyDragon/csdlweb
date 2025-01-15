@@ -26,7 +26,7 @@ async def update_shipper_by_id(shipper_id: str, shipper_info_dict: dict) -> int:
         
     updated_shipper = await db["shipper"].update_one({"_id": shipper_id}, {"$set": shipper_info_dict})
     
-    if not updated_shipper:
+    if not updated_shipper.modified_count:
         raise HTTPException(status_code=404, detail="Shipper not found")
     
     return updated_shipper.modified_count
@@ -36,7 +36,7 @@ async def update_shipper_by_id(shipper_id: str, shipper_info_dict: dict) -> int:
 async def delete_shipper_by_id(shipper_id: str) -> int:
     result = await db["shipper"].delete_one({"_id": shipper_id})
     
-    if not result:
+    if not result.deleted_count:
         raise HTTPException(status_code=404, detail="Shipper not found")
     
     return result.deleted_count

@@ -79,11 +79,11 @@ async def find_user_by_id(user_id: str) -> User:
 # Update user in db
 async def update_user_in_db_by_id(user_id: str, user: dict) -> dict:   # user: User
     # Hash password before inserting into db
-    if user["password"]:
+    if user.get("password"):
         user.update({"password": hash_password_local(user["password"])})
         
     updated_user = await db["user"].update_one({"_id": user_id}, {"$set": user})
-    if not updated_user:
+    if updated_user.modified_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
     
     return updated_user.modified_count
@@ -91,7 +91,7 @@ async def update_user_in_db_by_id(user_id: str, user: dict) -> dict:   # user: U
 # Delete user in db
 async def delete_user_in_db_by_id(user_id: str) -> int:
     result = await db["user"].delete_one({"_id": user_id})
-    if not result:
+    if not result.deleted_count:
         raise HTTPException(status_code=404, detail="User not found")
     
     return result.deleted_count

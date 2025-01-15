@@ -25,43 +25,43 @@ app = FastAPI()
 setup_cors(app)
 
 # setup auth middleware
-setup_auth_middleware(app)
+# setup_auth_middleware(app)
 
 # setup error handling middleware
-app.middleware("http")(error_handler)
+# app.middleware("http")(error_handler)
 
 router = APIRouter()
 router.include_router(admin_router, prefix="/admin", tags=["admin"])
 router.include_router(auth_router, prefix="/auth", tags=["auth"])
-router.include_router(shipper_router, prefix="/shipper", tags=["shipper"])
-router.include_router(customer_router, prefix="/customer", tags=["customer"])
+# router.include_router(shipper_router, prefix="/shipper", tags=["shipper"])
+# router.include_router(customer_router, prefix="/customer", tags=["customer"])
 
 app.include_router(router)
 
 #### Config Swagger UI to render "Authorization" button
-def custom_openapi():
-    if app.openapi_schema:
-        return app.openapi_schema
-    openapi_schema = get_openapi(
-        title="Your API",
-        version="1.0.0",
-        description="API description",
-        routes=app.routes,
-    )
-    openapi_schema["components"]["securitySchemes"] = {
-        "BearerAuth": {
-            "type": "http",
-            "scheme": "bearer",
-            "bearerFormat": "JWT",
-        }
-    }
-    for path in openapi_schema["paths"].values():
-        for method in path.values():
-            method["security"] = [{"BearerAuth": []}]
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
+# def custom_openapi():
+#     if app.openapi_schema:
+#         return app.openapi_schema
+#     openapi_schema = get_openapi(
+#         title="Your API",
+#         version="1.0.0",
+#         description="API description",
+#         routes=app.routes,
+#     )
+#     openapi_schema["components"]["securitySchemes"] = {
+#         "BearerAuth": {
+#             "type": "http",
+#             "scheme": "bearer",
+#             "bearerFormat": "JWT",
+#         }
+#     }
+#     for path in openapi_schema["paths"].values():
+#         for method in path.values():
+#             method["security"] = [{"BearerAuth": []}]
+#     app.openapi_schema = openapi_schema
+#     return app.openapi_schema
 
-app.openapi = custom_openapi
+# app.openapi = custom_openapi
 #####
 
 
