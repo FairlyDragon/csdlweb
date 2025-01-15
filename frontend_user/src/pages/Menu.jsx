@@ -319,6 +319,8 @@ const Menu = () => {
   });
 
   return (
+    <Box>
+      <Header />
     <Box sx={{ p: 3 }}>
       <Typography variant="h6" sx={{ mb: 2 }}>Category</Typography>
       
@@ -371,6 +373,7 @@ const Menu = () => {
           ))}
         </Box>
       </Box>
+    </Box>
     </Box>
   );
 };

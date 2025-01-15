@@ -1,108 +1,149 @@
-import { useState } from 'react';
-import { AppBar, Toolbar, Box, IconButton, Typography, Button } from "@mui/material";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from 'react';
+import { 
+  AppBar, 
+  Toolbar, 
+  Box, 
+  IconButton, 
+  Typography, 
+  Button,
+  Avatar,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import MenuIcon from '@mui/icons-material/Menu';
+import PersonIcon from '@mui/icons-material/Person';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import KeyIcon from '@mui/icons-material/Key';
+import LogoutIcon from '@mui/icons-material/Logout';
+import authService from '../services/authService';
 
 const Header = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Tạm thời dùng state, sau này sẽ dùng context hoặc redux
+  const [user, setUser] = useState(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
-  // Kiểm tra xem có đang ở trang menu không
-  const isMenuPage = location.pathname === '/menu';
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      setUser(JSON.parse(userStr));
+    }
+
+    const handleStorageChange = () => {
+      const updatedUserStr = localStorage.getItem('user');
+      if (updatedUserStr) {
+        setUser(JSON.parse(updatedUserStr));
+      } else {
+        setUser(null);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const handleCartClick = () => {
+    if (!user) {
+      navigate('/auth/signin');
+    } else {
+      navigate('/cart');
+    }
+  };
+
+  const handleMenuClick = (event) => {
+    setMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    authService.logout();
+    setUser(null);
+    handleMenuClose();
+    navigate('/');
+  };
 
   return (
     <AppBar 
       position="static" 
-      color="default" 
-      elevation={0}
       sx={{ 
         backgroundColor: 'white',
-        borderBottom: '1px solid',
-        borderColor: 'grey.200'
+        color: 'black',
+        boxShadow: 'none',
+        borderBottom: '1px solid #eee'
       }}
     >
-      <Toolbar sx={{ justifyContent: 'space-between', px: 2 }}>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
         {/* Logo */}
         <Typography 
-          variant="h5" 
-          component="h1"
+          variant="h6" 
           sx={{ 
             fontWeight: 'bold',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center'
+            cursor: 'pointer' 
           }}
           onClick={() => navigate('/')}
         >
-          FairyDragon<span style={{ color: '#FFA500' }}>.</span>
+          FairyDragon
+          <span style={{ color: '#dd1d1d' }}>.</span>
         </Typography>
 
         {/* Navigation */}
-        <Box sx={{ 
-          display: 'flex', 
-          gap: 2,
-          mx: 4,
-          '& .MuiButton-root': {
-            color: 'text.primary',
-            minWidth: 'unset',
-            px: 2
-          }
-        }}>
-          <Button 
-            onClick={() => navigate('/')}
-            sx={{
-              borderBottom: !isMenuPage ? '2px solid #000' : 'none',
-              borderRadius: 0
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Typography 
+            sx={{ 
+              cursor: 'pointer',
+              color: '#000',
+              textDecoration: 'none'
             }}
+            onClick={() => navigate('/')}
           >
             home
-          </Button>
-          <Button 
-            onClick={() => navigate('/menu')}
-            sx={{
-              borderBottom: isMenuPage ? '2px solid #000' : 'none',
-              borderRadius: 0
+          </Typography>
+          <Typography 
+            sx={{ 
+              cursor: 'pointer',
+              color: '#000',
+              textDecoration: 'underline',
+              textUnderlineOffset: '5px'
             }}
+            onClick={() => navigate('/menu')}
           >
             menu
-          </Button>
+          </Typography>
         </Box>
 
-        {/* Right Actions */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        {/* Right section */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <IconButton>
             <SearchIcon />
           </IconButton>
           
-          <IconButton>
+          <IconButton onClick={handleCartClick}>
             <ShoppingCartIcon />
           </IconButton>
 
-          {isMenuPage ? (
-            // Hiển thị Hello User khi ở trang menu
-            <Box sx={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              gap: 1,
-              ml: 1,
-              color: 'text.secondary'
-            }}>
-              <Typography variant="body2">
-                Hello
+          {user ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Avatar 
+                sx={{ 
+                  width: 32, 
+                  height: 32,
+                  bgcolor: '#dd1d1d'
+                }}
+              >
+                {user.email?.charAt(0).toUpperCase()}
+              </Avatar>
+              <Typography>
+                Hello {user.email?.split('@')[0]}
               </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <PersonOutlineIcon sx={{ fontSize: 20 }} />
-                <Typography variant="body2">
-                  User1
-                </Typography>
-              </Box>
             </Box>
           ) : (
-            // Hiển thị nút Sign In/Sign Up khi không ở trang menu
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Button
                 onClick={() => navigate('/auth/signin')}
@@ -119,7 +160,6 @@ const Header = () => {
               >
                 Sign In
               </Button>
-
               <Button
                 onClick={() => navigate('/auth/signup')}
                 sx={{
@@ -136,9 +176,72 @@ const Header = () => {
             </Box>
           )}
 
-          <IconButton sx={{ ml: 1 }}>
+          <IconButton onClick={handleMenuClick}>
             <MenuIcon />
           </IconButton>
+
+          <Menu
+            anchorEl={menuAnchorEl}
+            open={Boolean(menuAnchorEl)}
+            onClose={handleMenuClose}
+            PaperProps={{
+              sx: {
+                mt: 1,
+                width: 200,
+              }
+            }}
+          >
+            <MenuItem onClick={() => {
+              handleMenuClose();
+              navigate('/orders');
+            }}>
+              <ListItemIcon>
+                <ShoppingBagIcon sx={{ color: '#dd1d1d' }} />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2">Orders</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Check your order history
+                </Typography>
+              </ListItemText>
+            </MenuItem>
+
+            <MenuItem onClick={() => {
+              handleMenuClose();
+              navigate('/profile');
+            }}>
+              <ListItemIcon>
+                <PersonIcon sx={{ color: '#dd1d1d' }} />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2">Profile</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Edit your information
+                </Typography>
+              </ListItemText>
+            </MenuItem>
+
+            <MenuItem onClick={() => {
+              handleMenuClose();
+              navigate('/change-password');
+            }}>
+              <ListItemIcon>
+                <KeyIcon sx={{ color: '#dd1d1d' }} />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2">Change password</Typography>
+              </ListItemText>
+            </MenuItem>
+
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon sx={{ color: '#dd1d1d' }} />
+              </ListItemIcon>
+              <ListItemText>
+                <Typography variant="body2">Log Out</Typography>
+              </ListItemText>
+            </MenuItem>
+          </Menu>
         </Box>
       </Toolbar>
     </AppBar>

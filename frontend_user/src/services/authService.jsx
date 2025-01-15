@@ -60,11 +60,10 @@ const authService = {
     try {
       console.log('Sending reset password request for email:', email);
       
-      // Gửi request với body thay vì query params
       const response = await axios({
         method: 'POST',
         url: `${API_URL}/auth/reset-password`,
-        data: { email }, // Gửi email trong body
+        data: { email },
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
