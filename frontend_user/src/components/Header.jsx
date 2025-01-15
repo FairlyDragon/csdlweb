@@ -29,6 +29,7 @@ const Header = () => {
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
   const location = useLocation();
+  const isMenuActive = location.pathname === '/menu';
   const isCartActive = location.pathname === '/cart' || location.pathname === '/checkout';
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const Header = () => {
 
   const handleCartClick = () => {
     if (!user) {
-      navigate('/auth/signin');
+      navigate('/auth/login');
     } else {
       navigate('/cart');
     }
@@ -71,6 +72,7 @@ const Header = () => {
     setUser(null);
     handleMenuClose();
     navigate('/');
+    window.location.reload();
   };
 
   return (
@@ -113,7 +115,7 @@ const Header = () => {
             sx={{ 
               cursor: 'pointer',
               color: '#000',
-              textDecoration: 'underline',
+              textDecoration: isMenuActive ? 'underline' : 'none',
               textUnderlineOffset: '5px'
             }}
             onClick={() => navigate('/menu')}
@@ -129,36 +131,105 @@ const Header = () => {
           </IconButton>
           
           <IconButton 
-  onClick={handleCartClick}
-  sx={{
-    color: isCartActive ? '#dd1d1d' : 'inherit',
-    borderBottom: isCartActive ? '2px solid #dd1d1d' : 'none',
-    borderRadius: isCartActive ? '0' : '50%',
-    pb: isCartActive ? '4px' : '0'
-  }}
->
-  <ShoppingCartIcon />
-</IconButton>
+            onClick={handleCartClick}
+            sx={{
+              color: isCartActive ? '#dd1d1d' : 'inherit',
+              borderBottom: isCartActive ? '2px solid #dd1d1d' : 'none',
+              borderRadius: isCartActive ? '0' : '50%',
+              pb: isCartActive ? '4px' : '0'
+            }}
+          >
+            <ShoppingCartIcon />
+          </IconButton>
 
           {user ? (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Avatar 
-                sx={{ 
-                  width: 32, 
-                  height: 32,
-                  bgcolor: '#dd1d1d'
+            <>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Avatar 
+                  sx={{ 
+                    width: 32, 
+                    height: 32,
+                    bgcolor: '#dd1d1d'
+                  }}
+                >
+                  {user.email?.charAt(0).toUpperCase()}
+                </Avatar>
+                <Typography>
+                  Hello {user.email?.split('@')[0]}
+                </Typography>
+              </Box>
+
+              <IconButton onClick={handleMenuClick}>
+                <MenuIcon />
+              </IconButton>
+
+              <Menu
+                anchorEl={menuAnchorEl}
+                open={Boolean(menuAnchorEl)}
+                onClose={handleMenuClose}
+                PaperProps={{
+                  sx: {
+                    mt: 1,
+                    width: 200,
+                  }
                 }}
               >
-                {user.email?.charAt(0).toUpperCase()}
-              </Avatar>
-              <Typography>
-                Hello {user.email?.split('@')[0]}
-              </Typography>
-            </Box>
+                <MenuItem onClick={() => {
+                  handleMenuClose();
+                  navigate('/orders');
+                }}>
+                  <ListItemIcon>
+                    <ShoppingBagIcon sx={{ color: '#dd1d1d' }} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Typography variant="body2">Orders</Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Check your order history
+                    </Typography>
+                  </ListItemText>
+                </MenuItem>
+
+                <MenuItem onClick={() => {
+                  handleMenuClose();
+                  navigate('/profile');
+                }}>
+                  <ListItemIcon>
+                    <PersonIcon sx={{ color: '#dd1d1d' }} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Typography variant="body2">Profile</Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Edit your information
+                    </Typography>
+                  </ListItemText>
+                </MenuItem>
+
+                <MenuItem onClick={() => {
+                  handleMenuClose();
+                  navigate('/change-password');
+                }}>
+                  <ListItemIcon>
+                    <KeyIcon sx={{ color: '#dd1d1d' }} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Typography variant="body2">Change password</Typography>
+                  </ListItemText>
+                </MenuItem>
+
+                <MenuItem onClick={handleLogout}>
+                  <ListItemIcon>
+                    <LogoutIcon sx={{ color: '#dd1d1d' }} />
+                  </ListItemIcon>
+                  <ListItemText>
+                    <Typography variant="body2">Log Out</Typography>
+                  </ListItemText>
+                </MenuItem>
+              </Menu>
+            </>
           ) : (
             <Box sx={{ display: 'flex', gap: 1 }}>
               <Button
-                onClick={() => navigate('/auth/signin')}
+                onClick={() => navigate('/auth/login')}
                 sx={{
                   color: 'black',
                   backgroundColor: 'white',
@@ -170,7 +241,7 @@ const Header = () => {
                 }}
                 variant="outlined"
               >
-                Sign In
+                LOG IN
               </Button>
               <Button
                 onClick={() => navigate('/auth/signup')}
@@ -183,77 +254,10 @@ const Header = () => {
                 }}
                 variant="contained"
               >
-                Sign Up
+                SIGN UP
               </Button>
             </Box>
           )}
-
-          <IconButton onClick={handleMenuClick}>
-            <MenuIcon />
-          </IconButton>
-
-          <Menu
-            anchorEl={menuAnchorEl}
-            open={Boolean(menuAnchorEl)}
-            onClose={handleMenuClose}
-            PaperProps={{
-              sx: {
-                mt: 1,
-                width: 200,
-              }
-            }}
-          >
-            <MenuItem onClick={() => {
-              handleMenuClose();
-              navigate('/orders');
-            }}>
-              <ListItemIcon>
-                <ShoppingBagIcon sx={{ color: '#dd1d1d' }} />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="body2">Orders</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Check your order history
-                </Typography>
-              </ListItemText>
-            </MenuItem>
-
-            <MenuItem onClick={() => {
-              handleMenuClose();
-              navigate('/profile');
-            }}>
-              <ListItemIcon>
-                <PersonIcon sx={{ color: '#dd1d1d' }} />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="body2">Profile</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Edit your information
-                </Typography>
-              </ListItemText>
-            </MenuItem>
-
-            <MenuItem onClick={() => {
-              handleMenuClose();
-              navigate('/change-password');
-            }}>
-              <ListItemIcon>
-                <KeyIcon sx={{ color: '#dd1d1d' }} />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="body2">Change password</Typography>
-              </ListItemText>
-            </MenuItem>
-
-            <MenuItem onClick={handleLogout}>
-              <ListItemIcon>
-                <LogoutIcon sx={{ color: '#dd1d1d' }} />
-              </ListItemIcon>
-              <ListItemText>
-                <Typography variant="body2">Log Out</Typography>
-              </ListItemText>
-            </MenuItem>
-          </Menu>
         </Box>
       </Toolbar>
     </AppBar>

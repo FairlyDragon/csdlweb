@@ -7,7 +7,6 @@ import {
   Alert,
   Paper 
 } from '@mui/material';
-import Header from '../../components/Header';
 
 const ChangePassword = () => {
   const [formData, setFormData] = useState({
@@ -63,7 +62,6 @@ const ChangePassword = () => {
 
   return (
     <Box>
-      <Header />
       <Box 
         sx={{ 
           maxWidth: 400, 

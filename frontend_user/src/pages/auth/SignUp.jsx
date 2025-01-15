@@ -1,16 +1,17 @@
 import { useState } from 'react';
-import { 
-  Box, 
-  Typography, 
-  TextField, 
-  Button, 
-  Alert,
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Radio,
   RadioGroup,
   FormControlLabel,
-  Radio,
-  Paper 
+  Alert,
+  CircularProgress
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from '../../utils/axios';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -19,15 +20,16 @@ const SignUp = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'customer' // Thêm role mặc định
+    role: 'customer'
   });
+  
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
+    setFormData(prev => ({
+      ...prev,
       [name]: value
     }));
   };
@@ -35,173 +37,175 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+      setError('Please fill in all fields');
+      return;
+    }
 
-    // Validate password match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
     try {
-      const response = await fetch('http://localhost:8000/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role // Gửi role lên server
-        }),
+      setLoading(true);
+      
+      const response = await axios.post('/auth/signup', {
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+        username: formData.username
       });
 
-      const data = await response.json();
+      if (response.data.detail === "User created successfully") {
+        // Hiển thị thông báo thành công
+        setError('');
+        setFormData({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          role: 'customer'
+        });
 
-      if (!response.ok) {
-        throw new Error(data.detail || 'Something went wrong');
+        // Chuyển hướng sang trang login sau 2 giây
+        setTimeout(() => {
+          navigate('/auth/login', { 
+            state: { 
+              email: formData.email,
+              message: 'Account created successfully! Please login with your credentials.' 
+            }
+          });
+        }, 2000);
       }
 
-      setSuccess(true);
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        navigate('/auth/signin');
-      }, 2000);
-
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.detail || 'Failed to create account');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bgcolor: '#f5f5f5',
-        py: 4
-      }}
-    >
-      <Paper
-        elevation={3}
-        sx={{
-          p: 4,
-          width: '100%',
-          maxWidth: 500,
-          mx: 2
-        }}
-      >
-        <Typography variant="h4" align="center" sx={{ mb: 1, fontWeight: 600 }}>
-          Create Account
-        </Typography>
-        <Typography variant="body1" align="center" sx={{ mb: 4, color: 'text.secondary' }}>
-          Join us and start ordering your favorite food
-        </Typography>
+    <Box sx={{
+      maxWidth: 400,
+      mx: 'auto',
+      mt: 8,
+      p: 3,
+      boxShadow: 3,
+      borderRadius: 2,
+      bgcolor: 'background.paper'
+    }}>
+      <Typography variant="h4" align="center" gutterBottom>
+        Create Account
+      </Typography>
+      
+      <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 3 }}>
+        Join us and start ordering your favorite food
+      </Typography>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
-          </Alert>
-        )}
+      {error && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {error}
+        </Alert>
+      )}
 
-        {success && (
-          <Alert severity="success" sx={{ mb: 3 }}>
-            Registration successful! Redirecting to login...
-          </Alert>
-        )}
+      {/* Thêm thông báo thành công */}
+      {loading && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          Account created successfully! Redirecting to login page...
+        </Alert>
+      )}
 
-        <form onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            label="Username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-            sx={{ mb: 3 }}
+      <Box component="form" onSubmit={handleSubmit}>
+        <TextField
+          fullWidth
+          label="Username"
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
+          margin="normal"
+          required
+        />
+
+        <TextField
+          fullWidth
+          label="Email"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          margin="normal"
+          required
+        />
+
+        <TextField
+          fullWidth
+          label="Password"
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          margin="normal"
+          required
+        />
+
+        <TextField
+          fullWidth
+          label="Confirm Password"
+          name="confirmPassword"
+          type="password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          margin="normal"
+          required
+        />
+
+        <RadioGroup
+          row
+          name="role"
+          value={formData.role}
+          onChange={handleChange}
+          sx={{ my: 2, justifyContent: 'center' }}
+        >
+          <FormControlLabel 
+            value="customer" 
+            control={<Radio />} 
+            label="Customer" 
           />
-
-          <TextField
-            fullWidth
-            label="Email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            sx={{ mb: 3 }}
+          <FormControlLabel 
+            value="shipper" 
+            control={<Radio />} 
+            label="Shipper" 
           />
+        </RadioGroup>
 
-          <TextField
-            fullWidth
-            label="Password"
-            name="password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            sx={{ mb: 3 }}
-          />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          size="large"
+          disabled={loading}
+          sx={{ 
+            mt: 2,
+            bgcolor: '#dd1d1d',
+            '&:hover': {
+              bgcolor: '#bb0f0f'
+            }
+          }}
+        >
+          {loading ? <CircularProgress size={24} color="inherit" /> : 'SIGN UP'}
+        </Button>
 
-          <TextField
-            fullWidth
-            label="Confirm Password"
-            name="confirmPassword"
-            type="password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            required
-            sx={{ mb: 3 }}
-          />
-
-          {/* Thêm lựa chọn role */}
-          <RadioGroup
-            row
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            sx={{ mb: 3, justifyContent: 'center' }}
-          >
-            <FormControlLabel 
-              value="customer" 
-              control={<Radio />} 
-              label="Customer"
-              sx={{ 
-                mr: 4,
-                '& .MuiFormControlLabel-label': { 
-                  fontWeight: formData.role === 'customer' ? 600 : 400 
-                }
-              }}
-            />
-            <FormControlLabel 
-              value="shipper" 
-              control={<Radio />} 
-              label="Shipper"
-              sx={{ 
-                '& .MuiFormControlLabel-label': { 
-                  fontWeight: formData.role === 'shipper' ? 600 : 400 
-                }
-              }}
-            />
-          </RadioGroup>
-
-          <Button
-            fullWidth
-            type="submit"
-            variant="contained"
-            sx={{ 
-              bgcolor: '#dd1d1d',
-              '&:hover': {
-                bgcolor: '#bb0f0f'
-              }
-            }}
-          >
-            Sign Up
-          </Button>
-        </form>
-      </Paper>
+        <Button
+          fullWidth
+          onClick={() => navigate('/auth/login')}
+          sx={{ mt: 1 }}
+        >
+          Already have an account? Log In
+        </Button>
+      </Box>
     </Box>
   );
 };

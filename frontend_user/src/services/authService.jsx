@@ -1,34 +1,6 @@
-import axios from 'axios';
-
-const API_URL = 'http://127.0.0.1:8000';
+import axios from '../utils/axios';
 
 const authService = {
-  signup: async (userData) => {
-    try {
-      // Sửa lại để nhận role từ form đăng ký
-      const signupData = {
-        email: userData.email,
-        password: userData.password,
-        role: userData.role || "customer"  // Lấy role từ userData hoặc mặc định là customer
-      };
-
-      console.log('Sending signup data:', signupData);
-
-      const response = await axios.post(`${API_URL}/auth/signup`, signupData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      });
-      
-      console.log('Signup response:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Signup error details:', error.response?.data);
-      throw error.response?.data || { message: 'Registration failed' };
-    }
-  },
-
   login: async (credentials) => {
     try {
       const formData = new URLSearchParams();
@@ -39,70 +11,82 @@ const authService = {
       formData.append('client_id', 'string');
       formData.append('client_secret', 'string');
 
-      const response = await axios.post(`${API_URL}/auth/login`, formData, {
+      const response = await axios.post('/auth/login', formData, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'accept': 'application/json'
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       });
 
+      // Lưu thông tin user và token
       if (response.data.access_token) {
-        // Lưu thêm role vào localStorage
-        localStorage.setItem('user', JSON.stringify({
-          ...response.data,
-          email: credentials.username,
-          role: response.data.role // Đảm bảo API trả về role
-        }));
+        const userData = {
+          token: response.data.access_token,
+          role: response.data.role // Backend trả về role trong response
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
         localStorage.setItem('token', response.data.access_token);
         localStorage.setItem('userRole', response.data.role);
       }
+
       return response.data;
     } catch (error) {
-      console.error('Login error:', error.response?.data || error.message);
       throw error.response?.data || error;
     }
   },
 
-  resetPassword: async (email) => {
+  signup: async (userData) => {
     try {
-      console.log('Sending reset password request for email:', email);
-      
-      const response = await axios({
-        method: 'POST',
-        url: `${API_URL}/auth/reset-password`,
-        data: { email },
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
+      const response = await axios.post('/auth/signup', {
+        email: userData.email,
+        password: userData.password,
+        role: userData.role, // Thêm role vào request
+        username: userData.username
       });
-      
-      console.log('Reset password response:', response.data);
+
+      // Nếu đăng ký thành công, tự động đăng nhập
+      if (response.data.detail === "User created successfully") {
+        return await authService.login({
+          username: userData.email,
+          password: userData.password
+        });
+      }
+
       return response.data;
     } catch (error) {
-      console.error('Reset password error details:', error.response?.data);
-      throw error.response?.data || { detail: 'Failed to send password reset email' };
+      throw error.response?.data || error;
     }
   },
 
   logout: () => {
     localStorage.removeItem('user');
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('token_type');
-    localStorage.removeItem('token'); // Thêm xóa token mới
-    localStorage.removeItem('userRole'); // Thêm xóa userRole
+    localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
+    window.location.href = '/auth/login'; // Chuyển về trang login sau khi logout
   },
 
   getCurrentUser: () => {
     const userStr = localStorage.getItem('user');
-    if (userStr) return JSON.parse(userStr);
-    return null;
+    return userStr ? JSON.parse(userStr) : null;
   },
 
-  // Thêm method mới để kiểm tra role
-  getUserRole: () => {
-    const user = authService.getCurrentUser();
-    return user?.role || null;
+  // Kiểm tra role của user
+  isShipper: () => {
+    const userRole = localStorage.getItem('userRole');
+    return userRole === 'shipper';
+  },
+
+  isCustomer: () => {
+    const userRole = localStorage.getItem('userRole');
+    return userRole === 'customer';
+  },
+
+  // Lấy đường dẫn mặc định dựa theo role
+  getDefaultRoute: () => {
+    const userRole = localStorage.getItem('userRole');
+    if (userRole === 'shipper') {
+      return '/shipper/dashboard';
+    }
+    return '/'; // Mặc định về trang chủ cho customer
   }
 };
 

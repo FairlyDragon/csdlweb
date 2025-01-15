@@ -15,7 +15,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import authService from '../../services/authService';
 
-const SignIn = () => {
+const LogIn = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -38,7 +38,7 @@ const SignIn = () => {
     }));
   };
 
-  const handleSignIn = async (e) => {
+  const handleLogin = async (e) => {  // Đổi tên từ handleSignIn thành handleLogin
     e.preventDefault();
       
     try {
@@ -47,14 +47,11 @@ const SignIn = () => {
         password: formData.password
       });
   
-      console.log('Login response:', response);
-  
-      // Lưu thông tin user và role vào localStorage
       if (response.access_token) {
         localStorage.setItem('user', JSON.stringify({
           email: formData.email,
           token: response.access_token,
-          role: response.role // Thêm role vào thông tin user
+          role: response.role
         }));
         
         localStorage.setItem('token', response.access_token);
@@ -69,7 +66,7 @@ const SignIn = () => {
         // Redirect dựa trên role
         setTimeout(() => {
           if (response.role === 'shipper') {
-            navigate('/shipper');
+            navigate('/shipper/dashboard');  // Thêm /dashboard vào path
           } else {
             navigate('/');
           }
@@ -122,7 +119,7 @@ const SignIn = () => {
   return (
     <Box
       component="form"
-      onSubmit={handleSignIn}
+      onSubmit={handleLogin}  // Đổi tên từ handleSignIn thành handleLogin
       sx={{
         maxWidth: 400,
         mx: 'auto',
@@ -130,11 +127,11 @@ const SignIn = () => {
         p: 3,
         boxShadow: 1,
         borderRadius: 1,
-        bgcolor: 'white' // Thêm background màu trắng
+        bgcolor: 'white'
       }}
     >
       <Typography variant="h5" component="h1" sx={{ mb: 3, textAlign: 'center', fontWeight: 600 }}>
-        Sign In
+        Log In  {/* Đổi từ Sign In thành Log In */}
       </Typography>
 
       <TextField
@@ -172,7 +169,7 @@ const SignIn = () => {
           }
         }}
       >
-        Sign In
+        Log In  {/* Đổi từ Sign In thành Log In */}
       </Button>
 
       <Box sx={{ textAlign: 'center' }}>
@@ -223,7 +220,6 @@ const SignIn = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
@@ -241,4 +237,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default LogIn;

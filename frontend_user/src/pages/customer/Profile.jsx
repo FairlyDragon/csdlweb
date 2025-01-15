@@ -12,7 +12,6 @@ import {
   Snackbar,
   Alert
 } from '@mui/material';
-import Header from '../../components/Header';
 import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000';
@@ -180,7 +179,6 @@ const Profile = () => {
 
   return (
     <Box>
-      <Header />
       <Container maxWidth="md" sx={{ mt: 4 }}>
         <Typography variant="h4" gutterBottom>
           Account Details

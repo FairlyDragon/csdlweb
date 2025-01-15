@@ -17,7 +17,7 @@ import Orders from './pages/customer/Orders';
 import ChangePassword from './pages/customer/ChangePassword';
 
 // Auth pages
-import SignIn from './pages/auth/SignIn';
+import LogIn from './pages/auth/LogIn';
 import SignUp from './pages/auth/SignUp';
 
 // Shipper pages
@@ -33,7 +33,7 @@ function App() {
           <Router>
             <Routes>
               {/* Public routes */}
-              <Route path="/auth/signin" element={<SignIn />} />
+              <Route path="/auth/login" element={<LogIn />} />
               <Route path="/auth/signup" element={<SignUp />} />
 
               {/* Customer routes */}
