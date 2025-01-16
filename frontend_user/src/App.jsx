@@ -21,9 +21,10 @@ import LogIn from './pages/auth/LogIn';
 import SignUp from './pages/auth/SignUp';
 
 // Shipper pages
-import Dashboard from './pages/shipper/Dashboard';  // Sửa tên import
-import DeliveryOrders from './pages/shipper/DeliveryOrders';
-
+import WaitingOrders from './pages/shipper/WaitingOrders';
+import PickupOrder from './pages/shipper/PickupOrder';
+import DeliveringOrder from './pages/shipper/DeliveringOrder';
+import DeliveredOrder from './pages/shipper/DeliveredOrder';
 
 function App() {
   return (
@@ -43,11 +44,9 @@ function App() {
                 </CustomerLayout>
               } />
               <Route path="/menu" element={
-                <PrivateRoute roles={['customer']}>
-                  <CustomerLayout>
-                    <Menu />
-                  </CustomerLayout>
-                </PrivateRoute>
+                <CustomerLayout>
+                  <Menu />
+                </CustomerLayout>
               } />
               <Route path="/cart" element={
                 <PrivateRoute roles={['customer']}>
@@ -57,7 +56,7 @@ function App() {
                 </PrivateRoute>
               } />
               <Route path="/profile" element={
-                <PrivateRoute>
+                <PrivateRoute roles={['customer']}>
                   <CustomerLayout>
                     <Profile />
                   </CustomerLayout>
@@ -78,28 +77,36 @@ function App() {
                 </PrivateRoute>
               } />
               <Route path="/change-password" element={
-                <PrivateRoute>
+                <PrivateRoute roles={['customer']}>
                   <CustomerLayout>
                     <ChangePassword />
                   </CustomerLayout>
                 </PrivateRoute>
               } />
 
-                {/* Shipper routes */}
-                <Route path="/shipper" element={
-                <PrivateRoute roles={['shipper']}>
-                  <ShipperLayout>
-                    <Dashboard />  {/* Sử dụng đúng tên component */}
-                  </ShipperLayout>
-                </PrivateRoute>
+              {/* Shipper routes */}
+              <Route path="/shipper/waiting" element={
+                <ShipperLayout>
+                  <WaitingOrders />
+                </ShipperLayout>
               } />
-              <Route path="/shipper/orders" element={
-                <PrivateRoute roles={['shipper']}>
-                  <ShipperLayout>
-                    <DeliveryOrders />
-                  </ShipperLayout>
-                </PrivateRoute>
+              <Route path="/shipper/pickup" element={
+                <ShipperLayout>
+                  <PickupOrder />
+                </ShipperLayout>
               } />
+              <Route path="/shipper/delivering" element={
+                <ShipperLayout>
+                  <DeliveringOrder />
+                </ShipperLayout>
+              } />
+              <Route path="/shipper/delivered" element={
+                <ShipperLayout>
+                  <DeliveredOrder />
+                </ShipperLayout>
+              } />
+
+             
             </Routes>
           </Router>
         </OrderProvider>

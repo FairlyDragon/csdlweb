@@ -24,6 +24,7 @@ const SignUp = () => {
   });
   
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -34,33 +35,60 @@ const SignUp = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    
+  const validateForm = () => {
     if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
       setError('Please fill in all fields');
-      return;
+      return false;
     }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
-      return;
+      return false;
     }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters');
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setError('Invalid email format');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    if (!validateForm()) return;
 
     try {
       setLoading(true);
       
+      // Log request data
+      console.log('Sending signup data:', {
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+        id: formData.username
+      });
+
       const response = await axios.post('/auth/signup', {
         email: formData.email,
         password: formData.password,
         role: formData.role,
-        username: formData.username
+        id: formData.username
       });
 
-      if (response.data.detail === "User created successfully") {
-        // Hiển thị thông báo thành công
-        setError('');
+      console.log('Signup response:', response);
+
+      if (response.data) {
+        setSuccess('Account created successfully!');
         setFormData({
           username: '',
           email: '',
@@ -69,7 +97,7 @@ const SignUp = () => {
           role: 'customer'
         });
 
-        // Chuyển hướng sang trang login sau 2 giây
+        // Redirect to login page after 2 seconds
         setTimeout(() => {
           navigate('/auth/login', { 
             state: { 
@@ -81,7 +109,9 @@ const SignUp = () => {
       }
 
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to create account');
+      console.error('Signup error:', err);
+      console.error('Error response:', err.response?.data);
+      setError(err.response?.data?.detail || 'Failed to create account. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -111,10 +141,9 @@ const SignUp = () => {
         </Alert>
       )}
 
-      {/* Thêm thông báo thành công */}
-      {loading && (
+      {success && (
         <Alert severity="success" sx={{ mb: 2 }}>
-          Account created successfully! Redirecting to login page...
+          {success}
         </Alert>
       )}
 
@@ -149,6 +178,7 @@ const SignUp = () => {
           onChange={handleChange}
           margin="normal"
           required
+          helperText="Password must be at least 6 characters"
         />
 
         <TextField

@@ -7,7 +7,7 @@ export const OrderProvider = ({ children }) => {
 
   useEffect(() => {
     // Kết nối WebSocket
-    const ws = new WebSocket('ws://your-backend-url/ws');
+    const ws = new WebSocket('ws://localhost:8000/ws');
     
     ws.onmessage = (event) => {
       const updatedOrder = JSON.parse(event.data);

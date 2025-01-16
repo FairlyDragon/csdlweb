@@ -9,11 +9,10 @@ const instance = axios.create({
   withCredentials: true // Cho phép gửi cookies trong requests
 });
 
-// Add request interceptor
+/// Add a request interceptor
 instance.interceptors.request.use(
   (config) => {
-    // Lấy token từ localStorage nếu có
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -24,20 +23,17 @@ instance.interceptors.request.use(
   }
 );
 
-// Add response interceptor
+// Add a response interceptor
 instance.interceptors.response.use(
   (response) => {
     return response;
   },
-  async (error) => {
-    // Xử lý lỗi response
-    if (error.response) {
-      // Nếu token hết hạn (status 401)
-      if (error.response.status === 401) {
-        localStorage.removeItem('access_token');
-        // Redirect to login page
-        window.location.href = '/auth/login';
-      }
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      localStorage.removeItem('userRole');
+      window.location.href = '/auth/login';
     }
     return Promise.reject(error);
   }

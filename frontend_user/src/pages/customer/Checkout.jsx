@@ -14,7 +14,6 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../contexts/CartContext';
-import Header from '../../components/Header';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -52,7 +51,6 @@ const Checkout = () => {
 
   return (
     <Box>
-        <Header/>
     <Box sx={{ p: 3, maxWidth: 1200, mx: 'auto' }}>
       <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', gap: 2 }}>
         <IconButton onClick={() => navigate(-1)}>

@@ -17,11 +17,10 @@ const authService = {
         }
       });
 
-      // Lưu thông tin user và token
       if (response.data.access_token) {
         const userData = {
           token: response.data.access_token,
-          role: response.data.role // Backend trả về role trong response
+          role: response.data.role
         };
         localStorage.setItem('user', JSON.stringify(userData));
         localStorage.setItem('token', response.data.access_token);
@@ -30,29 +29,25 @@ const authService = {
 
       return response.data;
     } catch (error) {
+      console.error('Login error:', error);
       throw error.response?.data || error;
     }
   },
 
   signup: async (userData) => {
     try {
+      console.log('Signup request data:', userData);
       const response = await axios.post('/auth/signup', {
         email: userData.email,
         password: userData.password,
-        role: userData.role, // Thêm role vào request
-        username: userData.username
+        role: userData.role,
+        id: userData.username
       });
 
-      // Nếu đăng ký thành công, tự động đăng nhập
-      if (response.data.detail === "User created successfully") {
-        return await authService.login({
-          username: userData.email,
-          password: userData.password
-        });
-      }
-
+      console.log('Signup response:', response);
       return response.data;
     } catch (error) {
+      console.error('Signup error:', error);
       throw error.response?.data || error;
     }
   },
@@ -61,7 +56,7 @@ const authService = {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');
-    window.location.href = '/auth/login'; // Chuyển về trang login sau khi logout
+    window.location.href = '/auth/login';
   },
 
   getCurrentUser: () => {
@@ -69,7 +64,6 @@ const authService = {
     return userStr ? JSON.parse(userStr) : null;
   },
 
-  // Kiểm tra role của user
   isShipper: () => {
     const userRole = localStorage.getItem('userRole');
     return userRole === 'shipper';
@@ -80,13 +74,12 @@ const authService = {
     return userRole === 'customer';
   },
 
-  // Lấy đường dẫn mặc định dựa theo role
   getDefaultRoute: () => {
     const userRole = localStorage.getItem('userRole');
     if (userRole === 'shipper') {
       return '/shipper/dashboard';
     }
-    return '/'; // Mặc định về trang chủ cho customer
+    return '/';
   }
 };
 
