@@ -1,5 +1,5 @@
 from fastapi import Depends, Path
-from models.order_delivery import DeliveryStatusEnum
+from models.order_delivery import DeliveryStatusEnum, OrderDelivery
 from models.shipper import ShipperStatus
 from utils.roles import LimitedRole
 from services.voucher_service import get_voucher_by_id
@@ -590,6 +590,39 @@ async def update_role_of_user(id: str, role: LimitedRole) -> dict:
         raise HTTPException(status_code=404, detail="User not found")
     
     return {"message": f"Role of user with id {id} updated successfully"}
+
+# Update order status
+async def update_order(order_id: str, status: str) -> dict:
+    if not await get_order_by_id(order_id):
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    status = status.strip().lower()
+    if status not in [OrderStatus.PROCESSING, OrderStatus.REJECTED]:
+        raise HTTPException(status_code=400, detail="Invalid order status")
+    
+    modified_count = await update_order_in_db_by_id(order_id, {"status": status})
+    if modified_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return {"message": f"Order with id {order_id} updated status to {status}"}
+
+# Create order delivery object
+async def create_order_delivery_object(order_id: str, shipper_id: str) -> dict:
+    # Check if the order exists
+    if not await get_order_by_id(order_id):
+        raise HTTPException(status_code=404, detail="Order not found")
+        
+    # Check if the shipper exists
+    if not await get_shipper_by_id(shipper_id):
+        raise HTTPException(status_code=404, detail="Shipper not found")
+        
+    # Create order delivery object
+    order_delivery = OrderDelivery(order_id=order_id, shipper_id=shipper_id, delivery_status=DeliveryStatusEnum.DELIVERING)
+    
+    # Insert the order delivery object into the database
+    inserted_order_delivery = await insert_order_delivery_to_db(order_delivery.model_dump(by_alias=True))
+    
+    return {"message": f"Assigned order with id {order_id} to shipper with id {shipper_id}"}
     
     
     

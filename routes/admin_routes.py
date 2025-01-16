@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Body
 from controllers.admin_controller import *
 from utils.rbac import get_current_user, role_required, oauth2_scheme
 from utils.roles import LimitedRole, Role
@@ -190,7 +190,10 @@ async def read_waiting_orders_route():
 async def read_num_of_waiting_orders_route():
     return await read_num_of_waiting_orders()
 
-
+#### added here
+@router.post("/deliveries/assign", response_description="Assign an order to a shipper")    
+async def assign_delivery_route(order_id: str, shipper_id: str):
+    return await create_order_delivery_object(order_id, shipper_id)
 
 # ORDERS (Order List)
 @router.get("/orders/pending/preview", response_description="Get all the pending orders in preview")
@@ -216,7 +219,11 @@ async def read_passed_pending_orders_preview_route():
 async def read_passed_pending_orders_details_route():
     return await read_passed_pending_orders_details()
 
+#### added here
+@router.put("/orders/{order_id}/{status}", response_description="Update order status") # Order status: pending -> processing
 
+async def update_order_route(order_id: str, status: str = Path(..., example="processing")):
+    return await update_order(order_id, status)
 
 # SUBADMINS
 # only for superadmin

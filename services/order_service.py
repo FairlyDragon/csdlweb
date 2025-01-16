@@ -58,3 +58,19 @@ async def get_order_by_id(order_id: str) -> dict:
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
     return order
+
+# Update order in db
+async def update_order_in_db_by_id(order_id: str, order: dict) -> dict:   # order: Order
+    updated_order = await db["order"].update_one({"_id": order_id}, {"$set": order})
+    if updated_order.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Order not found")
+    
+    return updated_order.modified_count
+
+# Insert order delivery to db
+async def insert_order_delivery_to_db(order_delivery: dict) -> dict:
+    inserted_order_delivery = await db["order_delivery"].insert_one(order_delivery)
+    if not inserted_order_delivery:
+        raise HTTPException(status_code=404, detail="Failed to insert order delivery")
+    
+    return inserted_order_delivery
