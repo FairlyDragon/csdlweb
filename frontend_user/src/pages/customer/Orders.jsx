@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -8,11 +8,30 @@ import {
 } from '@mui/material';
 import { LocalShipping } from '@mui/icons-material';
 import { format } from 'date-fns';
-import { useOrders } from '../../contexts/OrderContext';
+import customerService from '../../services/customerService';
 
 const Orders = () => {
-  const { orders } = useOrders();
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [dateFilter, setDateFilter] = useState('');
+
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const response = await customerService.getOrders();
+      setOrders(response.data);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      setError('Failed to load orders');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getStatusColor = (status) => {
     switch(status.toLowerCase()) {
@@ -30,6 +49,22 @@ const Orders = () => {
         new Date(order.date).toDateString() === new Date(dateFilter).toDateString()
       )
     : orders;
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ p: 4 }}>
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
 
   return (
     <Box>
