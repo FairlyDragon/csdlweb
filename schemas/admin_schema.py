@@ -3,7 +3,7 @@ from typing import Optional, List
 from datetime import datetime
 from models.order_delivery import DeliveryStatusEnum
 from models.payment import PaymentMethod, PaymentStatus
-from models.order import OrderItem, OrderStatus
+from models.order import OrderItem, OrderItemSchema, OrderStatus
 
 class TimePeriod(BaseModel):
     start_date: datetime
@@ -122,7 +122,7 @@ class AdminOrderListDetailsResponseSchema(BaseModel):
     payment_status: Optional[PaymentStatus] = PaymentStatus.PENDING
     
     order_date: datetime
-    order_items: List[OrderItem]
+    order_items: List[OrderItemSchema]
     total_amount: Optional[float]
     num_of_items: int 
     note: Optional[str] = None
@@ -169,6 +169,17 @@ class Admin_Delivery_Order_Managament_Schema(BaseModel):
     customer_name: str
     address: str
     phone_number: str
+    
+class ReviewDashBoardResponseSchema(BaseModel):
+    review_id: str
+    customer_id: str # Review model has user_id field instead of customer_id
+    menuitem_id: str
+    name: str       # Review model DONT has this field
+    rating: int 
+    comment: str
+    review_date: datetime
+    image_url: str  # Review model DONT has this field
+    avatar_url: Optional[str] = None  # Review model DONT has this field
     
     
     

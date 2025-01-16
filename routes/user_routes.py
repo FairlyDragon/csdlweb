@@ -30,8 +30,8 @@ async def update_customer_profile_route(customer: CustomerResponseSchema):
 async def delete_customer_profile_route(customer_id: str = Path(..., example="u1")):
     return await delete_user_profile(customer_id)
 
-# @router.post("/{customer_id}/order", response_description="Create a new order")
+# @router.post("/{customer_id}", response_description="Create a new order")
 
-# async def create_order_route(customer_id: str = Path(..., example="u1")):
+# async def create_order_route(customer_id: str = Path(..., example="u1"), order: ):
 #     return await create_order(customer_id)
 

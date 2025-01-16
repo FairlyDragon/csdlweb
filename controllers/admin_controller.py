@@ -479,7 +479,10 @@ async def read_pending_orders_detais() -> list[dict]:  # list[AdminOrderListDeta
             address=customer_who_made_order["address"], 
                 payment_method=payment_by_order_id["payment_method"],
                     order_date=order["order_date"], 
-                    order_items=[OrderItem(**item).model_dump() for item in order["order_items"]], 
+                    order_items=[
+                OrderItemSchema(**{**item, "image_url": (await get_menu_item_by_id(menu_item_id=item["menuitem_id"]))["image_url"]}).model_dump() 
+                for item in order["order_items"]
+                    ],
                     total_amount=order["total_amount"], 
                     num_of_items=len(order["order_items"]), 
                     note=order["note"], 
@@ -563,7 +566,10 @@ async def read_passed_pending_orders_details() -> list[dict]:  # list[AdminOrder
                 payment_method=payment_by_order_id["payment_method"],
                 payment_status=payment_by_order_id["status"],
                     order_date=order["order_date"], 
-                    order_items=[OrderItem(**item).model_dump() for item in order["order_items"]], 
+                    order_items=[
+                OrderItemSchema(**{**item, "image_url": (await get_menu_item_by_id(menu_item_id=item["menuitem_id"]))["image_url"]}).model_dump() 
+                for item in order["order_items"]
+                    ],
                     total_amount=order["total_amount"], 
                     num_of_items=len(order["order_items"]), 
                     note=order["note"], 
@@ -607,7 +613,11 @@ async def update_order(order_id: str, status: str) -> dict:
     return {"message": f"Order with id {order_id} updated status to {status}"}
 
 # Create order delivery object
-async def create_order_delivery_object(order_id: str, shipper_id: str) -> dict:
+async def assign_order_to_shipper(order_id: str, shipper_id: str) -> dict:
+    """
+    In essence, this function creates an order delivery object and inserts it into the database with initial status as 'delivering'
+    """
+    
     # Check if the order exists
     if not await get_order_by_id(order_id):
         raise HTTPException(status_code=404, detail="Order not found")

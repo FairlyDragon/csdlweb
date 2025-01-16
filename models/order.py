@@ -9,6 +9,12 @@ class OrderItem(BaseModel):
     quantity: int
     subtotal: float
     
+class OrderItemSchema(BaseModel):
+    menuitem_id: str
+    quantity: int
+    subtotal: float
+    image_url: str
+    
 class OrderStatus(str, Enum):
     PENDING = "pending"
     PROCESSING = "processing"

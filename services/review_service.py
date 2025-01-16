@@ -1,6 +1,6 @@
 from fastapi import HTTPException
 from db.database import db
-from schemas.review_schema import ReviewDashBoardResponseSchema
+from schemas.admin_schema import ReviewDashBoardResponseSchema
 
 # Get all customer reviews and sort from lastest to oldest
 async def fetch_reviews() -> list[ReviewDashBoardResponseSchema]: 
