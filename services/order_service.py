@@ -93,3 +93,9 @@ async def insert_order_delivery_to_db(order_delivery: dict) -> dict:
         raise HTTPException(status_code=404, detail="Failed to insert order delivery")
     
     return inserted_order_delivery
+
+# get order delivery object by order id 
+# 1 - 1 relationship
+async def get_order_delivery_by_order_id(order_id: str) -> dict:
+    order_delivery = await db["order_delivery"].find_one({"order_id": order_id})
+    return order_delivery

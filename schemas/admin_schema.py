@@ -133,6 +133,8 @@ class AdminOrderListDetailsResponseSchema(BaseModel):
     discount_applied: Optional[float] = 0.0
     delivery_fee: Optional[float] = 0.0
     
+    shipper_name: Optional[str] = None
+    
 class AdminOrderListPreviewResponseSchema(BaseModel):
     order_id: str
     name: str

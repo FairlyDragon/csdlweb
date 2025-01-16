@@ -556,6 +556,9 @@ async def read_passed_pending_orders_details() -> list[dict]:  # list[AdminOrder
         # Get customer info according to current order_id among all pending orders
         customer_who_made_order = await get_customer_infor_by_order_id(order["_id"])
         
+        order_delivery_object = await get_order_delivery_by_order_id(order["_id"])
+        shipper_who_shipped = await get_shipper_by_id(order_delivery_object["shipper_id"]) if order_delivery_object else None
+        
         # Get payment info according to current order_id among all pending orders
         # 1 - 1 relationship
         payment_by_order_id = await get_payment_by_order_id(order["_id"])
@@ -585,7 +588,8 @@ async def read_passed_pending_orders_details() -> list[dict]:  # list[AdminOrder
                     status=order["status"], 
                         voucher_code=voucher["code"],
                         discount_applied=order["discount_applied"], 
-                        delivery_fee=order["delivery_fee"]
+                        delivery_fee=order["delivery_fee"],
+                            shipper_name=shipper_who_shipped["name"] if shipper_who_shipped else None
                     ).model_dump()
         )
         
