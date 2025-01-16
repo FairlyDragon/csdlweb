@@ -14,6 +14,9 @@ import CategoryCard from '../../components/CategoryCard';
 import FoodCard from '../../components/FoodCard';
 import { useCart } from '../../contexts/CartContext';
 
+import customerService from '../../services/customerService';
+
+
 const categories = [
   { id: 1, name: 'Rice Dishes', icon: RestaurantIcon },
   { id: 2, name: 'Noodles', icon: RamenDiningIcon },
@@ -309,6 +312,28 @@ const menuItems = [
 ];
 
 const Menu = () => {
+   // Thêm states mới
+   const [menuItems, setMenuItems] = useState([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(null);
+ 
+   // Thêm useEffect để fetch menu
+   useEffect(() => {
+     const fetchMenus = async () => {
+       try {
+         setLoading(true);
+         const data = await customerService.getMenus();
+         setMenuItems(data);
+       } catch (error) {
+         setError('Can not load menu.');
+         console.error('Error fetching menu:', error);
+       } finally {
+         setLoading(false);
+       }
+     };
+     fetchMenus();
+   }, []);
+
   const [selectedCategory, setSelectedCategory] = useState('all');
   const { cartItems, addToCart, updateQuantity } = useCart();
 

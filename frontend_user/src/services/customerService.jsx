@@ -40,18 +40,46 @@ const customerService = {
             throw error;
         }
     },
+    
+    // Order Services (thêm mới)
+    getOrders: async () => {
+        try {
+            const response = await axios.get('/customer/orders');
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    createOrder: async (orderData) => {
+        try {
+            const response = await axios.post('/customer/orders', orderData);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    getOrderDetails: async (orderId) => {
+        try {
+            const response = await axios.get(`/customer/orders/${orderId}`);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
 
     // Xử lý lỗi chung
     handleError: (error) => {
         if (error.response) {
             // Server trả về response với status code nằm ngoài range 2xx
-            return error.response.data.message || 'Có lỗi xảy ra';
+            return error.response.data.message || 'There is an error.';
         } else if (error.request) {
             // Request được gửi nhưng không nhận được response
-            return 'Không thể kết nối đến server';
+            return 'Can not connect to server.';
         } else {
             // Có lỗi khi thiết lập request
-            return 'Có lỗi xảy ra';
+            return 'There is an error.';
         }
     }
 };
