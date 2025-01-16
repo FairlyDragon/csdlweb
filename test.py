@@ -114,15 +114,17 @@ sample_orders = [
 
 sample_payments = [
     {"_id": "p1", "order_id": "o1", "payment_method": "cod", "amount": 10.0,
-     "created_at": datetime.now(), "status": "success"},
+     "created_at": datetime.now(), "payment_status": "success"},
     {"_id": "p2", "order_id": "o2", "payment_method": "stripe", "amount": 50.0,
-     "created_at": datetime.now(), "status": "success"},
+     "created_at": datetime.now(), "payment_status": "success"},
     {"_id": "p3", "order_id": "o3", "payment_method": "cod", "amount": 70.0,
-     "created_at": datetime.now(), "status": "success"},
+     "created_at": datetime.now(), "payment_status": "success"},
     {"_id": "p4", "order_id": "o4", "payment_method": "cod", "amount": 70.0,
-     "created_at": datetime.now(), "status": "success"},
+     "created_at": datetime.now(), "payment_status": "success"},
     {"_id": "p5", "order_id": "o5", "payment_method": "cod", "amount": 70.0,
-     "created_at": datetime.now(), "status": "pending"},
+     "created_at": datetime.now(), "payment_status": "pending"},
+    {"_id": "p6", "order_id": "o6", "payment_method": "cod", "amount": 70.0,
+     "created_at": datetime.now(), "payment_status": "failed"},
 ]
 
 sample_menu_items = [

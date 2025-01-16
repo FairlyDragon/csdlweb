@@ -12,6 +12,13 @@ async def get_orders_by_status(status: str) -> list[dict]:  # -> list[Order]
 
     return order_by_status
 
+# Get order by id
+async def get_order_by_order_id(order_id: str) -> dict:
+    order = await db["order"].find_one({"_id": order_id})
+    if not order:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return order
+
 # Get orders by status excluding a certain status (pending, processing, rejected, completed, canceled)
 async def get_orders_by_status_excluding(status: str) -> list[dict]:  # -> list[Order]
     order_by_status = await db["order"].find({"status": {"$ne": status}}).to_list(length=None) 
@@ -62,6 +69,7 @@ async def get_order_by_id(order_id: str) -> dict:
 
 # Update order in db
 async def update_order_in_db_by_id(order_id: str, order: dict) -> dict:   # order: Order
+    order  = {k:v for k, v in order.items() if v is not None}
     updated_order = await db["order"].update_one({"_id": order_id}, {"$set": order})
     if updated_order.modified_count == 0:
         raise HTTPException(status_code=404, detail="Order not found")
@@ -98,4 +106,10 @@ async def insert_order_delivery_to_db(order_delivery: dict) -> dict:
 # 1 - 1 relationship
 async def get_order_delivery_by_order_id(order_id: str) -> dict:
     order_delivery = await db["order_delivery"].find_one({"order_id": order_id})
+    return order_delivery
+
+# Get order delivery by shipper id
+# n order_delivery - 1 shipper_id
+async def get_order_delivery_by_shipper_id(shipper_id: str) -> list[dict]:
+    order_delivery = await db["order_delivery"].find({"shipper_id": shipper_id}).to_list(length=None)
     return order_delivery

@@ -193,6 +193,7 @@ async def get_vouchers_by_status(status: str) -> list[dict]:
 
 # Update a voucher by voucher id
 async def update_voucher_by_id(voucher_id: str, update_data: dict) -> dict:
+    update_data = {k: v for k, v in update_data.items() if v is not None}
     collection = db["voucher"]
     result = await collection.update_one({"_id": voucher_id}, {"$set": update_data})
     

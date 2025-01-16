@@ -21,6 +21,7 @@ async def get_voucher_by_voucher_code(voucher_code: str) -> dict:
 
 # Update voucher by id
 async def update_voucher_by_id(voucher_id: str, update_data: dict) -> dict:
+    update_data = {k: v for k, v in update_data.items() if v is not None}
     collection = db["voucher"]
     result = await collection.update_one({"_id": voucher_id}, {"$set": update_data})
     

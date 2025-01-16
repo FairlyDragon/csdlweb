@@ -56,5 +56,8 @@ async def update_password_route(customer_id: str = Path(..., example="u1"), old_
 async def read_orders_route(customer_id: str = Path(..., example="u1")):
     return await read_orders_history(customer_id)
 
-# @router.get("/orders/")
+@router.get("/orders/history/shipper-info/{order_id}", response_description="Get shipper infor by order id")
+
+async def read_shipper_infor_by_order_id_route(order_id: str = Path(..., example="o1")):
+    return await read_shipper_infor_by_order_id(order_id)
 

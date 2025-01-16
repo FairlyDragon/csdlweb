@@ -1,15 +1,17 @@
-from typing import Optional
 from fastapi import HTTPException
-from controllers.admin_controller import read_order_history_by_customer_id
-from models.order import DeliveryFeeDict
+from models.order_delivery import DeliveryStatusEnum
+from models.payment import Payment, PaymentStatus
+from services.payment_service import insert_payment_to_db
+from controllers.admin_controller import read_delivery_history_by_shipper_id, read_order_history_by_customer_id
+from models.order import DeliveryFeeDict, OrderItemSchema
 from services.auth_service import verify_password
-from services.order_service import insert_order_to_db
+from services.order_service import get_order_by_order_id, get_order_delivery_by_order_id, get_order_delivery_by_shipper_id, insert_order_to_db
 from services.voucher_service import *
 from services.shipper_service import delete_shipper_by_id, get_shipper_by_id, update_shipper_by_id
-from schemas.shipper_schema import ShipperSchema
+from schemas.shipper_schema import ShipperAssignedOrderDeliverySchema, ShipperSchema
 from services.user_service import delete_user_in_db_by_id, find_customer_by_id, is_me, update_user_in_db_by_id
-from services.menu_service import get_all_menu_items
-from schemas.user_schema import CreateOrderSchema, CustomerResponseSchema, UserSchema
+from services.menu_service import get_all_menu_items, get_menu_item_by_id
+from schemas.user_schema import CreateOrderSchema, CustomerResponseSchema
 
 # Get all menu items
 async def get_menu_items() -> list:
@@ -55,6 +57,13 @@ async def delete_user_profile(customer_id: str) -> dict:
 
 # Create order
 async def create_order(customer_id: str, order: CreateOrderSchema) -> dict:  # Order
+    """
+    There's two main tasks to be done here:
+    1. Handle order creation (voucher has to be checked)
+    2. Create a payment object (implicitly - not be returned to the user)
+    """
+    
+    """1. Handle order creation (voucher has to be checked)"""
     customer_id = customer_id.lower()
     # Check if the customer exists
     if not await find_customer_by_id(customer_id):
@@ -75,7 +84,20 @@ async def create_order(customer_id: str, order: CreateOrderSchema) -> dict:  # O
     if not inserted_order:
         raise HTTPException(status_code=404, detail="Failed to create order")
     
-    return inserted_order
+    """2. Create a payment object (implicitly - not be returned to the user)"""
+    # Create a payment object
+    payment_object = Payment(order_id=inserted_order["_id"], 
+                             payment_method=order["payment_method"], 
+                             amount=order["total_amount"], 
+                             payment_status=PaymentStatus.PENDING, 
+                             )
+    
+    # Insert the payment object into the database
+    inserted_id = await insert_payment_to_db(payment_object.model_dump(by_alias=True))
+    if not inserted_id:
+        raise HTTPException(status_code=404, detail="Failed to create payment")
+    
+    return inserted_order  # result of task 1
 
 # Update password
 async def update_password(customer_id: str, old_password: str, new_password: str) -> dict:
@@ -92,6 +114,67 @@ async def update_password(customer_id: str, old_password: str, new_password: str
     
     return {"message": f"Password updated successfully"}
 
+# Update password shipper
+async def update_password_shipper(shipper_id: str, old_password: str, new_password: str) -> dict:
+    shipper = await get_shipper_by_id(shipper_id)
+    if not shipper:
+        raise HTTPException(status_code=404, detail="Shipper not found")
+    
+    if not verify_password(old_password, shipper["password"]):
+        raise HTTPException(status_code=400, detail="Old password is incorrect")
+    
+    modified_count = await update_shipper_by_id(shipper_id, {"password": new_password})
+    if modified_count == 0:
+        raise HTTPException(status_code=404, detail="Update password failed. Please try again or contact administrator")
+    
+    return {"message": f"Password updated successfully"}
+
+
+# Get shipper history
+async def get_shipper_history(shipper_id: str) -> list[dict]:
+    history = await read_delivery_history_by_shipper_id(shipper_id)
+    if not history:
+        raise HTTPException(status_code=404, detail="No history found")
+    
+    return history
+
+
+# Get delivering orders
+async def read_assigned_order_delivery(shipper_id: str) -> dict:   # -> ShipperAssingedOrderDeliverySchema
+    # Get all order delivery of shipper by shipper id
+    all_order_delivery_of_shipper = await get_order_delivery_by_shipper_id(shipper_id)
+    
+    # Get order delivery object that is currently delivering
+    current_for_me_order_delivery = None
+    for order_delivery in all_order_delivery_of_shipper:
+        if order_delivery["delivery_status"] == DeliveryStatusEnum.DELIVERING:
+            current_for_me_order_delivery = order_delivery
+            break
+    
+    if not current_for_me_order_delivery:
+        raise HTTPException(status_code=404, detail="You have not been assigned any order")
+    
+    order = await get_order_by_order_id(current_for_me_order_delivery["order_id"])
+    customer_who_made_order = find_customer_by_id(order["user_id"])
+    if not customer_who_made_order:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    return ShipperAssignedOrderDeliverySchema(
+        order_id=order["_id"],
+        total_amount=order["total_amount"],
+        delivery_fee=order["delivery_fee"],
+            order_items=[
+                OrderItemSchema(**{**item, 
+                                   "image_url": (await get_menu_item_by_id(menu_item_id=item["menuitem_id"]))["image_url"],
+                                   "name": (await get_menu_item_by_id(menu_item_id=item["menuitem_id"]))["name"],
+                                   }).model_dump()
+                for item in order["order_items"]
+                    ],
+        customer_name=customer_who_made_order["name"],
+        avatar_url=customer_who_made_order.get("avatar_url", None),
+        address=customer_who_made_order["address"],
+        phone_number=customer_who_made_order["phone_number"],
+    ).model_dump()
 
 # Get delivery fee with respect to address
 async def read_delivery_fee(customer_id: str) -> dict:
@@ -164,3 +247,22 @@ async def delete_shipper_profile(shipper_id: str) -> dict:
         raise HTTPException(status_code=404, detail="Shipper not found")
     
     return {"message": f"Your account has been deleted successfully"}
+
+
+# Get shipper infor by order id
+async def read_shipper_infor_by_order_id(order_id: str) -> dict:
+    order_id = order_id.lower()
+    
+    # Get order delivery object
+    order_delivery_object = await get_order_delivery_by_order_id(order_id)
+    if not order_delivery_object:
+        raise HTTPException(status_code=404, detail="Your order has not been fetched yet")
+    
+    # Get shipper object
+    shipper_who_shipped = await get_shipper_by_id(order_delivery_object["shipper_id"])
+    if not shipper_who_shipped:
+        raise HTTPException(status_code=404, detail="No shipper found")
+    
+    return {"shipper_name": shipper_who_shipped["name"],
+            "address":shipper_who_shipped["address"],
+            "phone_number":shipper_who_shipped["phone_number"]}

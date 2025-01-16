@@ -60,6 +60,7 @@ async def insert_menuitem_to_db(menuitem: MenuItem) -> dict:
 
 # Update a menu item by ID
 async def update_menuitem_by_id(menuitem_id: str, update_data: dict) -> dict:
+    update_data = {k: v for k, v in update_data.items() if v is not None}
     collection = db["menuitem"]
     result = await collection.update_one({"_id": menuitem_id}, {"$set": update_data})
     

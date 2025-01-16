@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
+from models.order import OrderItemSchema
 from models.shipper import ShipperStatus
 from models.user import GenderEnum, Role
 
@@ -24,4 +25,17 @@ class Admin_Delivery_Shipper_Schema(BaseModel):
     name: str
     address: Optional[str] = None
     phone_number: Optional[str] = None
+    
+class ShipperAssignedOrderDeliverySchema(BaseModel):
+    order_id: str
+    total_amount: float
+    delivery_fee: float
+    
+    order_items: list[OrderItemSchema] 
+    
+    customer_name: str
+    avatar_url: Optional[str] = None
+    address: str
+    phone_number: str
+    created_at: Optional[datetime] = None
 

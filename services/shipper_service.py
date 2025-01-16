@@ -20,6 +20,7 @@ async def get_shipper_by_id(shipper_id: str) -> dict:  # return Shipper
 
 # Update shipper by id
 async def update_shipper_by_id(shipper_id: str, shipper_info_dict: dict) -> int:
+    shipper_info_dict = {k: v for k, v in shipper_info_dict.items() if v is not None}
     # Hash password before inserting into db
     if shipper_info_dict.get("password"):
         shipper_info_dict.update({"password": hash_password(shipper_info_dict["password"])})

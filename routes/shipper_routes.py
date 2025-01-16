@@ -1,6 +1,6 @@
 
-from fastapi import APIRouter, Depends, Path
-from controllers.user_controller import delete_shipper_profile, get_shipper_profile, update_shipper_profile
+from fastapi import APIRouter, Body, Depends, Path
+from controllers.user_controller import delete_shipper_profile, get_shipper_history, get_shipper_profile, read_assigned_order_delivery, update_password_shipper, update_shipper_profile
 from schemas.shipper_schema import ShipperSchema
 from schemas.user_schema import UserSchema
 from utils.rbac import get_current_user, role_required
@@ -27,3 +27,18 @@ async def update_shipper_profile_route(shipper: ShipperSchema):
 
 async def delete_shipper_profile_route(shipper_id: str = Path(..., example="s1")):
     return await delete_shipper_profile(shipper_id)
+
+@router.put("/change-password/{shipper_id}", response_description="Update password")
+
+async def update_password_route(shipper_id: str = Path(..., example="s1"), old_password: str = Body(..., example="old_password"), new_password: str = Body(..., example="new_password")):
+    return await update_password_shipper(shipper_id, old_password, new_password)
+
+@router.get("/history/{shipper_id}", response_description="Get shipper history")
+
+async def get_shipper_history_route(shipper_id: str = Path(..., example="s1")):
+    return await get_shipper_history(shipper_id)
+
+@router.get("deliveries/for-me/{shipper_id}", response_description="Get order has just been assigned for shipper")   # Get delivering orders in order_delivery 
+
+async def read_assigned_order_delivery_route(shipper_id: str = Path(..., example="s1")):
+    return await read_assigned_order_delivery(shipper_id)

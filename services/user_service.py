@@ -79,6 +79,7 @@ async def find_user_by_id(user_id: str) -> User:
 
 # Update user in db
 async def update_user_in_db_by_id(user_id: str, user: dict) -> dict:   # user: User
+    user = {k: v for k, v in user.items() if v is not None}
     # Hash password before inserting into db
     if user.get("password"):
         user.update({"password": hash_password_local(user["password"])})
