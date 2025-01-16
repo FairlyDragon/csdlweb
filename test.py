@@ -33,8 +33,8 @@ setup_cors(app)
 router = APIRouter()
 router.include_router(admin_router, prefix="/admin", tags=["admin"])
 router.include_router(auth_router, prefix="/auth", tags=["auth"])
-# router.include_router(shipper_router, prefix="/shipper", tags=["shipper"])
-# router.include_router(customer_router, prefix="/customer", tags=["customer"])
+router.include_router(shipper_router, prefix="/shipper", tags=["shipper"])
+router.include_router(customer_router, prefix="/customer", tags=["customer"])
 
 app.include_router(router)
 
