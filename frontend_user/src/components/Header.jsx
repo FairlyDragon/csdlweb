@@ -28,6 +28,7 @@ const Header = () => {
   const [user, setUser] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
+  
   useEffect(() => {
     const userStr = localStorage.getItem('user');
     if (userStr) {

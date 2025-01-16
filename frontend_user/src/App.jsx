@@ -23,7 +23,6 @@ import SignUp from './pages/auth/SignUp';
 // Shipper pages
 import WaitingOrders from './pages/shipper/WaitingOrders';
 import PickupOrder from './pages/shipper/PickupOrder';
-import DeliveringOrder from './pages/shipper/DeliveringOrder';
 import DeliveredOrder from './pages/shipper/DeliveredOrder';
 
 function App() {
@@ -49,39 +48,39 @@ function App() {
 
               {/* Customer routes */}
               <Route path="/cart" element={
-                <PrivateRoute roles={['customer']}>
+                
                   <CustomerLayout>
                     <Cart />
                   </CustomerLayout>
-                </PrivateRoute>
+               
               } />
               <Route path="/profile" element={
-                <PrivateRoute roles={['customer']}>
+                
                   <CustomerLayout>
                     <Profile />
                   </CustomerLayout>
-                </PrivateRoute>
+                
               } />
               <Route path="/orders" element={
-                <PrivateRoute roles={['customer']}>
+              
                   <CustomerLayout>
                     <Orders />
                   </CustomerLayout>
-                </PrivateRoute>
+               
               } />
               <Route path="/checkout" element={
-                <PrivateRoute roles={['customer']}>
+                
                   <CustomerLayout>
                     <Checkout />
                   </CustomerLayout>
-                </PrivateRoute>
+                
               } />
               <Route path="/change-password" element={
-                <PrivateRoute roles={['customer']}>
+               
                   <CustomerLayout>
                     <ChangePassword />
                   </CustomerLayout>
-                </PrivateRoute>
+               
               } />
 
               {/* Shipper routes */}
@@ -91,7 +90,6 @@ function App() {
                     <Routes>
                       <Route path="/waiting" element={<WaitingOrders />} />
                       <Route path="/pickup" element={<PickupOrder />} />
-                      <Route path="/delivering" element={<DeliveringOrder />} />
                       <Route path="/delivered" element={<DeliveredOrder />} />
                     </Routes>
                   </ShipperLayout>

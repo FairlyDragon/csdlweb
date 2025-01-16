@@ -13,6 +13,7 @@ import {
   InputLabel 
 } from '@mui/material';
 import authService from '../../services/authService';
+import LoadingScreen from '../../components/LoadingScreen';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -20,9 +21,10 @@ const SignUp = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: ''
+    role: ''  // Không set giá trị mặc định để bắt buộc user phải chọn
   });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -35,18 +37,22 @@ const SignUp = () => {
     e.preventDefault();
     setError('');
 
+    // Validate role selection
     if (!formData.role) {
       setError('Please select a role');
       return;
     }
 
+    // Validate password match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
+    setLoading(true);
+
     try {
-      // Đăng ký
+      // Đăng ký tài khoản
       await authService.signup({
         email: formData.email,
         password: formData.password,
@@ -54,32 +60,31 @@ const SignUp = () => {
         username: formData.email
       });
 
-      // Đăng nhập và lấy role
+      // Sau khi đăng ký thành công, tự động đăng nhập
       const loginResponse = await authService.login({
         username: formData.email,
         password: formData.password
       });
 
-      console.log('Login response:', loginResponse); // Debug log
-
-      // Kiểm tra role từ response
-      const userRole = loginResponse.role;
-      console.log('User role:', userRole); // Debug log
-
-      // Điều hướng dựa trên role
-      if (userRole === 'shipper') {
-        navigate('/shipper/waiting');
-      } else {
-        navigate('/menu');
+      if (loginResponse.access_token) {
+        // Điều hướng dựa trên role đã chọn
+        if (formData.role === 'shipper') {
+          navigate('/shipper/waiting');
+        } else if (formData.role === 'customer') {
+          navigate('/menu');
+        }
       }
-
     } catch (error) {
       setError(error.message || 'Registration failed');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Container component="main" maxWidth="xs">
+      {loading && <LoadingScreen />}
+      
       <Box
         sx={{
           marginTop: 8,

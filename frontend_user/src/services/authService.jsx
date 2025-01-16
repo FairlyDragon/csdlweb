@@ -25,12 +25,6 @@ const authService = {
         localStorage.setItem('user', JSON.stringify(userData));
         localStorage.setItem('token', response.data.access_token);
         localStorage.setItem('userRole', response.data.role);
-
-        // Trả về cả role để xử lý điều hướng
-        return {
-          ...response.data,
-          role: response.data.role
-        };
       }
 
       return response.data;
@@ -39,7 +33,7 @@ const authService = {
       throw error.response?.data || error;
     }
   },
-  
+
   signup: async (userData) => {
     try {
       console.log('Signup request data:', userData);

@@ -1,9 +1,18 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    // Khôi phục giỏ hàng từ localStorage khi khởi tạo
+    const savedCart = localStorage.getItem('cart');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+
+  // Lưu giỏ hàng vào localStorage mỗi khi có thay đổi
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (item) => {
     setCartItems(prev => {
@@ -36,8 +45,10 @@ export const CartProvider = ({ children }) => {
   const getCartTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
+
   const clearCart = () => {
     setCartItems([]);
+    localStorage.removeItem('cart');
   };
 
   return (
