@@ -477,10 +477,13 @@ async def read_pending_orders_detais() -> list[dict]:  # list[AdminOrderListDeta
             email=customer_who_made_order["email"], 
             phone_number=customer_who_made_order["phone_number"], 
             address=customer_who_made_order["address"], 
+            avatar_url=customer_who_made_order.get("avatar_url", None),
                 payment_method=payment_by_order_id["payment_method"],
                     order_date=order["order_date"], 
                     order_items=[
-                OrderItemSchema(**{**item, "image_url": (await get_menu_item_by_id(menu_item_id=item["menuitem_id"]))["image_url"]}).model_dump() 
+                OrderItemSchema(**{**item, 
+                                   "image_url": (await get_menu_item_by_id(menu_item_id=item["menuitem_id"]))["image_url"],
+                                   "name": (await get_menu_item_by_id(menu_item_id=item["menuitem_id"]))["name"]}).model_dump()
                 for item in order["order_items"]
                     ],
                     total_amount=order["total_amount"], 
@@ -563,11 +566,15 @@ async def read_passed_pending_orders_details() -> list[dict]:  # list[AdminOrder
             email=customer_who_made_order["email"], 
             phone_number=customer_who_made_order["phone_number"], 
             address=customer_who_made_order["address"], 
+            avatar_url=customer_who_made_order.get("avatar_url", None),
                 payment_method=payment_by_order_id["payment_method"],
                 payment_status=payment_by_order_id["status"],
                     order_date=order["order_date"], 
                     order_items=[
-                OrderItemSchema(**{**item, "image_url": (await get_menu_item_by_id(menu_item_id=item["menuitem_id"]))["image_url"]}).model_dump() 
+                OrderItemSchema(**{**item, 
+                                   "image_url": (await get_menu_item_by_id(menu_item_id=item["menuitem_id"]))["image_url"],
+                                   "name": (await get_menu_item_by_id(menu_item_id=item["menuitem_id"]))["name"],
+                                   }).model_dump()
                 for item in order["order_items"]
                     ],
                     total_amount=order["total_amount"], 

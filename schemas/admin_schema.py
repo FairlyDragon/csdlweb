@@ -117,6 +117,7 @@ class AdminOrderListDetailsResponseSchema(BaseModel):
     email: str
     phone_number: str
     address: str
+    avatar_url: Optional[str] = None
     
     payment_method: Optional[PaymentMethod] = PaymentMethod.COD
     payment_status: Optional[PaymentStatus] = PaymentStatus.PENDING

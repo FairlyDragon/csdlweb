@@ -11,6 +11,7 @@ class OrderItem(BaseModel):
     
 class OrderItemSchema(BaseModel):
     menuitem_id: str
+    name: str
     quantity: int
     subtotal: float
     image_url: str
