@@ -1,242 +1,174 @@
 import { useState } from 'react';
-import {
-  Box,
-  Typography,
-  TextField,
-  Button,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Alert,
-  CircularProgress
-} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../utils/axios';
+import { 
+  Box, 
+  TextField, 
+  Button, 
+  Typography, 
+  Container, 
+  Alert,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel 
+} from '@mui/material';
+import authService from '../../services/authService';
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'customer'
+    role: ''
   });
-  
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const validateForm = () => {
-    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
-      setError('Please fill in all fields');
-      return false;
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return false;
-    }
-
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setError('Invalid email format');
-      return false;
-    }
-
-    return true;
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
 
-    if (!validateForm()) return;
+    if (!formData.role) {
+      setError('Please select a role');
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
 
     try {
-      setLoading(true);
-      
-      // Log request data
-      console.log('Sending signup data:', {
+      // Đăng ký
+      await authService.signup({
         email: formData.email,
         password: formData.password,
         role: formData.role,
-        id: formData.username
+        username: formData.email
       });
 
-      const response = await axios.post('/auth/signup', {
-        email: formData.email,
-        password: formData.password,
-        role: formData.role,
-        id: formData.username
+      // Đăng nhập và lấy role
+      const loginResponse = await authService.login({
+        username: formData.email,
+        password: formData.password
       });
 
-      console.log('Signup response:', response);
+      console.log('Login response:', loginResponse); // Debug log
 
-      if (response.data) {
-        setSuccess('Account created successfully!');
-        setFormData({
-          username: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-          role: 'customer'
-        });
+      // Kiểm tra role từ response
+      const userRole = loginResponse.role;
+      console.log('User role:', userRole); // Debug log
 
-        // Redirect to login page after 2 seconds
-        setTimeout(() => {
-          navigate('/auth/login', { 
-            state: { 
-              email: formData.email,
-              message: 'Account created successfully! Please login with your credentials.' 
-            }
-          });
-        }, 2000);
+      // Điều hướng dựa trên role
+      if (userRole === 'shipper') {
+        navigate('/shipper/waiting');
+      } else {
+        navigate('/menu');
       }
 
-    } catch (err) {
-      console.error('Signup error:', err);
-      console.error('Error response:', err.response?.data);
-      setError(err.response?.data?.detail || 'Failed to create account. Please try again.');
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      setError(error.message || 'Registration failed');
     }
   };
 
   return (
-    <Box sx={{
-      maxWidth: 400,
-      mx: 'auto',
-      mt: 8,
-      p: 3,
-      boxShadow: 3,
-      borderRadius: 2,
-      bgcolor: 'background.paper'
-    }}>
-      <Typography variant="h4" align="center" gutterBottom>
-        Create Account
-      </Typography>
-      
-      <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 3 }}>
-        Join us and start ordering your favorite food
-      </Typography>
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Typography component="h1" variant="h5">
+          Sign Up
+        </Typography>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
+        {error && (
+          <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
+            {error}
+          </Alert>
+        )}
 
-      {success && (
-        <Alert severity="success" sx={{ mb: 2 }}>
-          {success}
-        </Alert>
-      )}
-
-      <Box component="form" onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          label="Username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-
-        <TextField
-          fullWidth
-          label="Email"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-
-        <TextField
-          fullWidth
-          label="Password"
-          name="password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          margin="normal"
-          required
-          helperText="Password must be at least 6 characters"
-        />
-
-        <TextField
-          fullWidth
-          label="Confirm Password"
-          name="confirmPassword"
-          type="password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
-
-        <RadioGroup
-          row
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          sx={{ my: 2, justifyContent: 'center' }}
-        >
-          <FormControlLabel 
-            value="customer" 
-            control={<Radio />} 
-            label="Customer" 
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="email"
+            label="Email Address"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
           />
-          <FormControlLabel 
-            value="shipper" 
-            control={<Radio />} 
-            label="Shipper" 
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
           />
-        </RadioGroup>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            name="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+          
+          <FormControl fullWidth margin="normal" required>
+            <InputLabel>Role</InputLabel>
+            <Select
+              name="role"
+              value={formData.role}
+              label="Role"
+              onChange={handleChange}
+            >
+              <MenuItem value="customer">Customer</MenuItem>
+              <MenuItem value="shipper">Shipper</MenuItem>
+            </Select>
+          </FormControl>
 
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          size="large"
-          disabled={loading}
-          sx={{ 
-            mt: 2,
-            bgcolor: '#dd1d1d',
-            '&:hover': {
-              bgcolor: '#bb0f0f'
-            }
-          }}
-        >
-          {loading ? <CircularProgress size={24} color="inherit" /> : 'SIGN UP'}
-        </Button>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            sx={{ 
+              mt: 3, 
+              mb: 2,
+              bgcolor: '#dd1d1d',
+              '&:hover': {
+                bgcolor: '#bb1818'
+              }
+            }}
+          >
+            Sign Up
+          </Button>
 
-        <Button
-          fullWidth
-          onClick={() => navigate('/auth/login')}
-          sx={{ mt: 1 }}
-        >
-          Already have an account? Log In
-        </Button>
+          <Button
+            fullWidth
+            onClick={() => navigate('/auth/login')}
+            sx={{ color: '#dd1d1d' }}
+          >
+            Already have an account? Sign in
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </Container>
   );
 };
 

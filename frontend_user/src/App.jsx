@@ -34,20 +34,20 @@ function App() {
           <Router>
             <Routes>
               {/* Public routes */}
-              <Route path="/auth/login" element={<LogIn />} />
-              <Route path="/auth/signup" element={<SignUp />} />
-
-              {/* Customer routes */}
               <Route path="/" element={
                 <CustomerLayout>
                   <Home />
                 </CustomerLayout>
               } />
+              <Route path="/auth/login" element={<LogIn />} />
+              <Route path="/auth/signup" element={<SignUp />} />
               <Route path="/menu" element={
                 <CustomerLayout>
                   <Menu />
                 </CustomerLayout>
               } />
+
+              {/* Customer routes */}
               <Route path="/cart" element={
                 <PrivateRoute roles={['customer']}>
                   <CustomerLayout>
@@ -62,17 +62,17 @@ function App() {
                   </CustomerLayout>
                 </PrivateRoute>
               } />
-              <Route path="/checkout" element={
-                <PrivateRoute roles={['customer']}>
-                  <CustomerLayout>
-                    <Checkout />
-                  </CustomerLayout>
-                </PrivateRoute>
-              } />
               <Route path="/orders" element={
                 <PrivateRoute roles={['customer']}>
                   <CustomerLayout>
                     <Orders />
+                  </CustomerLayout>
+                </PrivateRoute>
+              } />
+              <Route path="/checkout" element={
+                <PrivateRoute roles={['customer']}>
+                  <CustomerLayout>
+                    <Checkout />
                   </CustomerLayout>
                 </PrivateRoute>
               } />
@@ -85,28 +85,18 @@ function App() {
               } />
 
               {/* Shipper routes */}
-              <Route path="/shipper/waiting" element={
-                <ShipperLayout>
-                  <WaitingOrders />
-                </ShipperLayout>
+              <Route path="/shipper/*" element={
+                <PrivateRoute roles={['shipper']}>
+                  <ShipperLayout>
+                    <Routes>
+                      <Route path="/waiting" element={<WaitingOrders />} />
+                      <Route path="/pickup" element={<PickupOrder />} />
+                      <Route path="/delivering" element={<DeliveringOrder />} />
+                      <Route path="/delivered" element={<DeliveredOrder />} />
+                    </Routes>
+                  </ShipperLayout>
+                </PrivateRoute>
               } />
-              <Route path="/shipper/pickup" element={
-                <ShipperLayout>
-                  <PickupOrder />
-                </ShipperLayout>
-              } />
-              <Route path="/shipper/delivering" element={
-                <ShipperLayout>
-                  <DeliveringOrder />
-                </ShipperLayout>
-              } />
-              <Route path="/shipper/delivered" element={
-                <ShipperLayout>
-                  <DeliveredOrder />
-                </ShipperLayout>
-              } />
-
-             
             </Routes>
           </Router>
         </OrderProvider>
