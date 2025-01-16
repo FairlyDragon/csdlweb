@@ -559,6 +559,7 @@ async def read_passed_pending_orders_details() -> list[dict]:  # list[AdminOrder
             phone_number=customer_who_made_order["phone_number"], 
             address=customer_who_made_order["address"], 
                 payment_method=payment_by_order_id["payment_method"],
+                payment_status=payment_by_order_id["status"],
                     order_date=order["order_date"], 
                     order_items=[OrderItem(**item).model_dump() for item in order["order_items"]], 
                     total_amount=order["total_amount"], 

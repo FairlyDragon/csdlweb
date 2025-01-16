@@ -118,7 +118,8 @@ class AdminOrderListDetailsResponseSchema(BaseModel):
     phone_number: str
     address: str
     
-    payment_method: PaymentMethod
+    payment_method: Optional[PaymentMethod] = PaymentMethod.COD
+    payment_status: Optional[PaymentStatus] = PaymentStatus.PENDING
     
     order_date: datetime
     order_items: List[OrderItem]

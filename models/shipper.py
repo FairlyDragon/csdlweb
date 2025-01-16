@@ -13,16 +13,16 @@ class ShipperStatus(str, Enum):
     
 class Shipper(BaseModel): 
     shipper_id: str = Field(default_factory=lambda: str(uuid4()), alias="_id") 
-    name: str 
-    phone_number: str 
-    total_amount: float		
-    email: str		
-    password: str		
-    address: str		
-    created_at: datetime		
-    date_of_birth: datetime		
-    gender: GenderEnum		# Male or Female
+    name: Optional[str] = None
+    phone_number: Optional[str] = None  
+    total_amount: Optional[float] = None		
+    email: Optional[str] = None		
+    password: Optional[str] = None		
+    address: Optional[str] = None		
+    created_at: Optional[datetime] = datetime.now()
+    date_of_birth: Optional[datetime] = datetime.now()
+    gender: Optional[GenderEnum] = None		# Male or Female
     avatar_url: Optional[str] = None
     role: Role = Role.SHIPPER
-    account_status: ShipperStatus
+    account_status: Optional[ShipperStatus] = ShipperStatus.INACTIVE
 

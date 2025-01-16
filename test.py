@@ -111,14 +111,16 @@ sample_orders = [
 ]
 
 sample_payments = [
-    {"_id": "p1", "order_id": "o1", "payment_method": "cod", "amount": 90.0,
+    {"_id": "p1", "order_id": "o1", "payment_method": "cod", "amount": 10.0,
      "created_at": datetime.now(), "status": "success"},
-    {"_id": "p2", "order_id": "o2", "payment_method": "stripe", "amount": 100.0,
+    {"_id": "p2", "order_id": "o2", "payment_method": "stripe", "amount": 50.0,
      "created_at": datetime.now(), "status": "success"},
-    {"_id": "p3", "order_id": "o3", "payment_method": "cod", "amount": 100.0,
+    {"_id": "p3", "order_id": "o3", "payment_method": "cod", "amount": 70.0,
      "created_at": datetime.now(), "status": "success"},
-    {"_id": "p4", "order_id": "o4", "payment_method": "cod", "amount": 100.0,
+    {"_id": "p4", "order_id": "o4", "payment_method": "cod", "amount": 70.0,
      "created_at": datetime.now(), "status": "success"},
+    {"_id": "p5", "order_id": "o5", "payment_method": "cod", "amount": 70.0,
+     "created_at": datetime.now(), "status": "pending"},
 ]
 
 sample_menu_items = [

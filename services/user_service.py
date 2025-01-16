@@ -23,10 +23,11 @@ async def find_user_by_email(email: str) -> Optional[UserSchema]:
 # Insert all kinds of users into database
 async def create_user(user: dict) -> dict:  
     if user["role"] == Role.SHIPPER:
-        user_model_to_insert_into_db = Shipper(**user)
+        user_model_to_insert_into_db = Shipper(**{k: v for k, v in user.items() if v is not None})
         inserted_user = await db["shipper"].insert_one(user_model_to_insert_into_db.model_dump(by_alias=True))
     elif user["role"] == Role.CUSTOMER:
-        user_model_to_insert_into_db = User(**user)
+        # need to modelize and then model_dump again to create uuid with alias
+        user_model_to_insert_into_db = User(**{k: v for k, v in user.items() if v is not None})
         inserted_user = await db["user"].insert_one(user_model_to_insert_into_db.model_dump(by_alias=True))
     else:
         raise HTTPException(status_code=400, detail="Invalid user role")

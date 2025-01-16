@@ -10,7 +10,7 @@ from services.auth_service import signup_user, authenticate_user, update_passwor
 
 # Signup customer/shipper
 async def signup(user: UserSchema):
-    result = await signup_user(user.model_dump(by_alias=True))
+    result = await signup_user({k: v for k, v in user.model_dump().items() if v is not None})
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return result
