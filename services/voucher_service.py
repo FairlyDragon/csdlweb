@@ -50,4 +50,4 @@ async def check_usability_of_voucher(order: CreateOrderSchema) -> Optional[dict]
     # increment used count
     await update_voucher_by_id(voucher["_id"], {"used": voucher["used"] + 1})
     
-    return returned
+    return returned  # inlude voucher_code, voucher_id and MAY BE discount_applied

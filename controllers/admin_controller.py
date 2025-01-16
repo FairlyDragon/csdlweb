@@ -513,6 +513,7 @@ async def read_pending_orders_preview() -> list[dict]:  # list[AdminOrderListPre
             name=customer_who_made_order["name"], 
             phone_number=customer_who_made_order["phone_number"], 
             order_date=order["order_date"], 
+            email=customer_who_made_order["email"],
             address=customer_who_made_order["address"],
             num_of_items=len(order["order_items"]), 
             status=order["status"]
@@ -536,6 +537,7 @@ async def read_passed_pending_orders_preview() -> list[dict]:  # list[AdminOrder
             name=customer_who_made_order["name"], 
             phone_number=customer_who_made_order["phone_number"], 
             address=customer_who_made_order["address"],
+            email=customer_who_made_order["email"],
             order_date=order["order_date"], 
             num_of_items=len(order["order_items"]), 
             status=order["status"]

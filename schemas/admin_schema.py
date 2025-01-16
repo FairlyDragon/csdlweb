@@ -138,6 +138,7 @@ class AdminOrderListPreviewResponseSchema(BaseModel):
     name: str
     phone_number: str
     address: str
+    email: str
     order_date: datetime
     num_of_items: int
     status: OrderStatus
