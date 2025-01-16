@@ -1,6 +1,7 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from pydantic import BaseModel
+from models.order import OrderItem
 from models.user import GenderEnum, Role
 
 class UserSchema(BaseModel):
@@ -46,3 +47,33 @@ class CustomerResponseSchema(BaseModel):
             }
         }   
 
+
+class CreateOrderSchema(BaseModel):
+    # order_date: datetime
+    order_items: List[OrderItem]
+    note: Optional[str] = None
+    voucher_code: Optional[str] = None
+    total_amount: float
+    delivery_fee: float
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "order_items": [
+                    {
+                        "menuitem_id": "m1",
+                        "quantity": 2,
+                        "subtotal": 40.0
+                    },
+                    {
+                        "menuitem_id": "m2",
+                        "quantity": 1,
+                        "subtotal": 20.0
+                    }
+                ],
+                "note": "Leave at the door",
+                "voucher_code": "SUMMER10",
+                "total_amount": 105.0,
+                "delivery_fee": 1.0
+            }
+        }

@@ -18,5 +18,5 @@ class Payment(BaseModel):
     order_id: str 
     payment_method: PaymentMethod   
     amount: float
-    status: PaymentStatus
+    payment_status: PaymentStatus
     created_at: datetime = Field(default_factory=datetime.now)

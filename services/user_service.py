@@ -64,7 +64,7 @@ async def find_customer_by_id(customer_id: str) -> User:
     # get customer from db
     customer = await db["user"].find_one({"_id": customer_id})
     if not customer or customer["role"] != Role.CUSTOMER:
-        raise HTTPException(status_code=404, detail="No customers found")
+        raise HTTPException(status_code=404, detail="No customer found")
     
     return customer
 
@@ -113,3 +113,4 @@ def is_me(passed_id: str, current_user: UserSchema) -> str:
         raise HTTPException(status_code=403, detail="You do not have access to this resource")
     
     return True
+

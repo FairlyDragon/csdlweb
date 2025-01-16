@@ -1,4 +1,5 @@
 
+from models.order import Order
 from db.database import db
 from schemas.admin_schema import *
 from services.time_service import *
@@ -66,6 +67,24 @@ async def update_order_in_db_by_id(order_id: str, order: dict) -> dict:   # orde
         raise HTTPException(status_code=404, detail="Order not found")
     
     return updated_order.modified_count
+
+# Insert order to db
+async def insert_order_to_db(customer_id: str, order: dict) -> dict:  # Order
+    # Create order object
+    order_object = Order(
+        user_id=customer_id, 
+        order_items=order["order_items"], 
+        total_amount=order["total_amount"], 
+        note=order.get("note", None), 
+        voucher_id=order.get("voucher_id", None), 
+        discount_applied=order.get("discount_applied", 0), 
+        delivery_fee=order["delivery_fee"])
+    
+    inserted_order = await db["order"].insert_one(order_object.model_dump(by_alias=True))
+    if not inserted_order.inserted_id:
+        raise HTTPException(status_code=404, detail="Failed to create order")
+    
+    return await db["order"].find_one({"_id": inserted_order.inserted_id})
 
 # Insert order delivery to db
 async def insert_order_delivery_to_db(order_delivery: dict) -> dict:

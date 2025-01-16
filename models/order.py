@@ -28,10 +28,22 @@ class Order(BaseModel):
     order_date: datetime = Field(default_factory=datetime.now) 
     order_items: List[OrderItem]
     total_amount: float                     # including delivery fee and discount directly from restaurant (NOT VOUCHER???)  
-    status: str 
+    status: Optional[OrderStatus] = OrderStatus.PENDING
     note: Optional[str] = None 
     voucher_id: Optional[str] = None 
     discount_applied: Optional[float] = None    # discount AMOUNT (not percentage) of voucher applied
     delivery_fee: float
+    
+class DeliveryFeeDict:
+    delivery_fee_dict = {
+        "ha dong": 1,
+        "dong da": 1,
+        "cau giay": 2,
+        "hai ba trung": 2,
+        "hoang mai": 2,
+        "ba dinh": 3,
+        "nam tu liem": 3,
+        "bac tu liem": 3,
+    }
     
     

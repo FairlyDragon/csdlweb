@@ -81,9 +81,9 @@ sample_reviews = [Review(**review).model_dump(by_alias=True) for review in sampl
 
 sample_users = [
     {"_id": "u1", "name": "John Doe", "email": "cus1@gmail.com", "password": hash_password("cus1"), "gender": GenderEnum.MALE, "date_of_birth": "1990-01-01",
-     "phone_number": "1234567890", "address": "123 Main St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
+     "phone_number": "1234567890", "address": "67 phung khoang, quan ha dong", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA"},
     {"_id": "u2", "name": "Jane Smith", "email": "cus2@gmail.com", "password": hash_password("cus2"), "gender": GenderEnum.FEMALE, "date_of_birth": "1999-06-01",
-     "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
+     "phone_number": "0987654321", "address": "13 vuong thua vu, thanh xuan", "created_at": datetime.now(), "role": "customer", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
     {"_id": "u3", "name": "I AM ADMIN", "email": "admin@admin.com", "password": hash_password("admin"), "gender": GenderEnum.MALE, "date_of_birth": "1999-06-01",
      "phone_number": "0987654321", "address": "456 Elm St", "created_at": datetime.now(), "role": "admin", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq"},
 ]
@@ -125,7 +125,11 @@ sample_payments = [
 
 sample_menu_items = [
     {"_id": "m1", "name": "Pizza", "description": "Delicious cheese pizza", "price": 20.0,
-     "category": "Main Course", "average_rating": 4.5, "discount": None, "is_active": True,
+     "category": "Pizza", "average_rating": 4.5, "discount": None, "is_active": True,
+     "image_url": "https://drive.google.com/thumbnail?id=18Szt2GUkFNpRcSEtIo0VGJa5jbIY5Jux"},
+    
+    {"_id": "m2", "name": "Chicken", "description": "Fried chicken", "price": 25.0,
+     "category": "Chicken", "average_rating": 4.7, "discount": None, "is_active": True,
      "image_url": "https://drive.google.com/thumbnail?id=18Szt2GUkFNpRcSEtIo0VGJa5jbIY5Jux"},
 ]
 

@@ -630,7 +630,7 @@ async def assign_order_to_shipper(order_id: str, shipper_id: str) -> dict:
     order_delivery = OrderDelivery(order_id=order_id, shipper_id=shipper_id, delivery_status=DeliveryStatusEnum.DELIVERING)
     
     # Insert the order delivery object into the database
-    inserted_order_delivery = await insert_order_delivery_to_db(order_delivery.model_dump(by_alias=True))
+    await insert_order_delivery_to_db(order_delivery.model_dump(by_alias=True))
     
     return {"message": f"Assigned order with id {order_id} to shipper with id {shipper_id}"}
     
