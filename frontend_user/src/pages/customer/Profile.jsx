@@ -12,66 +12,63 @@ import {
   Snackbar,
   Alert
 } from '@mui/material';
-import axios from 'axios';
-
-const API_URL = 'http://127.0.0.1:8000';
+import customerService from '../../services/customerService';
 
 const Profile = () => {
-    const [formData, setFormData] = useState({
-      fullName: '',
-      email: '',
-      address: '',
-      phone: '',
-      gender: '',
-      dateOfBirth: '',
-      updatedAt: ''
-    });
-  
-    const [isEditing, setIsEditing] = useState(false);
-    const [loading, setLoading] = useState(false); // Thêm state loading
-    const [errors, setErrors] = useState({});
-    const [snackbar, setSnackbar] = useState({
-      open: false,
-      message: '',
-      severity: 'success'
-    });
-  
-    useEffect(() => {
-      fetchUserProfile();
-    }, []);
-  
-    const fetchUserProfile = async () => {
-      try {
-        setLoading(true); // Set loading khi bắt đầu fetch
-        const user = JSON.parse(localStorage.getItem('user'));
-        
-        setFormData(prev => ({
-          ...prev,
-          email: user?.email || ''
-        }));
-  
-        const response = await axios.get(`${API_URL}/api/user/profile`, {
-          headers: {
-            'Authorization': `Bearer ${user?.token}`
-          }
-        });
-  
-        setFormData(prev => ({
-          ...response.data,
-          email: user?.email || response.data.email
-        }));
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-        setSnackbar({
-          open: true,
-          message: 'Failed to load profile data',
-          severity: 'error'
-        });
-      } finally {
-        setLoading(false); // Set loading về false khi hoàn thành
-      }
-    };
-  
+  const customerId = localStorage.getItem('customerId');
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    address: '',
+    phone: '',
+    gender: '',
+    dateOfBirth: '',
+    updatedAt: ''
+  });
+  const [errors, setErrors] = useState({});
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true);
+      const user = JSON.parse(localStorage.getItem('user'));
+      
+      setFormData(prev => ({
+        ...prev,
+        email: user?.email || ''
+      }));
+
+      const response = await customerService.getProfile(customerId);
+
+      setFormData(prev => ({
+        ...response.data,
+        email: user?.email || response.data.email
+      }));
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      setSnackbar({
+        open: true,
+        message: 'Failed to load profile data',
+        severity: 'error'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -104,7 +101,6 @@ const Profile = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -126,18 +122,7 @@ const Profile = () => {
 
     try {
       setLoading(true);
-      const token = JSON.parse(localStorage.getItem('user'))?.token;
-      
-      await axios.put(
-        `${API_URL}/api/user/profile`,
-        formData,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      await customerService.updateProfile(customerId, formData);
 
       setSnackbar({
         open: true,
