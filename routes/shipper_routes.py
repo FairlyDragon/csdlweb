@@ -38,7 +38,12 @@ async def update_password_route(shipper_id: str = Path(..., example="s1"), old_p
 async def get_shipper_history_route(shipper_id: str = Path(..., example="s1")):
     return await get_shipper_history(shipper_id)
 
-@router.get("deliveries/for-me/{shipper_id}", response_description="Get order has just been assigned for shipper")   # Get delivering orders in order_delivery 
+@router.get("/deliveries/for-me/{shipper_id}", response_description="Get order has just been assigned for shipper")   # Get delivering orders in order_delivery 
 
 async def read_assigned_order_delivery_route(shipper_id: str = Path(..., example="s1")):
     return await read_assigned_order_delivery(shipper_id)
+
+@router.put("/deliveries/{delivery_status}", response_description="Update status of order delivery")
+
+async def update_order_delivery_route(delivery_status: str = Path(..., example="delivered")):
+    pass

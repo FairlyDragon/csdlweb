@@ -185,6 +185,31 @@ class ReviewDashBoardResponseSchema(BaseModel):
     image_url: str  # Review model DONT has this field
     avatar_url: Optional[str] = None  # Review model DONT has this field
     
+class AdminReportCustomerSchema(BaseModel):
+    customer_name: str
+    email: str
+    phone_number: str
+    address: str
+    created_at: datetime
+    
+    total_order: int        # completed
+    total_purchase: float 
+    
+class AdminReportShipperSchema(BaseModel):
+    shipper_name: str
+    email: str
+    phone_number: str
+    address: str
+    created_at: datetime
+    
+    total_delivery: int     # delivered
+    total_income: float
+    
+    
+class AdminReportRestaurantSchema():
+    total_food_quantity: int
+    revenue: float
+    
     
     
     

@@ -233,3 +233,20 @@ async def update_order_route(order_id: str, status: str = Path(..., example="pro
 async def update_role_of_user_route(id: str, role: LimitedRole = Query(..., example="admin")):
     return await update_role_of_user(id, role)
 
+
+# REPORT
+@router.get("/report/customer", response_description="Get orders report of all customers")
+
+async def get_customer_report_route(time_period: TimePeriod = Depends(get_time_period)):
+    return await get_customer_report(time_period.start_date, time_period.end_date)
+
+@router.get("/report/shipper", response_description="Get delivery report of all shippers")
+
+async def get_shipper_report_route(time_period: TimePeriod = Depends(get_time_period)):    
+    return await get_shipper_report(time_period.start_date, time_period.end_date)
+
+@router.get("/report/restaurant", response_description="Get restaurant's figure report")
+async def get_restaurant_report_route(time_period: TimePeriod = Depends(get_time_period)):
+    
+    return await get_restaurant_report(time_period.start_date, time_period.end_date)
+

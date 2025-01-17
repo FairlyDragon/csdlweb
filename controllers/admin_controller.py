@@ -573,7 +573,7 @@ async def read_passed_pending_orders_details() -> list[dict]:  # list[AdminOrder
             address=customer_who_made_order["address"], 
             avatar_url=customer_who_made_order.get("avatar_url", None),
                 payment_method=payment_by_order_id["payment_method"],
-                payment_status=payment_by_order_id["status"],
+                payment_status=payment_by_order_id["payment_status"],
                     order_date=order["order_date"], 
                     order_items=[
                 OrderItemSchema(**{**item, 
@@ -646,6 +646,102 @@ async def assign_order_to_shipper(order_id: str, shipper_id: str) -> dict:
     await insert_order_delivery_to_db(order_delivery.model_dump(by_alias=True))
     
     return {"message": f"Assigned order with id {order_id} to shipper with id {shipper_id}"}
+
+
+### Report ###
+# Get order report of all customers
+async def get_customer_report(start_time: datetime, end_time: datetime):
+    # Get all customers from the database
+    all_customers = await get_customers()
+    
+    figures_of_all_customers = []       # result
+    # Get all orders for each customer
+    for customer in all_customers:
+        # Only fetching completed orders
+        #   and within the time period
+        all_orders = [order for order in (await get_order_history_by_customer_id(customer["_id"])) 
+                                    if order["status"] == OrderStatus.COMPLETED and start_time <= order["order_date"] <= end_time]
+        
+        figures_of_all_customers.append(AdminReportCustomerSchema(
+            customer_name=customer["name"],
+            email=customer["email"],
+            phone_number=customer["phone_number"],
+            address=customer["address"],
+            created_at=customer["created_at"],
+                total_order=len(all_orders),
+                total_purchase=sum([order["total_amount"] for order in all_orders]),
+            )
+            .model_dump())
+        
+    figures_of_all_customers.append({
+        "total_order_quantity": sum([ele["total_order"] for ele in figures_of_all_customers]),
+        "total_purchase_from_customers": sum([ele["total_purchase"] for ele in figures_of_all_customers]),
+    })
+    
+    if not figures_of_all_customers:
+        raise HTTPException(status_code=404, detail="No customers order history found")
+    
+    return figures_of_all_customers
+
+# Get delivery report of all shippers
+async def get_shipper_report(start_time: datetime, end_time: datetime):
+    # Get all shippers from the database
+    all_shippers = await get_shippers()
+    
+    figures_of_all_shippers = []       # result
+    # Get all orders for each shipper
+    for shipper in all_shippers:
+        # Only fetching completed orders
+        #   and within the time period
+        completed_orders = [order for order in (await get_orders_within_period(start_time=start_time, end_time=end_time)) 
+                                    if start_time <= order["order_date"] <= end_time 
+                                                and order["status"] == OrderStatus.COMPLETED]
+        
+        # Only fetching delivered order_deliveries
+        all_delivered = [order_delivery for order_delivery in (await get_delivery_history_by_shipper_id(shipper["_id"])) if order_delivery["delivery_status"] == DeliveryStatusEnum.DELIVERED]
+        
+        # Get order ids from delivered order_deliveries
+        order_ids = set([order_delivery["order_id"] for order_delivery in all_delivered])
+        
+        # Filter to get orders that meet the two conditions
+        final_orders = [order for order in completed_orders if order["_id"] in order_ids]
+        
+        figures_of_all_shippers.append(AdminReportShipperSchema(
+            shipper_name=shipper["name"],
+            email=shipper["email"],
+            phone_number=shipper["phone_number"],
+            address=shipper["address"],
+            created_at=shipper["created_at"],
+                total_delivery=len(final_orders),
+                total_income=sum(order.get("delivery_fee", 0) * (1 - DISCOUNT_RATE_FOR_SHIPPERS) for order in final_orders),
+            )
+            .model_dump())
+        
+    figures_of_all_shippers.append({
+        "total_delivery_quantity": sum([ele["total_delivery"] for ele in figures_of_all_shippers]),
+        "total_income_from_shippers": sum([ele["total_income"] for ele in figures_of_all_shippers]),
+    })
+    
+    if not figures_of_all_shippers:
+        raise HTTPException(status_code=404, detail="No shippers order_delivery history found")
+        
+    return figures_of_all_shippers
+
+# Get restaurant's figure report
+async def get_restaurant_report(start_time: datetime, end_time: datetime):
+    all_completed_orders = [order for order in (await get_orders_within_period(start_time, end_time))
+                                    if order["status"] == OrderStatus.COMPLETED]
+    
+    if not all_completed_orders:
+        raise HTTPException(status_code=404, detail="No completed orders found")
+    
+    return {
+        "total_food_quantity": sum([item["quantity"] 
+                                    for order in all_completed_orders 
+                                        for item in order["order_items"]]),
+        "total_revenue": sum([order["total_amount"] for order in all_completed_orders]),
+    }
+        
     
     
     

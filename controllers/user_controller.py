@@ -155,7 +155,7 @@ async def read_assigned_order_delivery(shipper_id: str) -> dict:   # -> ShipperA
         raise HTTPException(status_code=404, detail="You have not been assigned any order")
     
     order = await get_order_by_order_id(current_for_me_order_delivery["order_id"])
-    customer_who_made_order = find_customer_by_id(order["user_id"])
+    customer_who_made_order = await find_customer_by_id(order["user_id"])
     if not customer_who_made_order:
         raise HTTPException(status_code=404, detail="Customer not found")
     
