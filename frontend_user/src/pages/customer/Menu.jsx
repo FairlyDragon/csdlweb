@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -13,8 +13,6 @@ import TapasIcon from '@mui/icons-material/Tapas';
 import CategoryCard from '../../components/CategoryCard';
 import FoodCard from '../../components/FoodCard';
 import { useCart } from '../../contexts/CartContext';
-
-import customerService from '../../services/customerService';
 
 
 const categories = [
@@ -312,28 +310,6 @@ const menuItems = [
 ];
 
 const Menu = () => {
-   // Thêm states mới
-   const [menuItems, setMenuItems] = useState([]);
-   const [loading, setLoading] = useState(true);
-   const [error, setError] = useState(null);
- 
-   // Thêm useEffect để fetch menu
-   useEffect(() => {
-     const fetchMenus = async () => {
-       try {
-         setLoading(true);
-         const data = await customerService.getMenus();
-         setMenuItems(data);
-       } catch (error) {
-         setError('Can not load menu.');
-         console.error('Error fetching menu:', error);
-       } finally {
-         setLoading(false);
-       }
-     };
-     fetchMenus();
-   }, []);
-
   const [selectedCategory, setSelectedCategory] = useState('all');
   const { cartItems, addToCart, updateQuantity } = useCart();
 
@@ -355,6 +331,7 @@ const Menu = () => {
       description: item.description
     });
   };
+
   return (
     <Box>
       <Box sx={{ p: 3 }}>
@@ -382,7 +359,6 @@ const Menu = () => {
           ))}
         </Box>
 
-            
         <Box sx={{ mb: 4 }}>
           <Box sx={{ 
             display: 'grid',

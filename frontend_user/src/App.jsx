@@ -33,57 +33,56 @@ function App() {
           <Router>
             <Routes>
               {/* Public routes */}
+              <Route path="/auth/login" element={<LogIn />} />
+              <Route path="/auth/signup" element={<SignUp />} />
               <Route path="/" element={
                 <CustomerLayout>
                   <Home />
                 </CustomerLayout>
               } />
-              <Route path="/auth/login" element={<LogIn />} />
-              <Route path="/auth/signup" element={<SignUp />} />
               <Route path="/menu" element={
                 <CustomerLayout>
                   <Menu />
                 </CustomerLayout>
               } />
+               <Route path="/orders" element={
+                <CustomerLayout>
+                  <Orders />
+                </CustomerLayout>
+              } />
 
-              {/* Customer routes */}
+              {/* Protected Customer routes */}
               <Route path="/cart" element={
-                
+                <PrivateRoute roles={['customer']}>
                   <CustomerLayout>
                     <Cart />
                   </CustomerLayout>
-               
+                </PrivateRoute>
               } />
               <Route path="/profile" element={
-                
+                <PrivateRoute roles={['customer']}>
                   <CustomerLayout>
                     <Profile />
                   </CustomerLayout>
-                
+                </PrivateRoute>
               } />
-              <Route path="/orders" element={
               
-                  <CustomerLayout>
-                    <Orders />
-                  </CustomerLayout>
-               
-              } />
               <Route path="/checkout" element={
-                
+                <PrivateRoute roles={['customer']}>
                   <CustomerLayout>
                     <Checkout />
                   </CustomerLayout>
-                
+                </PrivateRoute>
               } />
               <Route path="/change-password" element={
-               
+                <PrivateRoute roles={['customer']}>
                   <CustomerLayout>
                     <ChangePassword />
                   </CustomerLayout>
-               
+                </PrivateRoute>
               } />
 
-              {/* Shipper routes */}
+              {/* Protected Shipper routes */}
               <Route path="/shipper/*" element={
                 <PrivateRoute roles={['shipper']}>
                   <ShipperLayout>
@@ -91,6 +90,7 @@ function App() {
                       <Route path="/waiting" element={<WaitingOrders />} />
                       <Route path="/pickup" element={<PickupOrder />} />
                       <Route path="/delivered" element={<DeliveredOrder />} />
+                      
                     </Routes>
                   </ShipperLayout>
                 </PrivateRoute>

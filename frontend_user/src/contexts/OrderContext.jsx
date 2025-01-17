@@ -1,25 +1,9 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
   const [orders, setOrders] = useState([]);
-
-  useEffect(() => {
-    // Kết nối WebSocket
-    const ws = new WebSocket('ws://localhost:8000/ws');
-    
-    ws.onmessage = (event) => {
-      const updatedOrder = JSON.parse(event.data);
-      setOrders(prevOrders => 
-        prevOrders.map(order => 
-          order.id === updatedOrder.id ? updatedOrder : order
-        )
-      );
-    };
-
-    return () => ws.close();
-  }, []);
 
   const addOrder = (cartItems, total, voucher) => {
     const newOrder = {
@@ -35,8 +19,46 @@ export const OrderProvider = ({ children }) => {
     return newOrder;
   };
 
+  // Function to fetch orders from API
+  const fetchOrders = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:8000/orders/${userId}`);
+      const data = await response.json();
+      setOrders(data);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
+  };
+
+  // Function to update order status
+  const updateOrderStatus = async (orderId, status) => {
+    try {
+      const response = await fetch(`http://localhost:8000/orders/${orderId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status })
+      });
+      const updatedOrder = await response.json();
+      
+      setOrders(prev => 
+        prev.map(order => 
+          order.id === orderId ? updatedOrder : order
+        )
+      );
+    } catch (error) {
+      console.error('Error updating order:', error);
+    }
+  };
+
   return (
-    <OrderContext.Provider value={{ orders, addOrder }}>
+    <OrderContext.Provider value={{ 
+      orders, 
+      addOrder, 
+      fetchOrders,
+      updateOrderStatus 
+    }}>
       {children}
     </OrderContext.Provider>
   );

@@ -1,86 +1,77 @@
-import axios from '../utils/axios';
+import axios from "axios";
+
+const AUTH_URL = "http://127.0.0.1:8000/auth";
 
 const authService = {
-  login: async (credentials) => {
-    try {
-      const formData = new URLSearchParams();
-      formData.append('username', credentials.username);
-      formData.append('password', credentials.password);
-      formData.append('grant_type', 'password');
-      formData.append('scope', '');
-      formData.append('client_id', 'string');
-      formData.append('client_secret', 'string');
+    signup: async (userData) => {
+        try {
+            console.log('Signup request data:', userData);
+            
+            const response = await axios.post(`${AUTH_URL}/signup`, {
+                email: userData.email,
+                password: userData.password,
+                role: userData.role
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
 
-      const response = await axios.post('/auth/login', formData, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
+            console.log('Signup successful:', response.data);
+            return response.data;
+        } catch (error) {
+            if (!error.response) {
+                console.error('No response from server');
+                throw new Error('Cannot connect to server. Please check if the server is running.');
+            }
+            console.error('Signup error:', error);
+            throw error;
         }
-      });
+    },
 
-      if (response.data.access_token) {
-        const userData = {
-          token: response.data.access_token,
-          role: response.data.role
-        };
-        localStorage.setItem('user', JSON.stringify(userData));
-        localStorage.setItem('token', response.data.access_token);
-        localStorage.setItem('userRole', response.data.role);
-      }
+    login: async (credentials) => {
+        try {
+            const formData = new URLSearchParams();
+            formData.append('username', credentials.username);
+            formData.append('password', credentials.password);
 
-      return response.data;
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error.response?.data || error;
+            const response = await axios.post(`${AUTH_URL}/login`, formData, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+
+            if (response.data.access_token) {
+                localStorage.setItem('user', JSON.stringify({
+                    email: credentials.username,
+                    token: response.data.access_token,
+                    role: response.data.role,
+                    id: response.data.id
+                }));
+            }
+
+            return response.data;
+        } catch (error) {
+            console.error("Error logging in:", error);
+            throw error;
+        }
+    },
+
+    logout: () => {
+        localStorage.removeItem('user');
+        window.location.href = '/';
+    },
+
+    getCurrentUser: () => {
+        const userStr = localStorage.getItem('user');
+        return userStr ? JSON.parse(userStr) : null;
+    },
+
+    isAuthenticated: () => {
+        const user = authService.getCurrentUser();
+        return !!user && !!user.token;
     }
-  },
-
-  signup: async (userData) => {
-    try {
-      console.log('Signup request data:', userData);
-      const response = await axios.post('/auth/signup', {
-        email: userData.email,
-        password: userData.password,
-        role: userData.role,
-        id: userData.username
-      });
-
-      console.log('Signup response:', response);
-      return response.data;
-    } catch (error) {
-      console.error('Signup error:', error);
-      throw error.response?.data || error;
-    }
-  },
-
-  logout: () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('userRole');
-    window.location.href = '/auth/login';
-  },
-
-  getCurrentUser: () => {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
-  },
-
-  isShipper: () => {
-    const userRole = localStorage.getItem('userRole');
-    return userRole === 'shipper';
-  },
-
-  isCustomer: () => {
-    const userRole = localStorage.getItem('userRole');
-    return userRole === 'customer';
-  },
-
-  getDefaultRoute: () => {
-    const userRole = localStorage.getItem('userRole');
-    if (userRole === 'shipper') {
-      return '/shipper/waiting';
-    }
-    return '/';
-  }
 };
 
 export default authService;

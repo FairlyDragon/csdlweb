@@ -7,13 +7,12 @@ import {
   Typography, 
   Container, 
   Alert,
-  Select,
-  MenuItem,
+  Radio,
+  FormControlLabel,
   FormControl,
-  InputLabel 
+  RadioGroup // Make sure this is imported
 } from '@mui/material';
 import authService from '../../services/authService';
-import LoadingScreen from '../../components/LoadingScreen';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -21,131 +20,141 @@ const SignUp = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: ''  // Không set giá trị mặc định để bắt buộc user phải chọn
+    role: 'customer'
   });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    // Validate role selection
-    if (!formData.role) {
-      setError('Please select a role');
+    // Basic validation
+    if (!formData.email || !formData.password || !formData.confirmPassword) {
+      setError('Please fill in all fields');
       return;
     }
 
-    // Validate password match
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    setLoading(true);
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
 
     try {
-      // Đăng ký tài khoản
-      await authService.signup({
-        email: formData.email,
-        password: formData.password,
-        role: formData.role,
-        username: formData.email
-      });
-
-      // Sau khi đăng ký thành công, tự động đăng nhập
-      const loginResponse = await authService.login({
-        username: formData.email,
-        password: formData.password
-      });
-
-      if (loginResponse.access_token) {
-        // Điều hướng dựa trên role đã chọn
-        if (formData.role === 'shipper') {
-          navigate('/shipper/waiting');
-        } else if (formData.role === 'customer') {
-          navigate('/menu');
-        }
+      // Basic validation
+      if (!formData.email || !formData.password || !formData.confirmPassword) {
+          setError('Please fill in all fields');
+          return;
       }
-    } catch (error) {
-      setError(error.message || 'Registration failed');
-    } finally {
-      setLoading(false);
-    }
+
+      if (formData.password !== formData.confirmPassword) {
+          setError('Passwords do not match');
+          return;
+      }
+
+      const signupData = {
+          email: formData.email,
+          password: formData.password,
+          role: formData.role
+      };
+
+      console.log('Attempting signup with:', signupData);
+
+      const response = await authService.signup(signupData);
+      
+      console.log('Signup successful:', response);
+      alert('Registration successful! Please login.');
+      navigate('/auth/login');
+      
+  } catch (error) {
+      console.error('Signup error details:', error);
+      
+      if (error.response?.status === 409) {
+          setError('Email already exists');
+      } else if (error.response?.data?.detail) {
+          setError(error.response.data.detail);
+      } else if (!error.response) {
+          setError('Cannot connect to server. Please try again later.');
+      } else {
+          setError('Registration failed. Please try again.');
+      }
+  }
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      {loading && <LoadingScreen />}
-      
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Typography component="h1" variant="h5">
-          Sign Up
-        </Typography>
+    <Box sx={{ 
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      bgcolor: '#f5f5f5'
+    }}>
+      <Container maxWidth="sm">
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            bgcolor: 'white',
+            p: 4,
+            borderRadius: 2,
+            boxShadow: 3
+          }}
+        >
+          <Typography variant="h4" align="center" gutterBottom>
+            Sign Up
+          </Typography>
 
-        {error && (
-          <Alert severity="error" sx={{ width: '100%', mt: 2 }}>
-            {error}
-          </Alert>
-        )}
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
 
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <TextField
-            margin="normal"
-            required
             fullWidth
-            name="email"
-            label="Email Address"
+            label="Email"
             type="email"
             value={formData.email}
-            onChange={handleChange}
-          />
-          <TextField
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             margin="normal"
             required
+          />
+
+          <TextField
             fullWidth
-            name="password"
             label="Password"
             type="password"
             value={formData.password}
-            onChange={handleChange}
-          />
-          <TextField
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
             margin="normal"
             required
+          />
+
+          <TextField
             fullWidth
-            name="confirmPassword"
             label="Confirm Password"
             type="password"
             value={formData.confirmPassword}
-            onChange={handleChange}
+            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+            margin="normal"
+            required
           />
-          
-          <FormControl fullWidth margin="normal" required>
-            <InputLabel>Role</InputLabel>
-            <Select
-              name="role"
+
+          <FormControl component="fieldset" fullWidth sx={{ mt: 2 }}>
+            <Typography variant="subtitle1" gutterBottom>
+              Select Role
+            </Typography>
+            <RadioGroup
               value={formData.role}
-              label="Role"
-              onChange={handleChange}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
             >
-              <MenuItem value="customer">Customer</MenuItem>
-              <MenuItem value="shipper">Shipper</MenuItem>
-            </Select>
+              <FormControlLabel value="customer" control={<Radio />} label="Customer" />
+              <FormControlLabel value="shipper" control={<Radio />} label="Shipper" />
+            </RadioGroup>
           </FormControl>
 
           <Button
@@ -153,27 +162,34 @@ const SignUp = () => {
             fullWidth
             variant="contained"
             sx={{ 
-              mt: 3, 
+              mt: 3,
               mb: 2,
               bgcolor: '#dd1d1d',
               '&:hover': {
-                bgcolor: '#bb1818'
+                bgcolor: '#bb0f0f'
               }
             }}
           >
             Sign Up
           </Button>
 
-          <Button
-            fullWidth
-            onClick={() => navigate('/auth/login')}
-            sx={{ color: '#dd1d1d' }}
-          >
-            Already have an account? Sign in
-          </Button>
+          <Box sx={{ textAlign: 'center' }}>
+            <Button
+              onClick={() => navigate('/auth/login')}
+              sx={{ 
+                color: '#dd1d1d',
+                '&:hover': {
+                  bgcolor: 'transparent',
+                  textDecoration: 'underline'
+                }
+              }}
+            >
+              Already have an account? Log In
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 

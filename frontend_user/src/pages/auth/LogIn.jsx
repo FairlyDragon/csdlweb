@@ -5,10 +5,6 @@ import {
   Button, 
   Typography, 
   Link,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Alert,
   Snackbar
 } from '@mui/material';
@@ -21,9 +17,6 @@ const LogIn = () => {
     email: '',
     password: ''
   });
-  const [openResetDialog, setOpenResetDialog] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
-  const [resetSent, setResetSent] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -38,201 +31,169 @@ const LogIn = () => {
     }));
   };
 
-  const handleLogin = async (e) => {  // Đổi tên từ handleSignIn thành handleLogin
+  const handleSubmit = async (e) => {
     e.preventDefault();
-      
+    
     try {
       const response = await authService.login({
         username: formData.email,
         password: formData.password
       });
-  
+
       if (response.access_token) {
+        // Store user data
         localStorage.setItem('user', JSON.stringify({
           email: formData.email,
           token: response.access_token,
-          role: response.role
+          role: response.role,
+          id: response.id
         }));
-        
-        localStorage.setItem('token', response.access_token);
-        localStorage.setItem('userRole', response.role);
-        
+
         setSnackbar({
           open: true,
           message: 'Login successful!',
           severity: 'success'
         });
-  
-        // Redirect dựa trên role
+
+        // Redirect based on role
         setTimeout(() => {
           if (response.role === 'shipper') {
-            navigate('/shipper/dashboard');  // Thêm /dashboard vào path
+            navigate('/shipper/waiting');
           } else {
-            navigate('/');
+            navigate('/menu');
           }
         }, 1500);
       }
-        
     } catch (error) {
       console.error('Login error:', error);
-      
-      const errorMessage = error.detail || error.message || 'Login failed';
       setSnackbar({
         open: true,
-        message: errorMessage,
-        severity: 'error'
-      });
-    }
-  };
-
-  const handleResetPassword = async () => {
-    if (!resetEmail) {
-      setSnackbar({
-        open: true,
-        message: 'Please enter your email',
-        severity: 'error'
-      });
-      return;
-    }
-
-    try {
-      await authService.resetPassword(resetEmail);
-      setResetSent(true);
-      setSnackbar({
-        open: true,
-        message: 'Password reset email sent!',
-        severity: 'success'
-      });
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: error.message || 'Failed to send reset email',
+        message: error.response?.data?.detail || 'Login failed. Please check your credentials.',
         severity: 'error'
       });
     }
   };
 
   const handleCloseSnackbar = () => {
-    setSnackbar(prev => ({ ...prev, open: false }));
+    setSnackbar(prev => ({
+      ...prev,
+      open: false
+    }));
   };
 
   return (
-    <Box
-      component="form"
-      onSubmit={handleLogin}  // Đổi tên từ handleSignIn thành handleLogin
-      sx={{
-        maxWidth: 400,
-        mx: 'auto',
-        mt: 8,
-        p: 3,
-        boxShadow: 1,
-        borderRadius: 1,
-        bgcolor: 'white'
-      }}
-    >
-      <Typography variant="h5" component="h1" sx={{ mb: 3, textAlign: 'center', fontWeight: 600 }}>
-        Log In  {/* Đổi từ Sign In thành Log In */}
-      </Typography>
-
-      <TextField
-        fullWidth
-        label="Email"
-        name="email"
-        type="email"
-        value={formData.email}
-        onChange={handleChange}
-        margin="normal"
-        required
-      />
-
-      <TextField
-        fullWidth
-        label="Password"
-        name="password"
-        type="password"
-        value={formData.password}
-        onChange={handleChange}
-        margin="normal"
-        required
-      />
-
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        sx={{ 
-          mt: 3, 
-          mb: 2,
-          bgcolor: '#dd1d1d',
-          '&:hover': {
-            bgcolor: '#bb0f0f'
-          }
+    <Box sx={{ 
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      bgcolor: '#f5f5f5'
+    }}>
+      <Box
+        component="form"
+        onSubmit={handleSubmit}
+        sx={{
+          width: '100%',
+          maxWidth: 400,
+          p: 4,
+          bgcolor: 'white',
+          borderRadius: 2,
+          boxShadow: 3
         }}
       >
-        Log In  {/* Đổi từ Sign In thành Log In */}
-      </Button>
-
-      <Box sx={{ textAlign: 'center' }}>
-        <Link
-          component="button"
-          variant="body2"
-          onClick={() => setOpenResetDialog(true)}
-          sx={{ mb: 1, display: 'block' }}
+        <Typography 
+          variant="h4" 
+          component="h1" 
+          sx={{ 
+            mb: 4, 
+            textAlign: 'center',
+            fontWeight: 600,
+            color: '#333'
+          }}
         >
-          Forgot password?
-        </Link>
-        <Typography variant="body2">
-          Don't have an account?{' '}
-          <Link
-            component="button"
-            onClick={() => navigate('/auth/signup')}
-          >
-            Sign Up
-          </Link>
+          Welcome Back
         </Typography>
-      </Box>
 
-      {/* Reset Password Dialog */}
-      <Dialog open={openResetDialog} onClose={() => setOpenResetDialog(false)}>
-        <DialogTitle>Reset Password</DialogTitle>
-        <DialogContent>
-          {!resetSent ? (
-            <TextField
-              autoFocus
-              margin="dense"
-              label="Email Address"
-              type="email"
-              fullWidth
-              value={resetEmail}
-              onChange={(e) => setResetEmail(e.target.value)}
-            />
-          ) : (
-            <Typography>
-              Password reset instructions have been sent to your email.
-            </Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenResetDialog(false)}>Cancel</Button>
-          {!resetSent && (
-            <Button onClick={handleResetPassword}>Send Reset Link</Button>
-          )}
-        </DialogActions>
-      </Dialog>
+        <TextField
+          fullWidth
+          label="Email"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          margin="normal"
+          required
+          sx={{ mb: 2 }}
+        />
 
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-      >
-        <Alert 
-          onClose={handleCloseSnackbar} 
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
+        <TextField
+          fullWidth
+          label="Password"
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          margin="normal"
+          required
+          sx={{ mb: 3 }}
+        />
+
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ 
+            py: 1.5,
+            mb: 2,
+            bgcolor: '#dd1d1d',
+            '&:hover': {
+              bgcolor: '#bb0f0f'
+            },
+            textTransform: 'none',
+            fontSize: '1.1rem'
+          }}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+          Log In
+        </Button>
+
+        <Box sx={{ 
+          textAlign: 'center',
+          mt: 2 
+        }}>
+          <Typography variant="body2" color="text.secondary">
+            Don't have an account?{' '}
+            <Link
+              component="button"
+              variant="body2"
+              onClick={() => navigate('/auth/signup')}
+              sx={{ 
+                color: '#dd1d1d',
+                textDecoration: 'none',
+                '&:hover': {
+                  textDecoration: 'underline'
+                }
+              }}
+            >
+              Sign Up
+            </Link>
+          </Typography>
+        </Box>
+
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <Alert 
+            onClose={handleCloseSnackbar} 
+            severity={snackbar.severity}
+            sx={{ width: '100%' }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      </Box>
     </Box>
   );
 };

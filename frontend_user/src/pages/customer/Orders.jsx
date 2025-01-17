@@ -16,22 +16,7 @@ const Orders = () => {
   const [error, setError] = useState(null);
   const [dateFilter, setDateFilter] = useState('');
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      const response = await customerService.getOrders();
-      setOrders(response.data);
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-      setError('Failed to load orders');
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
   const getStatusColor = (status) => {
     switch(status.toLowerCase()) {
