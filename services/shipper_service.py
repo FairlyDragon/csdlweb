@@ -28,7 +28,7 @@ async def update_shipper_by_id(shipper_id: str, shipper_info_dict: dict) -> int:
     updated_shipper = await db["shipper"].update_one({"_id": shipper_id}, {"$set": shipper_info_dict})
     
     if not updated_shipper.modified_count:
-        raise HTTPException(status_code=404, detail="Shipper not found")
+        raise HTTPException(status_code=404, detail="Shipper update failed")
     
     return updated_shipper.modified_count
 

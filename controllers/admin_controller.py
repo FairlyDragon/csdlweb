@@ -3,7 +3,7 @@ from models.order_delivery import DeliveryStatusEnum, OrderDelivery
 from models.shipper import ShipperStatus
 from utils.roles import LimitedRole
 from services.voucher_service import get_voucher_by_id
-from services.payment_service import get_payment_by_order_id
+from services.payment_service import get_payment_by_order_id, get_payment_by_order_id_without_raising_error, update_payment_by_id_without_raising_error
 from schemas.shipper_schema import Admin_Delivery_Shipper_Schema, ShipperSchema
 from config import DISCOUNT_RATE_FOR_SHIPPERS
 from schemas.user_schema import CustomerResponseSchema
@@ -612,6 +612,13 @@ async def update_role_of_user(id: str, role: LimitedRole) -> dict:
 
 # Update order status
 async def update_order(order_id: str, status: str) -> dict:
+    """
+    There's two main tasks to be done here:
+    1. Update order status
+    2. Update payment status IMPLICITLY if order is rejected {"payment_status": PaymentStatus.FAILED}
+    """
+    
+    """1. Update order status"""
     if not await get_order_by_id(order_id):
         raise HTTPException(status_code=404, detail="Order not found")
     
@@ -622,6 +629,14 @@ async def update_order(order_id: str, status: str) -> dict:
     modified_count = await update_order_in_db_by_id(order_id, {"status": status})
     if modified_count == 0:
         raise HTTPException(status_code=404, detail="Order not found")
+    
+    """2. Update payment status IMPLICITLY if order is rejected"""
+    if status == OrderStatus.REJECTED:
+        payment_accordingly = await get_payment_by_order_id_without_raising_error(order_id)
+        if not payment_accordingly:
+            pass
+        else:
+            await update_payment_by_id_without_raising_error(payment_accordingly["_id"], {"payment_status": PaymentStatus.FAILED})
     
     return {"message": f"Order with id {order_id} updated status to {status}"}
 
@@ -741,6 +756,7 @@ async def get_restaurant_report(start_time: datetime, end_time: datetime):
                                         for item in order["order_items"]]),
         "total_revenue": sum([order["total_amount"] for order in all_completed_orders]),
     }
+    
         
     
     
