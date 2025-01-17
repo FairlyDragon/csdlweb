@@ -11,14 +11,14 @@ only_superadmin_role = [Role.SUPERADMIN]
 
 # DASHBOARD
 @router.get("/dashboard/header", response_description="Get dashboard header data")
-
-async def dashboard_header( time_period: TimePeriod = Depends(get_time_period)):
+@role_required(any_admin_roles)
+async def dashboard_header( time_period: TimePeriod = Depends(get_time_period), current_user: User = Depends(get_current_user)):
     return await read_dashboard_header(time_period=time_period)
 
 
 @router.get("/dashboard/center/piechart", response_description="Pie chart data of dashboard center")
-
-async def dashboard_center_piechart():
+@role_required(any_admin_roles)
+async def dashboard_center_piechart(current_user: User = Depends(get_current_user)):
     return await read_dashboard_center_piechart()
 
 
