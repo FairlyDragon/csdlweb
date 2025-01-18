@@ -73,19 +73,36 @@ const Header = () => {
   return (
     <AppBar position="static" sx={{ bgcolor: 'white' }}>
       <Toolbar>
-        <Typography 
-          variant="h6" 
-          sx={{ 
-            flexGrow: 1,
-            color: '#000',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}
-          onClick={() => navigate('/')}
-        >
-          FAIRY DRAGON
-          <span style={{ color: '#dd1d1d' }}>.</span>
-        </Typography>
+      <Box 
+      sx={{ 
+        flexGrow: 1, 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: 1,
+        cursor: 'pointer' 
+      }}
+      onClick={() => navigate('/')}
+    >
+      <img 
+        src="/src/assets/favicon-32x32.png" 
+        alt="Fairy Dragon Logo" 
+        style={{
+          width: '32px',
+          height: '32px',
+          objectFit: 'contain'
+        }}
+      />
+      <Typography 
+        variant="h6" 
+        sx={{ 
+          color: '#000',
+          fontWeight: 'bold',
+        }}
+      >
+        FAIRY DRAGON
+        <span style={{ color: '#dd1d1d' }}>.</span>
+      </Typography>
+    </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button 
