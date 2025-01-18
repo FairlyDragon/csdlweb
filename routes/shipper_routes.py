@@ -1,6 +1,6 @@
 
 from fastapi import APIRouter, Body, Depends, Path
-from controllers.user_controller import delete_shipper_profile, get_shipper_history, get_shipper_profile, logout, read_assigned_order_delivery, update_password_shipper, update_shipper_profile
+from controllers.user_controller import delete_shipper_profile, get_shipper_history, get_shipper_profile, logout, read_assigned_order_delivery, update_order_delivery, update_password_shipper, update_shipper_profile
 from schemas.shipper_schema import ShipperSchema
 from schemas.user_schema import UserSchema
 from utils.rbac import get_current_user, role_required
@@ -52,7 +52,7 @@ async def read_assigned_order_delivery_route(shipper_id: str = Path(..., example
 @role_required(only_shipper_role)
 async def update_order_delivery_route(delivery_status: str = Path(..., example="delivered"), 
                                       current_user: UserSchema = Depends(get_current_user)):
-    pass
+    return await update_order_delivery(delivery_status, current_user)
 
 @router.post("/logout", response_description="Logout")
 @role_required(only_shipper_role)

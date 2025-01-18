@@ -1,7 +1,7 @@
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from models.shipper import ShipperStatus
-from services.shipper_service import update_shipper_by_id
+from services.shipper_service import update_shipper_by_id, update_shipper_by_id_without_raising_error
 from utils.roles import Role
 from services.user_service import find_user_by_email
 from services.email_service import generate_random_password, send_reset_email
@@ -24,7 +24,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     # Set shipper account status to active
     shipper = await find_user_by_email(form_data.username)
     if shipper and shipper.role == Role.SHIPPER:
-        await update_shipper_by_id(shipper.id, {"account_status": ShipperStatus.ACTIVE})
+        await update_shipper_by_id_without_raising_error(shipper.id, {"account_status": ShipperStatus.ACTIVE})
         
     return {"access_token": token, "token_type": "bearer"}
 

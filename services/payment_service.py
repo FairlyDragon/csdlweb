@@ -30,3 +30,10 @@ async def get_payment_by_order_id_without_raising_error(order_id: str) -> dict:
     payment = await db["payment"].find_one({"order_id": order_id})
     
     return payment
+
+# Update payment by order id without raising error
+async def update_payment_by_order_id_without_raising_error(order_id: str, payment: dict) -> int:
+    payment = {k: v for k, v in payment.items() if v is not None}
+    updated_payment = await db["payment"].update_one({"order_id": order_id}, {"$set": payment})
+    
+    return updated_payment.modified_count

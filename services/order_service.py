@@ -113,3 +113,26 @@ async def get_order_delivery_by_order_id(order_id: str) -> dict:
 async def get_order_delivery_by_shipper_id(shipper_id: str) -> list[dict]:
     order_delivery = await db["order_delivery"].find({"shipper_id": shipper_id}).to_list(length=None)
     return order_delivery
+
+# Update order delivery by id
+async def update_order_delivery_by_id(order_delivery_id: str, order_delivery: dict) -> dict:
+    order_delivery  = {k:v for k, v in order_delivery.items() if v is not None}
+    updated_order_delivery = await db["order_delivery"].update_one({"_id": order_delivery_id}, {"$set": order_delivery})
+    if updated_order_delivery.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Order delivery not found")
+    
+    return updated_order_delivery.modified_count
+
+# Update order by id without raising error
+async def update_order_in_db_by_id_without_raising_error(order_id: str, order: dict) -> int:
+    order  = {k:v for k, v in order.items() if v is not None}
+    updated_order = await db["order"].update_one({"_id": order_id}, {"$set": order})
+   
+    return updated_order.modified_count
+
+# Update order delivery by id without raising error
+async def update_order_delivery_by_id_without_raising_error(order_delivery_id: str, order_delivery: dict) -> int:
+    order_delivery  = {k:v for k, v in order_delivery.items() if v is not None}
+    updated_order_delivery = await db["order_delivery"].update_one({"_id": order_delivery_id}, {"$set": order_delivery})
+    
+    return updated_order_delivery.modified_count

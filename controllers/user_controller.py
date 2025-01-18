@@ -3,13 +3,13 @@ from models.shipper import ShipperStatus
 from utils.roles import Role
 from models.order_delivery import DeliveryStatusEnum
 from models.payment import Payment, PaymentStatus
-from services.payment_service import insert_payment_to_db
+from services.payment_service import insert_payment_to_db, update_payment_by_order_id_without_raising_error
 from controllers.admin_controller import read_delivery_history_by_shipper_id, read_order_history_by_customer_id
-from models.order import DeliveryFeeDict, OrderItemSchema
+from models.order import DeliveryFeeDict, OrderItemSchema, OrderStatus
 from services.auth_service import verify_password
-from services.order_service import get_order_by_order_id, get_order_delivery_by_order_id, get_order_delivery_by_shipper_id, insert_order_to_db
+from services.order_service import get_order_by_order_id, get_order_delivery_by_order_id, get_order_delivery_by_shipper_id, insert_order_to_db, update_order_delivery_by_id, update_order_delivery_by_id_without_raising_error, update_order_in_db_by_id, update_order_in_db_by_id_without_raising_error
 from services.voucher_service import *
-from services.shipper_service import delete_shipper_by_id, get_shipper_by_id, update_shipper_by_id
+from services.shipper_service import delete_shipper_by_id, get_shipper_by_id, update_shipper_by_id, update_shipper_by_id_without_raising_error
 from schemas.shipper_schema import ShipperAssignedOrderDeliverySchema, ShipperSchema
 from services.user_service import delete_user_in_db_by_id, find_customer_by_id, is_me, update_user_in_db_by_id
 from services.menu_service import get_all_menu_items, get_menu_item_by_id
@@ -198,6 +198,7 @@ async def read_assigned_order_delivery(shipper_id: str, current_user: UserSchema
         raise HTTPException(status_code=404, detail="Customer not found")
     
     return ShipperAssignedOrderDeliverySchema(
+        delivery_id=current_for_me_order_delivery["_id"],
         order_id=order["_id"],
         total_amount=order["total_amount"],
         delivery_fee=order["delivery_fee"],
@@ -321,10 +322,57 @@ async def read_shipper_infor_by_order_id(order_id: str) -> dict:
             "address":shipper_who_shipped["address"],
             "phone_number":shipper_who_shipped["phone_number"]}
 
+# Update order delivery (shipper update delviry_status)
+async def update_order_delivery(delivery_status: str, current_user: UserSchema) -> dict:
+    """
+    There needs to update three things:
+    1. order_delivery.delivery_status
+    2. order.status
+    3. payment.payment_status
+    The second and the third one are updated with respect to the delivery_status that is passed in
+    """
+    
+    # Get all order delivery of shipper by shipper id
+    all_order_delivery_of_shipper = await get_order_delivery_by_shipper_id(current_user.id)
+    order_delivery_object = [order_delivery for order_delivery in all_order_delivery_of_shipper if order_delivery["delivery_status"] == DeliveryStatusEnum.DELIVERING]
+    if not order_delivery_object:
+        raise HTTPException(status_code=404, detail="No order delivery found")
+    
+    """Update order_delivery.delivery_status, order.status, payment.payment_status with respect to delivery_status that is passed in"""
+    if delivery_status == DeliveryStatusEnum.DELIVERED:
+        # Update order_delivery.delivery_status
+        modified_count_first = await update_order_delivery_by_id_without_raising_error(order_delivery_object[0]["_id"], {"delivery_status": DeliveryStatusEnum.DELIVERED})
+        
+        # Update order.status
+        modified_count_second = await update_order_in_db_by_id_without_raising_error(order_delivery_object[0]["order_id"], {"status": OrderStatus.COMPLETED})
+        
+        # Update payment.payment_status
+        modified_count_third = await update_payment_by_order_id_without_raising_error(order_delivery_object[0]["order_id"], {"payment_status": PaymentStatus.SUCCESS})
+        
+        if modified_count_first == 0 or modified_count_second == 0 or modified_count_third == 0:
+            raise HTTPException(status_code=404, detail="Delivery status with delivery id {} updated: Failed".format(order_delivery_object[0]["_id"]))
+
+    elif delivery_status == DeliveryStatusEnum.FAILED:
+        # Update order_delivery.delivery_status
+        modified_count_first = await update_order_delivery_by_id_without_raising_error(order_delivery_object[0]["_id"], {"delivery_status": DeliveryStatusEnum.FAILED})
+        
+        # Update order.status
+        modified_count_second = await update_order_in_db_by_id_without_raising_error(order_delivery_object[0]["order_id"], {"status": OrderStatus.CANCELED})
+        
+        # Update payment.payment_status
+        modified_count_third = await update_payment_by_order_id_without_raising_error(order_delivery_object[0]["order_id"], {"payment_status": PaymentStatus.FAILED})
+        
+        if modified_count_first == 0 or modified_count_second == 0 or modified_count_third == 0:
+            raise HTTPException(status_code=404, detail="Delivery status with delivery id {} updated: Failed".format(order_delivery_object[0]["_id"]))
+    
+    else:
+        raise HTTPException(status_code=400, detail="Invalid delivery status")
+    
+    return {"message": f"Delivery status with delivery id {order_delivery_object[0]['_id']} updated: Success"}
 
 # Logout
 async def logout(current_user: UserSchema) -> dict:
     if current_user.role == Role.SHIPPER:
-        await update_shipper_by_id(current_user.id, {"account_status": ShipperStatus.INACTIVE})
+        await update_shipper_by_id_without_raising_error(current_user.id, {"account_status": ShipperStatus.INACTIVE})
         
     return {"message": "You have been logged out"}

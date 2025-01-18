@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Body, Depends, Path
-from services.auth_service import verify_password
 from schemas.user_schema import CreateOrderSchema, CustomerResponseSchema, UserSchema
 from controllers.user_controller import *
 from utils.roles import Role

@@ -27,6 +27,7 @@ class Admin_Delivery_Shipper_Schema(BaseModel):
     phone_number: Optional[str] = None
     
 class ShipperAssignedOrderDeliverySchema(BaseModel):
+    delivery_id: str
     order_id: str
     total_amount: float
     delivery_fee: float

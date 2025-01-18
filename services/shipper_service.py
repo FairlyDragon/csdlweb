@@ -32,6 +32,16 @@ async def update_shipper_by_id(shipper_id: str, shipper_info_dict: dict) -> int:
     
     return updated_shipper.modified_count
 
+# Update shipper by id without raising error
+async def update_shipper_by_id_without_raising_error(shipper_id: str, shipper_info_dict: dict) -> int:
+    shipper_info_dict = {k: v for k, v in shipper_info_dict.items() if v is not None}
+    # Hash password before inserting into db
+    if shipper_info_dict.get("password"):
+        shipper_info_dict.update({"password": hash_password(shipper_info_dict["password"])})
+        
+    updated_shipper = await db["shipper"].update_one({"_id": shipper_id}, {"$set": shipper_info_dict})
+    
+    return updated_shipper.modified_count
 
 # Delete shipper by id
 async def delete_shipper_by_id(shipper_id: str) -> int:

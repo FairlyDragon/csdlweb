@@ -117,7 +117,7 @@ sample_payments = [
     {"_id": "p2", "order_id": "o2", "payment_method": "stripe", "amount": 50.0,
      "created_at": datetime.now(), "payment_status": "success"},
     {"_id": "p3", "order_id": "o3", "payment_method": "cod", "amount": 70.0,
-     "created_at": datetime.now(), "payment_status": "success"},
+     "created_at": datetime.now(), "payment_status": "pending"},
     {"_id": "p4", "order_id": "o4", "payment_method": "cod", "amount": 70.0,
      "created_at": datetime.now(), "payment_status": "success"},
     {"_id": "p5", "order_id": "o5", "payment_method": "cod", "amount": 70.0,
@@ -145,7 +145,7 @@ sample_order_deliveries = [
 ]
 
 sample_shippers = [
-    {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "email": "ship1@gmail.com", "password": hash_password("ship1"), "address": "123 Main St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "Male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA", "role": "shipper", "account_status": "active"},
+    {"_id": "s1", "name": "Fast Delivery", "phone_number": "9876543210", "total_amount": 5000.0, "email": "ship1@gmail.com", "password": hash_password("ship1"), "address": "123 Main St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "Male", "avatar_url": "https://drive.google.com/thumbnail?id=1IJtNeDhOc8MhoILEqXZXqr7HhbEehPeA", "role": "shipper", "account_status": "inactive"},
     
     {"_id": "s2", "name": "Fast Delivery2", "phone_number": "0987654321", "total_amount": 5099.0, "email": "ship2@gmail.com", "password": hash_password("ship2"), "address": "456 Elm St", "created_at": datetime.now(), "date_of_birth": datetime.now(), "gender": "Female", "avatar_url": "https://drive.google.com/thumbnail?id=1cPevppEiYK5OViXtAZOTJqN9IfW3X6eq", "role": "shipper","account_status": "active"},
 ]
