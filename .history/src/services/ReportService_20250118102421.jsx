@@ -1,12 +1,14 @@
 // import { axiosInstance } from "./authService";
 import axios from "axios";
 
+const API_URL = "/api/admin/report";
+
 const ReportService = {
   // Lấy báo cáo khách hàng
   getCustomerReport: async (startDate, endDate) => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/admin/report/customer?start_date=${startDate}&end_date=${endDate}`,
+        `${API_URL}/customer?start_date=${startDate}&end_date=${endDate}`,
         {
           headers: {
             accept: "application/json",
@@ -44,7 +46,7 @@ const ReportService = {
   getShipperReport: async (startDate, endDate) => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/admin/report/shipper?start_date=${startDate}&end_date=${endDate}`,
+        `${API_URL}/shipper?start_date=${startDate}&end_date=${endDate}`,
         {
           headers: {
             accept: "application/json",
@@ -82,7 +84,7 @@ const ReportService = {
   getRestaurantReport: async (startDate, endDate) => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:8000/admin/report/restaurant?start_date=${startDate}&end_date=${endDate}`
+        `${API_URL}/restaurant?start_date=${startDate}&end_date=${endDate}`
       );
 
       return {

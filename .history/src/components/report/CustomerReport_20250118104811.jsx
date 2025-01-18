@@ -18,46 +18,51 @@ import {
 } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { format, parseISO, isWithinInterval } from "date-fns";
-import ExcelJS from "exceljs";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import ExcelJS from "exceljs";
 import SearchIcon from "@mui/icons-material/Search";
 import ReportService from "../../services/ReportService";
 
-export default function RestaurantReport() {
+export default function CustomerReport() {
   const [search, setSearch] = useState("");
-  const [searchType, setSearchType] = useState("name");
+  const [searchType, setSearchType] = useState("name"); // name, email, phone
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
-  const [reportData, setReportData] = useState({
-    totalFoodQuantity: 0,
-    totalRevenue: 0,
-  });
+  const [reportData, setReportData] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchReport();
-  }, [startDate, endDate, fetchReport]);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalPurchase, setTotalPurchase] = useState(0);
 
   const fetchReport = useCallback(async () => {
     try {
-      if (!startDate || !endDate) return;
+      if (!startDate || !endDate) {
+        console.log("Missing dates");
+        return;
+      }
 
       setLoading(true);
-      const response = await ReportService.getRestaurantReport(
+      const { customers, totals } = await ReportService.getCustomerReport(
         startDate,
         endDate
       );
-      setReportData(response);
-      setLoading(false);
+
+      setReportData(customers);
+      setTotalOrders(totals.totalOrderQuantity);
+      setTotalPurchase(totals.totalPurchaseAmount);
     } catch (error) {
-      console.error("Error fetching restaurant report:", error);
+      console.error("Error fetching report:", error);
+    } finally {
       setLoading(false);
     }
   }, [startDate, endDate]);
+
+  useEffect(() => {
+    fetchReport();
+  }, [fetchReport]);
 
   const handleReset = () => {
     setSearch("");
@@ -84,6 +89,7 @@ export default function RestaurantReport() {
     }
   };
 
+  // Filter data
   const filteredData = reportData.filter((row) => {
     const matchesSearch =
       searchType === "name"
@@ -105,6 +111,7 @@ export default function RestaurantReport() {
     return matchesSearch && withinDateRange;
   });
 
+  // Pagination calculations
   const startIndex = (page - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
   const displayedData = filteredData.slice(startIndex, endIndex);
@@ -114,12 +121,14 @@ export default function RestaurantReport() {
     setPage(newPage);
   };
 
+  // Export functions
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Restaurant Report");
+    const worksheet = workbook.addWorksheet("Customer Report");
 
-    worksheet.mergeCells("A1:J1");
-    worksheet.getCell("A1").value = "Restaurant Report";
+    // Add title
+    worksheet.mergeCells("A1:H1");
+    worksheet.getCell("A1").value = "Customer Report";
     worksheet.getCell("A1").font = {
       size: 16,
       bold: true,
@@ -130,6 +139,7 @@ export default function RestaurantReport() {
       vertical: "middle",
     };
 
+    // Add headers
     worksheet.addRow([
       "ID",
       "NAME",
@@ -137,8 +147,8 @@ export default function RestaurantReport() {
       "PHONE",
       "ADDRESS",
       "DATE",
-      "Food",
-      "Amount",
+      "Total Order",
+      "Total Purchase",
     ]);
     worksheet.getRow(2).font = { bold: true };
     worksheet.getRow(2).fill = {
@@ -147,6 +157,7 @@ export default function RestaurantReport() {
       fgColor: { argb: "f4f6f8" },
     };
 
+    // Add data
     filteredData.forEach((row) => {
       worksheet.addRow([
         row.id,
@@ -155,32 +166,36 @@ export default function RestaurantReport() {
         row.phone,
         row.address,
         formatDate(row.created_at),
-        row.food,
-        row.amount,
+        row.totalOrder,
+        row.totalPurchase,
       ]);
     });
 
+    // Add summary row
     const lastRow = worksheet.rowCount + 1;
     worksheet.mergeCells(`A${lastRow}:F${lastRow}`);
     worksheet.getCell(`G${lastRow}`).value = "Total:";
     worksheet.getCell(`G${lastRow}`).font = { bold: true };
     worksheet.getCell(`G${lastRow + 1}`).value = filteredData.reduce(
-      (sum, row) => sum + row.food,
+      (sum, row) => sum + row.totalOrder,
       0
     );
     worksheet.getCell(`H${lastRow + 1}`).value = filteredData.reduce(
-      (sum, row) => sum + row.amount,
+      (sum, row) => sum + row.totalPurchase,
       0
     );
 
+    // Style all cells
     worksheet.columns.forEach((column) => {
       column.width = 15;
       column.alignment = { horizontal: "left", vertical: "middle" };
     });
 
-    worksheet.getColumn("G").numFmt = "#,##0";
-    worksheet.getColumn("H").numFmt = "$#,##0.00";
+    // Style specific columns
+    worksheet.getColumn("G").numFmt = "#,##0"; // Total Order column
+    worksheet.getColumn("H").numFmt = "$#,##0.00"; // Total Purchase column
 
+    // Add borders
     worksheet.eachRow((row) => {
       row.eachCell((cell) => {
         cell.border = {
@@ -192,6 +207,7 @@ export default function RestaurantReport() {
       });
     });
 
+    // Generate & Save File
     const buffer = await workbook.xlsx.writeBuffer();
     const blob = new Blob([buffer], {
       type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -199,7 +215,7 @@ export default function RestaurantReport() {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "restaurant_report.xlsx";
+    link.download = "customer_report.xlsx";
     link.click();
     window.URL.revokeObjectURL(url);
     handleClose();
@@ -209,7 +225,16 @@ export default function RestaurantReport() {
     const doc = new jsPDF();
     doc.autoTable({
       head: [
-        ["ID", "Name", "Email", "Phone", "Address", "Date", "Food", "Amount"],
+        [
+          "ID",
+          "Name",
+          "Email",
+          "Phone",
+          "Address",
+          "Date",
+          "Total Order",
+          "Total Purchase",
+        ],
       ],
       body: filteredData.map((row) => [
         row.id,
@@ -218,17 +243,26 @@ export default function RestaurantReport() {
         row.phone,
         row.address,
         formatDate(row.created_at),
-        row.food,
-        `$${row.amount}`,
+        row.totalOrder,
+        `$${row.totalPurchase}`,
       ]),
     });
-    doc.save("restaurant_report.pdf");
+    doc.save("customer_report.pdf");
     handleClose();
   };
 
   const exportToCSV = () => {
     const csv = [
-      ["ID", "Name", "Email", "Phone", "Address", "Date", "Food", "Amount"],
+      [
+        "ID",
+        "Name",
+        "Email",
+        "Phone",
+        "Address",
+        "Date",
+        "Total Order",
+        "Total Purchase",
+      ],
       ...filteredData.map((row) => [
         row.id,
         row.name,
@@ -236,8 +270,8 @@ export default function RestaurantReport() {
         row.phone,
         row.address,
         formatDate(row.created_at),
-        row.food,
-        row.amount,
+        row.totalOrder,
+        row.totalPurchase,
       ]),
     ]
       .map((row) => row.join(","))
@@ -246,13 +280,24 @@ export default function RestaurantReport() {
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "restaurant_report.csv";
+    link.download = "customer_report.csv";
     link.click();
     handleClose();
   };
 
+  // Thêm xử lý khi chọn ngày
+  const handleDateChange = (type, value) => {
+    if (type === "start") {
+      setStartDate(value);
+    } else {
+      setEndDate(value);
+    }
+    console.log("Dates updated:", { startDate: value, endDate });
+  };
+
   return (
     <>
+      {/* Search and Filter */}
       <Box
         sx={{
           display: "flex",
@@ -290,25 +335,22 @@ export default function RestaurantReport() {
           }}
         />
 
-        <TextField
-          type="date"
-          label="From Date"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          sx={{ width: 170 }}
-          size="small"
-          InputLabelProps={{ shrink: true }}
-        />
-
-        <TextField
-          type="date"
-          label="To Date"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          sx={{ width: 170 }}
-          size="small"
-          InputLabelProps={{ shrink: true }}
-        />
+        <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+          <TextField
+            label="From Date"
+            type="date"
+            value={startDate}
+            onChange={(e) => handleDateChange("start", e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            label="To Date"
+            type="date"
+            value={endDate}
+            onChange={(e) => handleDateChange("end", e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
 
         <Button
           onClick={handleReset}
@@ -351,6 +393,7 @@ export default function RestaurantReport() {
         </Menu>
       </Box>
 
+      {/* Table */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -371,10 +414,10 @@ export default function RestaurantReport() {
                 DATE
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Food
+                Total Order
               </TableCell>
               <TableCell align="center" sx={{ fontWeight: "bold" }}>
-                Amount
+                Total Purchase
               </TableCell>
             </TableRow>
           </TableHead>
@@ -387,7 +430,7 @@ export default function RestaurantReport() {
               </TableRow>
             ) : (
               displayedData.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.email}>
                   <TableCell align="center">{row.name}</TableCell>
                   <TableCell align="center">{row.email}</TableCell>
                   <TableCell align="center">{row.phone}</TableCell>
@@ -395,8 +438,8 @@ export default function RestaurantReport() {
                   <TableCell align="center">
                     {formatDate(row.created_at)}
                   </TableCell>
-                  <TableCell align="center">{row.food}</TableCell>
-                  <TableCell align="center">${row.amount}</TableCell>
+                  <TableCell align="center">{row.totalOrder}</TableCell>
+                  <TableCell align="center">${row.totalPurchase}</TableCell>
                 </TableRow>
               ))
             )}
@@ -404,23 +447,26 @@ export default function RestaurantReport() {
         </Table>
       </TableContainer>
 
+      {/* Summary - Right aligned */}
       <Box
         sx={{
+          mt: 3,
+          mb: 2,
           display: "flex",
-          justifyContent: "flex-end",
-          gap: 4,
-          mt: 2,
-          p: 2,
+          justifyContent: "flex-end", // Căn phải
         }}
       >
-        <Typography>
-          Total Food Quantity: <strong>{reportData.totalFoodQuantity}</strong>
-        </Typography>
-        <Typography>
-          Total Revenue: <strong>${reportData.totalRevenue}</strong>
-        </Typography>
+        <Box sx={{ display: "flex", gap: 4 }}>
+          <Typography>
+            Total Order: <strong>{totalOrders}</strong>
+          </Typography>
+          <Typography>
+            Total Purchase: <strong>${totalPurchase}</strong>
+          </Typography>
+        </Box>
       </Box>
 
+      {/* Centered Pagination */}
       <Box
         sx={{
           display: "flex",

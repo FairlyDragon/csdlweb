@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Box, Tabs, Tab, Typography } from "@mui/material";
 import CustomerReport from "../components/report/CustomerReport";
 import ShipperReport from "../components/report/ShipperReport";
+import RestaurantReport from "../components/report/RestaurantReport";
 
 export default function Report() {
   const [tab, setTab] = useState(0);
@@ -49,6 +50,7 @@ export default function Report() {
       {/* Tab Panels */}
       {tab === 0 && <CustomerReport />}
       {tab === 1 && <ShipperReport />}
+      {tab === 2 && <RestaurantReport />}
     </Box>
   );
 }

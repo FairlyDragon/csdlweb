@@ -49,6 +49,7 @@ export default function Report() {
       {/* Tab Panels */}
       {tab === 0 && <CustomerReport />}
       {tab === 1 && <ShipperReport />}
+      {tab === 2 && <RestaurantReport />}
     </Box>
   );
 }

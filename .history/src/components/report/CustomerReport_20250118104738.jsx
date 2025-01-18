@@ -40,19 +40,17 @@ export default function CustomerReport() {
   const fetchReport = useCallback(async () => {
     try {
       if (!startDate || !endDate) {
-        alert("Please select both start date and end date");
+        console.log("Missing dates");
         return;
       }
 
       setLoading(true);
-      const { customers, totals } = await ReportService.getCustomerReport(
-        startDate,
-        endDate
-      );
-
+      const { customers, totals } = await ReportService.getCustomerReport(startDate, endDate);
+      
       setReportData(customers);
       setTotalOrders(totals.totalOrderQuantity);
       setTotalPurchase(totals.totalPurchaseAmount);
+
     } catch (error) {
       console.error("Error fetching report:", error);
     } finally {
@@ -458,10 +456,16 @@ export default function CustomerReport() {
       >
         <Box sx={{ display: "flex", gap: 4 }}>
           <Typography>
-            Total Order: <strong>{totalOrders}</strong>
+            Total Order:{" "}
+            <strong>
+              {totalOrders}
+            </strong>
           </Typography>
           <Typography>
-            Total Purchase: <strong>${totalPurchase}</strong>
+            Total Purchase:{" "}
+            <strong>
+              ${totalPurchase}
+            </strong>
           </Typography>
         </Box>
       </Box>

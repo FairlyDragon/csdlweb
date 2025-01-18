@@ -140,52 +140,67 @@ export default function Header() {
     const fetchAllCounts = async () => {
       try {
         // Fetch food count
-        const foodResponse = await fetch("/api/admin/foods/menuitems/", {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const foodResponse = await fetch(
+          "http://127.0.0.1:8000/admin/foods/menuitems/",
+          {
+            headers: {
+              accept: "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         const foodData = await foodResponse.json();
         setFoodCount(foodData.length);
 
         // Fetch delivering count
-        const deliveringResponse = await fetch("/api/admin/deliveries/delivering_orders", {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const deliveringResponse = await fetch(
+          "http://127.0.0.1:8000/admin/deliveries/delivering_orders",
+          {
+            headers: {
+              accept: "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         const deliveringData = await deliveringResponse.json();
         setDeliveringCount(deliveringData.number_of_delivering_orders || 0);
 
         // Fetch expired voucher count
-        const availableResponse = await fetch("/api/admin/vouchers/available", {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const availableResponse = await fetch(
+          "http://127.0.0.1:8000/admin/vouchers/available",
+          {
+            headers: {
+              accept: "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         const availableData = await availableResponse.json();
         setAvailableVoucherCount(availableData.length || 0);
 
         // Fetch waiting order count
-        const waitingResponse = await fetch("/api/admin/deliveries/num_of_waiting_orders", {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const waitingResponse = await fetch(
+          "http://127.0.0.1:8000/admin/deliveries/num_of_waiting_orders",
+          {
+            headers: {
+              accept: "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         const waitingData = await waitingResponse.json();
         setWaitingOrderCount(waitingData.number_of_waiting_orders || 0);
 
         // Fetch active shippers count
-        const activeShippersResponse = await fetch("/api/admin/deliveries/active_shippers", {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const activeShippersResponse = await fetch(
+          "http://127.0.0.1:8000/admin/deliveries/active_shippers",
+          {
+            headers: {
+              accept: "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         const activeShippersData = await activeShippersResponse.json();
         setActiveShippersCount(
           activeShippersData.number_of_active_shippers || 0

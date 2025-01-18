@@ -40,19 +40,43 @@ export default function CustomerReport() {
   const fetchReport = useCallback(async () => {
     try {
       if (!startDate || !endDate) {
-        alert("Please select both start date and end date");
+        console.log("Missing dates");
         return;
       }
 
       setLoading(true);
-      const { customers, totals } = await ReportService.getCustomerReport(
-        startDate,
-        endDate
+      const response = await fetch(
+        `http://127.0.0.1:8000/admin/report/customer?start_date=${startDate}&end_date=${endDate}`,
+        {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
       );
+      const data = await response.json();
 
-      setReportData(customers);
-      setTotalOrders(totals.totalOrderQuantity);
-      setTotalPurchase(totals.totalPurchaseAmount);
+      // Tách dữ liệu thành danh sách khách hàng và tổng số liệu
+      const customers = data.slice(0, -1);
+      const totals = data[data.length - 1];
+
+      // Format dữ liệu khách hàng theo cấu trúc mới
+      const formattedCustomers = customers.map(customer => ({
+        name: customer.customer_name,
+        email: customer.email,
+        phone: customer.phone_number,
+        address: customer.address,
+        created_at: customer.created_at,
+        totalOrder: customer.total_order,
+        totalPurchase: customer.total_purchase
+      }));
+
+      setReportData(formattedCustomers);
+      
+      // Cập nhật tổng số liệu
+      setTotalOrders(totals.total_order_quantity);
+      setTotalPurchase(totals.total_purchase_from_customers);
+
     } catch (error) {
       console.error("Error fetching report:", error);
     } finally {
@@ -458,10 +482,16 @@ export default function CustomerReport() {
       >
         <Box sx={{ display: "flex", gap: 4 }}>
           <Typography>
-            Total Order: <strong>{totalOrders}</strong>
+            Total Order:{" "}
+            <strong>
+              {totalOrders}
+            </strong>
           </Typography>
           <Typography>
-            Total Purchase: <strong>${totalPurchase}</strong>
+            Total Purchase:{" "}
+            <strong>
+              ${totalPurchase}
+            </strong>
           </Typography>
         </Box>
       </Box>
