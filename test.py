@@ -24,7 +24,7 @@ app = FastAPI()
 setup_cors(app)
 
 # setup auth middleware
-setup_auth_middleware(app)
+# setup_auth_middleware(app)
 
 # setup error handling middleware
 app.middleware("http")(error_handler)

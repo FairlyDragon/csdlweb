@@ -22,23 +22,16 @@ async def get_menu_items() -> list:
 
 
 # Get customer profile
-async def get_customer_profile(customer_id: str, current_user: UserSchema) -> dict:
+async def get_customer_profile(customer_id: str) -> dict:
     customer_id = customer_id.lower()
-    if not is_me(customer_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
     
-    customer = await find_customer_by_id(current_user.id)
+    customer = await find_customer_by_id(customer_id=customer_id)
     return customer
 
 # Update customer profile
-async def update_customer_profile(customer: CustomerResponseSchema, current_user: UserSchema) -> dict:
+async def update_customer_profile(customer: CustomerResponseSchema) -> dict:
     customer_id = customer.customer_id
-    
-    # Can invoke api with "me" as customer_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(customer_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    customer_id = current_user.id
+
     
     modified_count = await update_user_in_db_by_id(customer_id, customer.model_dump())
     if modified_count == 0:
@@ -47,14 +40,9 @@ async def update_customer_profile(customer: CustomerResponseSchema, current_user
     return {"message": f"Your account has been updated successfully"}
 
 # Delete customer profile
-async def delete_user_profile(customer_id: str, current_user: UserSchema) -> dict:
+async def delete_user_profile(customer_id: str) -> dict:
     customer_id = customer_id.lower()
-    
-    # Can invoke api with "me" as customer_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(customer_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    customer_id = current_user.id
+
     
     deleted_count = await delete_user_in_db_by_id(customer_id)
     if deleted_count == 0:
@@ -63,7 +51,7 @@ async def delete_user_profile(customer_id: str, current_user: UserSchema) -> dic
     return {"message": f"Your account has been deleted successfully"}
 
 # Create order
-async def create_order(customer_id: str, order: CreateOrderSchema, current_user: UserSchema) -> dict:  # Order
+async def create_order(customer_id: str, order: CreateOrderSchema) -> dict:  # Order
     """
     There's two main tasks to be done here:
     1. Handle order creation (voucher has to be checked)
@@ -73,11 +61,6 @@ async def create_order(customer_id: str, order: CreateOrderSchema, current_user:
     """1. Handle order creation (voucher has to be checked)"""
     customer_id = customer_id.lower()
     
-    # Can invoke api with "me" as customer_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(customer_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    customer_id = current_user.id
     
     # Check if the customer exists
     if not await find_customer_by_id(customer_id):
@@ -114,12 +97,7 @@ async def create_order(customer_id: str, order: CreateOrderSchema, current_user:
     return inserted_order  # result of task 1
 
 # Update password
-async def update_password(customer_id: str, old_password: str, new_password: str, current_user: UserSchema) -> dict:
-    # Can invoke api with "me" as customer_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(customer_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    customer_id = current_user.id
+async def update_password(customer_id: str, old_password: str, new_password: str) -> dict:
     
     user = await find_customer_by_id(customer_id)
     if not user:
@@ -135,13 +113,8 @@ async def update_password(customer_id: str, old_password: str, new_password: str
     return {"message": f"Password updated successfully"}
 
 # Update password shipper
-async def update_password_shipper(shipper_id: str, old_password: str, new_password: str, current_user: UserSchema) -> dict:
-    # Can invoke api with "me" as shipper_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(shipper_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    shipper_id = current_user.id
-    
+async def update_password_shipper(shipper_id: str, old_password: str, new_password: str) -> dict:
+   
     shipper = await get_shipper_by_id(shipper_id)
     if not shipper:
         raise HTTPException(status_code=404, detail="Shipper not found")
@@ -157,12 +130,8 @@ async def update_password_shipper(shipper_id: str, old_password: str, new_passwo
 
 
 # Get shipper history
-async def get_shipper_history(shipper_id: str, current_user: UserSchema) -> list[dict]:
-    # Can invoke api with "me" as shipper_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(shipper_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    shipper_id = current_user.id
+async def get_shipper_history(shipper_id: str) -> list[dict]:
+    
     
     history = await read_delivery_history_by_shipper_id(shipper_id)
     if not history:
@@ -173,11 +142,7 @@ async def get_shipper_history(shipper_id: str, current_user: UserSchema) -> list
 
 # Get delivering orders
 async def read_assigned_order_delivery(shipper_id: str, current_user: UserSchema) -> dict:   # -> ShipperAssingedOrderDeliverySchema
-    # Can invoke api with "me" as shipper_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(shipper_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    shipper_id = current_user.id
+  
     
     # Get all order delivery of shipper by shipper id
     all_order_delivery_of_shipper = await get_order_delivery_by_shipper_id(shipper_id)
@@ -216,11 +181,8 @@ async def read_assigned_order_delivery(shipper_id: str, current_user: UserSchema
     ).model_dump()
 
 # Get delivery fee with respect to address
-async def read_delivery_fee(customer_id: str, current_user: UserSchema) -> dict:
-    customer_id = customer_id.lower()
-    if not is_me(customer_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    customer_id = current_user.id
+async def read_delivery_fee(customer_id: str) -> dict:
+    
     
     customer = await find_customer_by_id(customer_id)
     if not customer:
@@ -239,12 +201,8 @@ async def read_delivery_fee(customer_id: str, current_user: UserSchema) -> dict:
     return {"delivery_fee": DeliveryFeeDict.delivery_fee_dict.get(address_to_calculate)}
 
 # Read orders history of a customer
-async def read_orders_history(customer_id: str, current_user: UserSchema) -> list[dict]:
-    # Can invoke api with "me" as customer_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(customer_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    customer_id = current_user.id
+async def read_orders_history(customer_id: str) -> list[dict]:
+    
     
     history = await read_order_history_by_customer_id(customer_id)
     if not history:
@@ -253,14 +211,9 @@ async def read_orders_history(customer_id: str, current_user: UserSchema) -> lis
     return history
 
 # Get shipper profile
-async def get_shipper_profile(shipper_id: str, current_user: UserSchema) -> dict:
+async def get_shipper_profile(shipper_id: str) -> dict:
     shipper_id = shipper_id.lower()
     
-    # Can invoke api with "me" as customer_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(shipper_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    shipper_id = current_user.id
     
     # Get shipper infor by shipper id
     shipper = await get_shipper_by_id(shipper_id)
@@ -271,14 +224,8 @@ async def get_shipper_profile(shipper_id: str, current_user: UserSchema) -> dict
     return shipper
 
 # Update shipper profile
-async def update_shipper_profile(shipper: ShipperSchema, current_user: UserSchema) -> dict:
+async def update_shipper_profile(shipper: ShipperSchema) -> dict:
     shipper_id = shipper.shipper_id
-    
-    # Can invoke api with "me" as shipper_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(shipper_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    shipper_id = current_user.id
     
     # Update shipper infor by shipper id
     modified_count = await update_shipper_by_id(shipper_id, shipper.model_dump())
@@ -288,14 +235,9 @@ async def update_shipper_profile(shipper: ShipperSchema, current_user: UserSchem
     return {"message": f"Your account has been updated successfully"}
 
 # Delete shipper profile
-async def delete_shipper_profile(shipper_id: str, current_user: UserSchema) -> dict:
+async def delete_shipper_profile(shipper_id: str) -> dict:
     shipper_id = shipper_id.lower()
     
-    # Can invoke api with "me" as shipper_id
-    # Need to check if passed_id is not really "me"
-    if not is_me(shipper_id, current_user):
-        raise HTTPException(status_code=403, detail="You do not have access to this resource")
-    shipper_id = current_user.id
     
     deleted_count = await delete_shipper_by_id(shipper_id)
     if deleted_count == 0:
@@ -371,8 +313,6 @@ async def update_order_delivery(delivery_status: str, current_user: UserSchema) 
     return {"message": f"Delivery status with delivery id {order_delivery_object[0]['_id']} updated: Success"}
 
 # Logout
-async def logout(current_user: UserSchema) -> dict:
-    if current_user.role == Role.SHIPPER:
-        await update_shipper_by_id_without_raising_error(current_user.id, {"account_status": ShipperStatus.INACTIVE})
-        
+async def logout() -> dict:
+    
     return {"message": "You have been logged out"}
