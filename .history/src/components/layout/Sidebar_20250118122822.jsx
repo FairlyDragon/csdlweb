@@ -79,9 +79,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const [menuItems, setMenuItems] = useState([]);
 
   useEffect(() => {
-    const isSuperAdmin = AdminService.isSuperAdmin();
-
-    // Định nghĩa menu items dựa trên role
+    const role = localStorage.getItem("role");
+    
+    // Định nghĩa menu items cơ bản
     const baseMenuItems = [
       {
         icon: GridViewIcon,
@@ -150,16 +150,10 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         path: "/admin/settings",
         iconColor: "#546E7A",
       },
-      {
-        icon: AdminPanelSettingsOutlinedIcon,
-        label: "Sub Admins",
-        path: "/admin/admins",
-        iconColor: "#D81B60",
-      }
     ];
 
-    // Chỉ hiển thị Sub Admins nếu là super admin
-    if (isSuperAdmin) {
+    // Thêm Sub Admins menu nếu là super admin
+    if (role === "super_admin") {
       baseMenuItems.push({
         icon: AdminPanelSettingsOutlinedIcon,
         label: "Sub Admins",

@@ -150,12 +150,6 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         path: "/admin/settings",
         iconColor: "#546E7A",
       },
-      {
-        icon: AdminPanelSettingsOutlinedIcon,
-        label: "Sub Admins",
-        path: "/admin/admins",
-        iconColor: "#D81B60",
-      }
     ];
 
     // Chỉ hiển thị Sub Admins nếu là super admin

@@ -108,16 +108,16 @@ export default function Admin() {
       if (!currentAdmin) return;
 
       // Xác định role mới (ngược với role hiện tại)
-      const newRole = currentAdmin.permission ? "customer" : "admin";
+      const newRole = currentAdmin.permission ? 'customer' : 'admin';
 
       // Gọi API với PUT request
       const response = await fetch(
         `http://127.0.0.1:8000/admin/subadmins/${id}?role=${newRole}`,
         {
-          method: "PUT",
+          method: 'PUT',
           headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            'accept': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
@@ -136,10 +136,10 @@ export default function Admin() {
           )
         );
       } else {
-        console.error("Failed to update permission");
+        console.error('Failed to update permission');
       }
     } catch (error) {
-      console.error("Error updating permission:", error);
+      console.error('Error updating permission:', error);
     }
   };
 
