@@ -40,7 +40,7 @@ export default function CustomerReport() {
   const fetchReport = useCallback(async () => {
     try {
       if (!startDate || !endDate) {
-        alert("Please select both start date and end date");
+        co
         return;
       }
 
@@ -335,25 +335,22 @@ export default function CustomerReport() {
           }}
         />
 
-        <TextField
-          label="From Date"
-          type="date"
-          value={startDate}
-          onChange={(e) => handleDateChange("start", e.target.value)}
-          InputLabelProps={{ shrink: true }}
-          size="small"
-          sx={{ width: 200 }}
-        />
-
-        <TextField
-          label="To Date"
-          type="date"
-          value={endDate}
-          onChange={(e) => handleDateChange("end", e.target.value)}
-          InputLabelProps={{ shrink: true }}
-          size="small"
-          sx={{ width: 200 }}
-        />
+        <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+          <TextField
+            label="From Date"
+            type="date"
+            value={startDate}
+            onChange={(e) => handleDateChange("start", e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+          <TextField
+            label="To Date"
+            type="date"
+            value={endDate}
+            onChange={(e) => handleDateChange("end", e.target.value)}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
 
         <Button
           onClick={handleReset}
