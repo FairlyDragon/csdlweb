@@ -96,19 +96,19 @@ sample_vouchers = [
 sample_voucherss = [Voucher(**voucher).model_dump(by_alias=True) for voucher in sample_vouchers]
 
 sample_orders = [
-    {"_id": "o1", "user_id": "u1", "order_date": datetime.now(), "total_amount": 100.0, "status": "completed",
+    {"_id": "o1", "user_id": "u1", "order_date": datetime.now(), "total_amount": 31.0, "status": "completed",
      "note": "Leave at the door", "voucher_id": "v1", "discount_applied": 10.0, "delivery_fee": 1.0,
      "order_items": [{"menuitem_id": "m1", "quantity": 2, "subtotal": 40.0}]},
     
-    {"_id": "o2", "user_id": "u2", "order_date": datetime.now(), "total_amount": 50.0, "status": "pending", "note": "You are my destiny", "voucher_id": "v1", "discount_applied": 5.0, "delivery_fee": 2.0, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}, {"menuitem_id": "m2", "quantity": 1, "subtotal": 20.0}]},
+    {"_id": "o2", "user_id": "u2", "order_date": datetime.now(), "total_amount": 37.0, "status": "pending", "note": "You are my destiny", "voucher_id": "v1", "discount_applied": 5.0, "delivery_fee": 2.0, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}, {"menuitem_id": "m2", "quantity": 1, "subtotal": 20.0}]},
     
-    {"_id": "o3", "user_id": "u1", "order_date": datetime.now(), "total_amount": 70.0, "status": "canceled", "note": "This is a note", "voucher_id": "v1", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
+    {"_id": "o3", "user_id": "u1", "order_date": datetime.now(), "total_amount": 17.5, "status": "canceled", "note": "This is a note", "voucher_id": "v1", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
     
-    {"_id": "o4", "user_id": "u1", "order_date": datetime.now(), "total_amount": 70.0, "status": "processing", "note": "You are hehe", "voucher_id": "v2", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
+    {"_id": "o4", "user_id": "u1", "order_date": datetime.now(), "total_amount": 17.5, "status": "processing", "note": "You are hehe", "voucher_id": "v2", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 1, "subtotal": 20.0}]},
     
-    {"_id": "o5", "user_id": "u1", "order_date": datetime.now(), "total_amount": 70.0, "status": "rejected", "note": "You are hehe", "voucher_id": "v2", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 4, "subtotal": 80.0}]},
+    {"_id": "o5", "user_id": "u1", "order_date": datetime.now(), "total_amount": 77.5, "status": "rejected", "note": "You are hehe", "voucher_id": "v2", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 4, "subtotal": 80.0}]},
     
-    {"_id": "o6", "user_id": "u2", "order_date": datetime.now(), "total_amount": 550.0, "status": "completed", "note": "You are hoho", "voucher_id": "v2", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 3, "subtotal": 60.0}, {"menuitem_id": "m2", "quantity": 1, "subtotal": 20.0}]},
+    {"_id": "o6", "user_id": "u2", "order_date": datetime.now(), "total_amount": 77.5, "status": "completed", "note": "You are hoho", "voucher_id": "v2", "discount_applied": 5.0, "delivery_fee": 2.5, "order_items": [{"menuitem_id": "m1", "quantity": 3, "subtotal": 60.0}, {"menuitem_id": "m2", "quantity": 1, "subtotal": 20.0}]},
 ]
 
 sample_payments = [
