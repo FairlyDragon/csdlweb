@@ -1,0 +1,20 @@
+# Sử dụng Node.js để chạy trong môi trường phát triển
+FROM node:18
+
+# Đặt thư mục làm việc
+WORKDIR /app
+
+# Sao chép file package.json và package-lock.json
+COPY package*.json ./
+
+# Cài đặt dependencies
+RUN npm install
+
+# Sao chép toàn bộ mã nguồn
+COPY . .
+
+# Mở cổng cần thiết cho ứng dụng
+EXPOSE 5173
+
+# Chạy ứng dụng trong chế độ dev
+CMD ["npm", "run", "dev", "--", "--host"]

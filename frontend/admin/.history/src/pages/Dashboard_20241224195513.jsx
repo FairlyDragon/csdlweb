@@ -1,0 +1,56 @@
+import { Box, Typography } from "@mui/material";
+import FilterPeriod from "../components/dashboard/FilterPeriod";
+import StatsCards from "../components/dashboard/StatsCards";
+import PieCharts from "../components/dashboard/PieCharts";
+import OrderChart from "../components/dashboard/OrderChart";
+import RevenueChart from "../components/dashboard/RevenueChart";
+import CustomerMap from "../components/dashboard/CustomerMap";
+import CustomerReviews from "../components/dashboard/CustomerReviews";
+
+export default function Dashboard() {
+  return (
+    <Box sx={{ p: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 4,
+        }}
+      >
+        <Box>
+          <Typography variant="h4" sx={{ mb: 1 }}>
+            Dashboard
+          </Typography>
+          <Typography color="text.secondary">
+            Hi, Admin, Welcome back to Fairy Dragon Admin!
+          </Typography>
+        </Box>
+        <FilterPeriod />
+      </Box>
+
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        <StatsCards />
+
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 3,
+            mb: 3,
+          }}
+        >
+          <PieCharts />
+          <OrderChart />
+        </Box>
+
+        <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 3 }}>
+          <RevenueChart />
+          <CustomerMap />
+        </Box>
+
+        <CustomerReviews />
+      </Box>
+    </Box>
+  );
+}
